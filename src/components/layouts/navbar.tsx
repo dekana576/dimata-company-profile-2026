@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Button } from "@heroui/react";
 import { Menu, X, ArrowUpRight, Sun, Moon } from "lucide-react";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 
 export interface NavItem {
   label: string;
@@ -92,8 +93,7 @@ export function Navbar({
           className="flex shrink-0 items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-medium"
         >
           {logoSrc ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoSrc} alt={brandName} className="h-8 w-auto" />
+            <ThemeLogo alt={brandName} className="h-8 w-auto" />
           ) : (
             <span className="flex h-8 w-8 items-center justify-center rounded-medium bg-foreground text-sm font-bold text-background">
               {brandName.charAt(0).toUpperCase()}

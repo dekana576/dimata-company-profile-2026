@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 import type { SVGProps } from "react";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 
 /**
  * lucide-react sudah menghapus ikon brand/logo (Facebook, Instagram,
@@ -45,8 +48,6 @@ export interface SocialLink {
 }
 
 export interface FooterProps {
-  /** Path logo (contoh: "/img/logo/logo-dimata-no-bg.png") */
-  logoSrc?: string;
   brandName?: string;
   tagline?: string;
   description?: string;
@@ -80,7 +81,6 @@ const SOCIAL_ICON_MAP = {
 };
 
 export function Footer({
-  logoSrc = "/img/logo/logo-dimata-light.png",
   brandName = "DIMATA",
   tagline = "IT Solutions",
   description = "Digitalization for All. Helping businesses grow since 2002 with innovative IT solutions.",
@@ -99,9 +99,7 @@ export function Footer({
         {/* Brand */}
         <div className="md:col-span-5 lg:col-span-4">
           <Link href="/" className="flex items-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logoSrc}
+            <ThemeLogo
               alt={`${brandName} ${tagline}`}
               className="h-9 w-auto object-contain"
             />

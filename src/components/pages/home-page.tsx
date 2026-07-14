@@ -16,6 +16,34 @@ export default function TestPage() {
         <Button variant="ghost">Ghost</Button>
         <Button variant="danger">Danger</Button>
       </div>
+      <div className="flex gap-3">
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="danger">Danger</Button>
+      </div>
+      <div className="flex gap-3">
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="danger">Danger</Button>
+      </div>
+      <div className="flex gap-3">
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="danger">Danger</Button>
+      </div>
+      <div className="flex gap-3">
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="danger">Danger</Button>
+      </div>
 
       <div className="flex items-center gap-4">
         <Avatar>

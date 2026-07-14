@@ -61,8 +61,8 @@ export interface FooterProps {
 const DEFAULT_QUICK_LINKS: FooterLink[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Produk & Layanan", href: "/produk-layanan" },
-  { label: "Solutions", href: "/solution" },
+  { label: "Produk & Layanan", href: "/products" },
+  { label: "Solutions", href: "/solutions" },
   { label: "Vision & Mission", href: "/vision-mission" },
   { label: "Contact", href: "/contact" },
 ];
@@ -94,7 +94,7 @@ export function Footer({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#F5F5F5]">
+    <footer className="w-full bg-[#e8e8e8]">
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-16 sm:px-6 md:grid-cols-12 lg:px-8">
         {/* Brand */}
         <div className="md:col-span-5 lg:col-span-4">

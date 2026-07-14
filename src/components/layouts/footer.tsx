@@ -80,7 +80,7 @@ const SOCIAL_ICON_MAP = {
 };
 
 export function Footer({
-  logoSrc = "/img/logo/logo-dimata-no-bg.png",
+  logoSrc = "/img/logo/logo-dimata-light.png",
   brandName = "DIMATA",
   tagline = "IT Solutions",
   description = "Digitalization for All. Helping businesses grow since 2002 with innovative IT solutions.",

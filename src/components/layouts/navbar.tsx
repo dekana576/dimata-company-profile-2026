@@ -52,7 +52,7 @@ const ctaLinkClass =
 
 export function Navbar({
   brandName = "",
-  logoSrc = "img/logo/logo-dimata-no-bg.png",
+  logoSrc = "img/logo/logo-dimata-light.png",
   items = DEFAULT_ITEMS,
   ctaItem = DEFAULT_CTA,
 }: NavbarProps) {

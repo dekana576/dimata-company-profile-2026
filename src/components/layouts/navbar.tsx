@@ -14,11 +14,12 @@
  *    lewat `ctaLinkClass` supaya tampilannya tetap konsisten seperti tombol.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, startTransition, useSyncExternalStore, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { Button } from "@heroui/react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Sun, Moon } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -47,7 +48,7 @@ const DEFAULT_ITEMS: NavItem[] = [
 const DEFAULT_CTA: NavItem = { label: "Contact", href: "/contact" };
 
 const ctaLinkClass =
-  "inline-flex items-center justify-center gap-1.5 rounded-medium bg-accent px-4 py-2 text-[14px] font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2";
+  "inline-flex items-center justify-center gap-1.5 rounded-medium bg-primary px-4 py-2 text-[14px] font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 
 export function Navbar({
   brandName = "",
@@ -56,7 +57,13 @@ export function Navbar({
   ctaItem = DEFAULT_CTA,
 }: NavbarProps) {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   // Kunci scroll body saat menu mobile terbuka
   useEffect(() => {
@@ -68,7 +75,9 @@ export function Navbar({
 
   // Tutup menu mobile otomatis saat route berubah
   useEffect(() => {
-    setIsMenuOpen(false);
+    startTransition(() => {
+      setIsMenuOpen(false);
+    });
   }, [pathname]);
 
   const isActive = (href: string) =>
@@ -104,12 +113,12 @@ export function Navbar({
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className="group relative inline-flex items-center px-3 py-2 text-[14px] font-medium text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground"
+                  className="group relative inline-flex items-center px-3 py-2 text-[14px] font-medium text-foreground/70 transition-colors hover:text-primary data-[active=true]:text-foreground"
                   data-active={active}
                 >
                   {item.label}
                   <span
-                    className={`pointer-events-none absolute inset-x-3 -bottom-px h-0.5 origin-center scale-x-0 bg-accent transition-transform duration-200 ease-out group-hover:scale-x-100 ${
+                    className={`pointer-events-none absolute inset-x-3 -bottom-px h-0.5 origin-center scale-x-0 bg-primary transition-transform duration-200 ease-out group-hover:scale-x-100 ${
                       active ? "scale-x-100" : ""
                     }`}
                   />
@@ -128,6 +137,23 @@ export function Navbar({
             {ctaItem.label}
             <ArrowUpRight className="h-4 w-4" />
           </Link>
+
+          {mounted && (
+            <Button
+              isIconOnly
+              variant="ghost"
+              size="sm"
+              aria-label="Toggle theme"
+              onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="hidden md:inline-flex"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </Button>
+          )}
 
           <Button
             isIconOnly
@@ -162,7 +188,7 @@ export function Navbar({
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className="block rounded-medium px-3 py-2.5 text-[15px] font-medium text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground data-[active=true]:bg-accent/10 data-[active=true]:text-accent"
+                    className="block rounded-medium px-3 py-2.5 text-[15px] font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
                     data-active={active}
                   >
                     {item.label}
@@ -176,6 +202,30 @@ export function Navbar({
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
             </li>
+            {mounted && (
+              <li className="pt-2">
+                <Button
+                  isIconOnly
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Toggle theme"
+                  onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="w-full"
+                >
+                  {theme === "dark" ? (
+                    <>
+                      <Sun className="h-4 w-4" />
+                      <span>Light Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="h-4 w-4" />
+                      <span>Dark Mode</span>
+                    </>
+                  )}
+                </Button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

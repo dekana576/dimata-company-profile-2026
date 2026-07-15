@@ -1,6 +1,33 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/*
+ * Brand: DIMATA IT Solutions — logo blue as the primary color, logo red
+ * kept as a secondary accent. Backgrounds are neutral: white in light
+ * mode, near-black in dark mode — no color tint riding along with them.
+ *
+ * Role mapping (why each color lives where it does):
+ *   --primary    Signal Blue  → the main brand color: CTAs, status dot,
+ *                                highlighted words, focus ring. Tuned
+ *                                brighter than the logo's flat navy so
+ *                                it stays legible as a UI color.
+ *   --secondary  Signal Red   → secondary buttons/badges — the logo's
+ *                                red, used deliberately less often than
+ *                                primary.
+ *   --background/--foreground  plain white / near-black, untinted.
+ *   --hero       Near-black   → always-dark "statement" sections (hero,
+ *                                closing CTA, "how it works") — the same
+ *                                near-black in both modes, so it stays a
+ *                                fixed dark anchor regardless of the
+ *                                light/dark toggle.
+ *   --mint/--teal               light card tint + border, a soft blue
+ *                                tint that echoes --primary.
+ *   --accent     stays a neutral, muted tone (shadcn convention: hover/
+ *                selected backgrounds) — not a brand color.
+ *   --destructive stays clearly apart from both brand colors (hue 8°)
+ *                so error/delete actions never look like a CTA.
+ */
+
 /* ─── Light Mode (default) ─── */
 :root {
   --background: 0 0% 100%;
@@ -13,34 +40,47 @@
   --muted-foreground: 215 16% 47%;
   --accent: 210 40% 96%;
   --accent-foreground: 222 47% 11%;
-  --primary: 217 91% 60%;
+  --primary: 220 84% 56%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 142 76% 36%;
+  --secondary: 350 78% 50%;
   --secondary-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
+  --destructive: 8 80% 52%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  --ring: 220 84% 56%;
+
+  /* brand-only additions */
+  --hero: 240 10% 5%;
+  --hero-foreground: 0 0% 98%;
+  --mint: 220 70% 96%;
+  --teal: 220 40% 88%;
 }
 
 /* ─── Dark Mode ─── */
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 217 33% 17%;
-  --accent-foreground: 210 40% 98%;
-  --primary: 217 91% 60%;
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 8% 9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 6% 18%;
+  --input: 240 6% 18%;
+  --muted: 240 6% 14%;
+  --muted-foreground: 220 10% 65%;
+  --accent: 240 6% 14%;
+  --accent-foreground: 0 0% 98%;
+  --primary: 220 90% 64%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 142 76% 36%;
+  --secondary: 350 78% 58%;
   --secondary-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
+  --destructive: 8 75% 58%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  --ring: 220 90% 64%;
+
+  /* brand-only additions — same near-black in both modes, so Hero reads
+     as a fixed dark anchor rather than following the toggle */
+  --hero: 240 10% 5%;
+  --hero-foreground: 0 0% 98%;
+  --mint: 220 30% 14%;
+  --teal: 220 20% 24%;
 }
 
 @theme inline {
@@ -61,8 +101,20 @@
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-ring: hsl(var(--ring));
+
+  /* brand-only additions used by the homepage sections */
+  --color-hero: hsl(var(--hero));
+  --color-hero-foreground: hsl(var(--hero-foreground));
+  --color-mint: hsl(var(--mint));
+  --color-teal: hsl(var(--teal));
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* If you don't already define a display face elsewhere, point this at
+     whatever headline font you're loading (e.g. a Next/font variable) —
+     the homepage headings use `font-display`. Falls back to --font-sans
+     if left unset. */
+  --font-display: var(--font-display, var(--font-sans));
 }
 
 body {

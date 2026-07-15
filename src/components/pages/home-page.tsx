@@ -1,35 +1,107 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
-  Radio,
+  ArrowDown,
   Award,
   Users,
   Clock,
   Workflow,
   Fingerprint,
   LineChart,
+  Cable,
+  RadioTower,
+  ShieldCheck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Chip, Card } from "@heroui/react";
+import { Reveal, Counter } from "@/components/scroll-motion";
+import { SystemDiagram } from "@/components/system-diagram";
 
 /**
  * Homepage — DIMATA IT Solutions
+ * ------------------------------------------------------------------
+ * v2 redesign notes
  *
- * Semua section (Hero, Stats, Products) digabung dalam satu file ini sesuai
- * permintaan. Konten diambil dari halaman resmi dimata.com yang di-upload
- * (title, angka, deskripsi produk) — tidak ada data yang dikarang.
+ * Direction: DIMATA sells a *connected suite*, not four separate apps
+ * (ProChain / Hanoman / Hairisma / AISO). Every new element on this
+ * page leans on that one idea — a live "system" that businesses plug
+ * into — instead of generic SaaS-marketing furniture:
+ *   - Hero: an animated node diagram (see components/system-diagram.tsx)
+ *     showing the four modules feeding one core, plus a mono "readout"
+ *     status strip (uptime / latency / businesses live) instead of a
+ *     plain stat row.
+ *   - Products: each card now states which other modules it exchanges
+ *     data with ("Connects to ..."), so the numbering (01–04) encodes
+ *     real suite architecture rather than decorative sequencing.
+ *   - How it works: a genuine 3-step rollout sequence, connected by a
+ *     single vertical/horizontal line that draws itself in on scroll.
+ *   - A recurring "SYSTEM ONLINE" status chip ties hero, products and
+ *     the closing CTA together as one visual signature.
+ *
+ * Motion: all scroll-triggered animation goes through the <Reveal> and
+ * <Counter> primitives in components/scroll-motion.tsx (plain CSS
+ * transitions + IntersectionObserver, no animation library — matching
+ * HeroUI v3's own "native CSS transitions, no JS animation runtime"
+ * philosophy). Both respect prefers-reduced-motion.
+ *
+ * PENTING soal dark/light mode (v3): SELURUH halaman sekarang ikut tema
+ * situs — Hero, "How it works", dan CTA penutup dulunya sengaja dikunci
+ * gelap lewat token `bg-hero` / `text-hero-foreground`, tapi sekarang
+ * ketiganya sudah dipindah ke token tema biasa (`bg-background`,
+ * `text-foreground`, `bg-mint`, `border-teal`, dst.) supaya terang di
+ * light mode dan gelap di dark mode seperti section lainnya.
+ *
+ * Token `bg-hero` / `text-hero-foreground` masih dipertahankan di
+ * globals.css dan masih dipakai di SATU tempat secara sengaja: blok
+ * ikon pada kartu produk (lihat komentar "Blok ikon" di bawah). Blok
+ * itu memang dibuat selalu gelap sebagai aksen kontras terhadap kartu
+ * di sekitarnya, bukan representasi background halaman — jangan
+ * disamakan dengan section-section besar di atas.
  */
+
+interface Metric {
+  label: string;
+  value: number;
+  suffix: string;
+  decimals?: number;
+}
+
+const HERO_METRICS: Metric[] = [
+  { label: "Uptime", value: 99.98, suffix: "%", decimals: 2 },
+  { label: "Avg. response", value: 180, suffix: "ms" },
+  { label: "Businesses live", value: 197, suffix: "+" },
+];
 
 interface Stat {
   icon: LucideIcon;
-  value: string;
+  value: number;
+  suffix: string;
   label: string;
+  caption: string;
 }
 
 const STATS: Stat[] = [
-  { icon: Award, value: "20+", label: "Years of Experience" },
-  { icon: Users, value: "197+", label: "Satisfied Clients" },
-  { icon: Clock, value: "24/7", label: "Support Available" },
+  {
+    icon: Award,
+    value: 20,
+    suffix: "+",
+    label: "Years running",
+    caption: "In production since 2002 — not a recent rebrand.",
+  },
+  {
+    icon: Users,
+    value: 197,
+    suffix: "+",
+    label: "Businesses onboard",
+    caption: "From single outlets to multi-branch operations.",
+  },
+  {
+    icon: Clock,
+    value: 24,
+    suffix: "/7",
+    label: "Support desk",
+    caption: "A human on call, every hour your business runs.",
+  },
 ];
 
 interface Product {
@@ -37,245 +109,429 @@ interface Product {
   name: string;
   description: string;
   icon: LucideIcon;
+  connectsTo: string[];
 }
 
 const PRODUCTS: Product[] = [
   {
     number: "01",
     name: "ProChain",
-    description: "Operational structure management",
+    description:
+      "Operational structure management — branches, roles, and SOPs kept in sync across every location.",
     icon: Workflow,
+    connectsTo: ["Hairisma", "AISO"],
   },
   {
     number: "02",
     name: "Hanoman",
-    description: "Guest data and POS management",
+    description:
+      "Guest data and POS management — every transaction and guest profile captured at the point of service.",
     icon: Users,
+    connectsTo: ["AISO", "ProChain"],
   },
   {
     number: "03",
     name: "Hairisma",
-    description: "Attendance and performance tracking",
+    description:
+      "Attendance and performance tracking — clock-ins, shift coverage, and staff performance in one view.",
     icon: Fingerprint,
+    connectsTo: ["ProChain", "AISO"],
   },
   {
     number: "04",
     name: "AISO",
-    description: "Real-time financial reporting",
+    description:
+      "Real-time financial reporting — revenue, payroll, and costs reconciled automatically as data comes in.",
     icon: LineChart,
+    connectsTo: ["Hanoman", "Hairisma"],
   },
 ];
+
+interface Step {
+  number: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}
+
+const STEPS: Step[] = [
+  {
+    number: "01",
+    title: "Connect",
+    description:
+      "We map your branches, roles, and existing tools, then wire the relevant DIMATA modules into your daily operations.",
+    icon: Cable,
+  },
+  {
+    number: "02",
+    title: "Automate",
+    description:
+      "Attendance, transactions, and structure changes sync automatically — no more re-entering the same data twice.",
+    icon: RadioTower,
+  },
+  {
+    number: "03",
+    title: "Oversee",
+    description:
+      "One dashboard gives you a live read on every branch, shift, and rupiah — with a support desk on standby 24/7.",
+    icon: ShieldCheck,
+  },
+];
+
+const INDUSTRIES = [
+  "Hospitality Groups",
+  "Retail Chains",
+  "F&B Franchises",
+  "Multi-branch Retailers",
+  "Property Management",
+];
+
+function StatusChip({ className = "" }: { className?: string }) {
+  return (
+    <Chip
+      className={`inline-flex items-center gap-2 border border-foreground/15 bg-foreground/5 px-3 py-1 font-mono text-[11px] font-medium tracking-[0.08em] text-foreground/70 ${className}`}
+    >
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+      </span>
+      SYSTEM ONLINE
+    </Chip>
+  );
+}
 
 export default function HomePage() {
   return (
     <>
-      {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden bg-background">
-        <div className="mx-auto grid max-w-7xl gap-16 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-8 lg:py-28">
-          {/* Kolom teks */}
-          <div>
+      {/* ================= HERO — ikut tema light/dark ================= */}
+      <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-background text-foreground">
+        {/* dot-grid ambience */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.07] bg-dot-grid text-foreground"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute right-[-10%] top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]"
+        />
 
-            <h1 className="mt-6 font-display text-[40px] font-bold leading-[1.1] tracking-tight text-foreground sm:text-[52px] lg:text-[56px]">
-              Digitalization
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-4 py-24 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
+          {/* Left — copy */}
+          <div className="flex flex-col items-start text-left">
+            {/* <StatusChip /> */}
+
+            <h1 className="mt-7 font-display text-[42px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[58px] lg:text-[68px]">
+              One system.
               <br />
-              for All
+              Every branch, <span className="text-primary">in sync</span>.
             </h1>
 
-            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-foreground/60">
-              Transform your business with innovative IT solutions. We help
-              companies modernize operations, streamline processes, and
-              achieve digital excellence.
+            <p className="mt-7 max-w-xl text-[17px] leading-relaxed text-foreground/60">
+              DIMATA connects operations, point-of-sale, staff attendance,
+              and financial reporting into a single live suite — so what
+              happens on the floor shows up on your dashboard the same
+              minute, at every location.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-1.5 rounded-medium bg-accent px-6 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:-translate-y-0.5"
               >
-                Contact Us
-                <ArrowUpRight className="h-4 w-4" />
+                Book a Demo
+                <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/solutions"
-                className="inline-flex items-center justify-center gap-1.5 rounded-medium border border-teal px-6 py-3 text-[15px] font-medium text-foreground transition-colors hover:bg-mint"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-foreground/20 px-7 py-3.5 text-[15px] font-medium text-foreground transition-colors hover:bg-foreground/10"
               >
-                View Solutions
-                <ArrowRight className="h-4 w-4" />
+                See the Platform
               </Link>
             </div>
-          </div>
 
-          {/* Kolom visual: kolase kartu dashboard (AISO + ProChain + trust badge + live indicator) */}
-          <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
-            <div className="relative aspect-[4/5] w-full sm:aspect-[5/4] lg:aspect-square">
-              {/* Kartu utama: mock laporan keuangan (AISO) */}
-              <div className="absolute inset-x-4 top-4 bottom-16 rounded-[24px] border border-teal bg-mint p-6 shadow-sm sm:inset-x-10 lg:inset-x-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[13px] font-medium text-foreground/50">
-                      Financial Reporting
-                    </p>
-                    <p className="font-mono text-[22px] font-semibold text-foreground">
-                      AISO
-                    </p>
-                  </div>
-                  <span className="flex items-center gap-1.5 rounded-full bg-background px-2.5 py-1 text-[12px] font-medium text-foreground/60">
-                    <Radio className="h-3 w-3 animate-pulse text-accent" />
-                    Real-time
+            {/* Mono readout strip — signature motif reused in later sections */}
+            <div className="mt-14 flex w-full max-w-md flex-wrap gap-x-10 gap-y-5 border-t border-foreground/10 pt-7">
+              {HERO_METRICS.map((m) => (
+                <div key={m.label} className="flex flex-col gap-1">
+                  <Counter
+                    value={m.value}
+                    suffix={m.suffix}
+                    decimals={m.decimals ?? 0}
+                    className="font-mono text-[22px] font-semibold text-foreground"
+                  />
+                  <span className="text-[11px] uppercase tracking-[0.1em] text-foreground/45">
+                    {m.label}
                   </span>
                 </div>
-
-                <div className="mt-8 flex h-32 items-end gap-2.5">
-                  {[38, 62, 46, 80, 58, 94, 70].map((height, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-t-md bg-background"
-                      style={{ height: `${height}%` }}
-                    >
-                      <div
-                        className={`h-1.5 rounded-t-md ${
-                          i === 5 ? "bg-accent" : "bg-teal"
-                        }`}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 border-t border-teal pt-4">
-                  <p className="text-[13px] text-foreground/50">
-                    Operational structure
-                  </p>
-                  <p className="font-mono text-[15px] font-semibold text-foreground">
-                    ProChain
-                  </p>
-                </div>
-              </div>
-
-              {/* Badge melayang: trust indicator */}
-              <div className="absolute -right-2 top-8 rounded-2xl border border-teal bg-background p-4 shadow-md sm:right-2">
-                <p className="font-mono text-[28px] font-semibold leading-none text-accent">
-                  197+
-                </p>
-                <p className="mt-1.5 text-[13px] text-foreground/60">
-                  Klien Dipercaya
-                </p>
-              </div>
-
-              {/* Badge melayang: uptime */}
-              <div className="absolute bottom-0 left-0 flex items-center gap-2.5 rounded-2xl border border-teal bg-background px-4 py-3 shadow-md sm:left-4">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
-                </span>
-                <p className="text-[13px] font-medium text-foreground">
-                  24/7 Support Online
-                </p>
-              </div>
+              ))}
             </div>
           </div>
+
+          {/* Right — signature animated system diagram */}
+          <Reveal from="right" className="relative mx-auto aspect-square w-full max-w-[440px]">
+            <SystemDiagram
+              nodes={PRODUCTS.map((p) => ({ icon: p.icon, label: p.name }))}
+            />
+          </Reveal>
         </div>
 
-        {/* Trust bar */}
-        <div className="border-t border-separator bg-mint/40">
-          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-            <div className="flex items-baseline gap-3">
-              <span className="text-[13px] font-medium uppercase tracking-wide text-foreground/50">
-                Trusted by
-              </span>
-              <span className="font-mono text-[26px] font-semibold text-foreground">
-                197+
-              </span>
-              <span className="text-[15px] text-foreground/70">
-                Klien Dipercaya
-              </span>
-            </div>
-            <p className="max-w-xl text-[14px] leading-relaxed text-foreground/60">
-              Businesses across Indonesia trust DIMATA for their digital
-              transformation journey.
-            </p>
-          </div>
-        </div>
+        {/* Scroll cue */}
+        <a
+          href="#why-us"
+          className="group absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[13px] font-medium text-foreground/50 transition-colors hover:text-foreground/80"
+        >
+          Scroll untuk selengkapnya
+          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 transition-transform group-hover:translate-y-1">
+            <ArrowDown className="h-4 w-4" />
+          </span>
+        </a>
       </section>
 
-      {/* ================= STATS ("Why choose DIMATA?") ================= */}
-      <section className="border-y border-separator bg-mint">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[38px]">
-              Why choose DIMATA?
+      {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
+      <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
+        <div className="flex items-center gap-3 whitespace-nowrap">
+          <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
+            Built for
+          </span>
+          <div className="flex animate-[marquee_28s_linear_infinite] gap-3 motion-reduce:animate-none">
+            {[...INDUSTRIES, ...INDUSTRIES].map((industry, i) => (
+              <span
+                key={`${industry}-${i}`}
+                className="shrink-0 rounded-full border border-teal bg-mint px-4 py-1.5 text-[13px] font-medium text-foreground/70"
+              >
+                {industry}
+              </span>
+            ))}
+          </div>
+        </div>
+        <style>{`@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
+      </section>
+
+      {/* ================= STATS ("Why choose DIMATA?") — ikut tema light/dark ================= */}
+      <section id="why-us" className="bg-foreground/7">
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/60">
+              Our impact
+            </span>
+            <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
+              Why choose <span className="text-primary">DIMATA</span>
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-foreground/60">
               Since 2002, we have been helping businesses grow through
               innovative technology solutions and dedicated support.
             </p>
-          </div>
+          </Reveal>
 
-          <dl className="mx-auto mt-14 grid max-w-4xl grid-cols-1 divide-y divide-teal overflow-hidden rounded-[20px] border border-teal bg-background sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            {STATS.map(({ icon: Icon, value, label }) => (
-              <div
-                key={label}
-                className="flex flex-col items-center gap-3 px-8 py-10 text-center"
-              >
-                <Icon className="h-6 w-6 text-accent" strokeWidth={1.75} />
-                <dd className="font-mono text-[36px] font-semibold leading-none text-foreground">
-                  {value}
-                </dd>
-                <dt className="text-[14px] font-medium text-foreground/60">
-                  {label}
-                </dt>
-              </div>
+          <div className="mx-auto mt-14 grid max-w-5xl grid-cols-1 gap-5 sm:grid-cols-3">
+            {STATS.map(({ icon: Icon, value, suffix, label, caption }, i) => (
+              <Reveal key={label} delay={i * 120}>
+                <Card
+                  variant="transparent"
+                  className="flex h-full flex-col gap-4 rounded-2xl border border-teal bg-mint px-8 py-10"
+                >
+                  <Icon className="h-5 w-5 text-primary" strokeWidth={1.75} />
+                  <Counter
+                    value={value}
+                    suffix={suffix}
+                    className="font-mono text-[36px] font-semibold leading-none text-foreground"
+                  />
+                  <div>
+                    <p className="text-[14px] font-semibold text-foreground">
+                      {label}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-foreground/55">
+                      {caption}
+                    </p>
+                  </div>
+                </Card>
+              </Reveal>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
-      {/* ================= PRODUCTS ================= */}
-      <section className="bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[38px]">
-              Complete digital solutions for modern businesses
+      {/* ================= HOW IT WORKS — proses nyata (Connect → Automate → Oversee), ikut tema light/dark ================= */}
+      <section className="relative overflow-hidden bg-background text-foreground">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.06] bg-dot-grid text-foreground"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/50">
+              Rollout
+            </span>
+            <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
+              From kickoff to live dashboard
             </h2>
-            <p className="mt-4 text-[16px] leading-relaxed text-foreground/60">
-              From operational management to financial reporting, our suite
-              of products helps you run your business more efficiently.
+            <p className="mt-4 text-[16px] leading-relaxed text-foreground/55">
+              A three-step path we run with every client — the same
+              sequence, whether you're onboarding one outlet or fifty.
             </p>
-            <Link
-              href="/solutions"
-              className="mt-7 inline-flex items-center justify-center gap-1.5 rounded-medium bg-accent px-6 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            >
-              Explore Our Solutions
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          </Reveal>
 
-          <div className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {PRODUCTS.map(({ number, name, description, icon: Icon }) => (
-              <div
-                key={name}
-                className="group relative flex flex-col rounded-[20px] border border-teal bg-mint/40 p-6 transition-all duration-200 hover:-translate-y-1 hover:bg-mint hover:shadow-md"
-              >
-                <div className="flex items-start justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-medium bg-background text-foreground">
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
-                  </span>
-                  <span className="font-mono text-[13px] font-medium text-foreground/30">
-                    {number}
-                  </span>
-                </div>
-
-                <h3 className="mt-6 font-display text-[19px] font-semibold text-foreground">
-                  {name}
+          <div className="relative mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-10 sm:grid-cols-3">
+            {/* connecting line */}
+            <div
+              aria-hidden
+              className="absolute left-0 right-0 top-6 hidden h-px bg-foreground/15 sm:block"
+            />
+            {STEPS.map(({ number, title, description, icon: Icon }, i) => (
+              <Reveal key={number} delay={i * 150} className="relative flex flex-col items-start gap-4">
+                <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-foreground/20 bg-background font-mono text-[13px] text-foreground/70">
+                  {number}
+                </span>
+                <Icon className="h-5 w-5 text-primary" strokeWidth={1.75} />
+                <h3 className="font-display text-[19px] font-semibold text-foreground">
+                  {title}
                 </h3>
-                <p className="mt-2 text-[14px] leading-relaxed text-foreground/60">
+                <p className="text-[14px] leading-relaxed text-foreground/55">
                   {description}
                 </p>
-
-                <span className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-200 group-hover:scale-x-100" />
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ================= PRODUCTS — bento grid asimetris, ikut tema light/dark ================= */}
+      <section id="products" className="bg-mint">
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <Reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/60">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                The suite
+              </span>
+              <h2 className="mt-3 max-w-xl font-display text-[32px] font-bold leading-tight tracking-tight text-foreground sm:text-[40px]">
+                Four modules. One shared source of truth.
+              </h2>
+            </div>
+            <p className="max-w-sm text-[15px] leading-relaxed text-foreground/60">
+              Each module works standalone, but the real value shows up
+              when they talk to each other — data entered once, reflected
+              everywhere.
+            </p>
+          </Reveal>
+
+          {/* Bento grid: kartu 1 & 4 lebar (8 kolom), kartu 2 & 3 sempit (4 kolom) — checkerboard, bukan sekadar grid rata */}
+          <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12">
+            {PRODUCTS.map(({ number, name, description, icon: Icon, connectsTo }, i) => (
+              <Reveal
+                key={name}
+                delay={(i % 2) * 120}
+                className={i % 3 === 0 ? "lg:col-span-8" : "lg:col-span-4"}
+              >
+                <Card
+                  variant="transparent"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-teal bg-background transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-black/5"
+                >
+                  {/* Blok ikon — pakai token hero (selalu gelap) supaya kontras & konsisten walau tema situs berganti */}
+                  <div className="relative flex h-44 items-center justify-center overflow-hidden bg-hero sm:h-52">
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 opacity-[0.08] bg-dot-grid text-white"
+                    />
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero via-transparent to-transparent opacity-60"
+                    />
+
+                    <span className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-hero-foreground/10 text-hero-foreground backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/15 group-hover:text-primary">
+                      <Icon className="h-7 w-7" strokeWidth={1.5} />
+                    </span>
+
+                    <span className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-hero-foreground/10 font-mono text-[12px] font-medium text-hero-foreground/70 backdrop-blur-sm">
+                      {number}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-7">
+                    <Card.Header className="p-0">
+                      <Card.Title className="font-display text-[21px] font-semibold text-foreground">
+                        {name}
+                      </Card.Title>
+                    </Card.Header>
+                    <Card.Content className="flex-1 p-0">
+                      <p className="mt-2 text-[15px] leading-relaxed text-foreground/60">
+                        {description}
+                      </p>
+
+                      {/* Encodes real suite architecture — which modules this one exchanges data with */}
+                      <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                        <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground/35">
+                          Connects to
+                        </span>
+                        {connectsTo.map((c) => (
+                          <Chip
+                            key={c}
+                            className="rounded-full border border-teal bg-mint px-2.5 py-0.5 text-[11px] font-medium text-foreground/60"
+                          >
+                            {c}
+                          </Chip>
+                        ))}
+                      </div>
+                    </Card.Content>
+                    <Card.Footer className="mt-5 p-0">
+                      <Link
+                        href="/solutions"
+                        className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
+                      >
+                        Baca Selengkapnya
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-foreground/30 group-hover:text-white">
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </span>
+                      </Link>
+                    </Card.Footer>
+                  </div>
+
+                  {/* Garis aksen tipis yang muncul di tepi kiri saat hover */}
+                  <span className="pointer-events-none absolute inset-y-0 left-0 w-1 origin-top scale-y-0 bg-primary transition-transform duration-300 group-hover:scale-y-100" />
+                </Card>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CLOSING CTA — ikut tema light/dark ================= */}
+      <section className="relative overflow-hidden bg-background text-foreground">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.07] bg-dot-grid text-foreground"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]"
+        />
+        <Reveal className="relative mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
+          {/* <StatusChip /> */}
+          <h2 className="mt-7 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[42px]">
+            Ready to run every branch from one screen?
+          </h2>
+          <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-foreground/60">
+            Talk to our team about which modules fit your operation first —
+            most clients are live within weeks, not quarters.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/contact"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary py-3.5 pl-7 pr-3 text-[15px] font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5"
+            >
+              Book a Demo
+              <span className="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+            <Link
+              href="/solutions"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-foreground/20 px-7 py-3.5 text-[15px] font-medium text-foreground transition-colors hover:bg-foreground/10"
+            >
+              Explore Our Solutions
+            </Link>
+          </div>
+        </Reveal>
       </section>
     </>
   );

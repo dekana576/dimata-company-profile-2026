@@ -13,6 +13,7 @@ import {
   Zap,
   ShieldCheck,
 } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ─── Animation Variants ─── */
 
@@ -147,6 +148,7 @@ export default function AboutPage({
   founderImage = "/img/founder.jpg",
 }: AboutPageProps) {
   const [imgError, setImgError] = useState(false);
+  const { t } = useLanguage();
   const showImage = founderImage && !imgError;
 
   return (
@@ -166,13 +168,10 @@ export default function AboutPage({
             className='mx-auto max-w-3xl text-center'
           >
             <h1 className='text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl'>
-              About <span className='text-primary'>DIMATA</span> IT Solutions
+              {t("about.hero.title")} <span className='text-primary'>DIMATA</span> IT Solutions
             </h1>
             <p className='mt-6 text-lg leading-relaxed text-muted-foreground'>
-              Sejak 2002, Dimata membantu bisnis berkembang melalui solusi
-              teknologi yang inovatif dan terpercaya. Kami berkomitmen untuk
-              memberikan layanan terbaik dan mendukung transformasi digital
-              perusahaan Anda.
+              {t("about.hero.description")}
             </p>
           </motion.div>
         </div>
@@ -206,25 +205,23 @@ export default function AboutPage({
             {/* Content */}
             <motion.div {...fadeUp}>
               <p className='text-sm font-semibold uppercase tracking-widest text-primary'>
-                Founder &amp; CEO
+                {t("about.founder.label")}
               </p>
               <h2 className='mt-3 text-3xl font-bold text-foreground md:text-4xl'>
                 Dipl.-Ing. I Ketut Kartika Tanjana
               </h2>
               <p className='mt-1 text-lg font-medium text-muted-foreground'>
-                Founder &amp; Chief Executive Officer
+                {t("about.founder.title")}
               </p>
               <p className='mt-4 leading-relaxed text-muted-foreground'>
-                A visionary entrepreneur with over two decades of experience in
-                technology and business development. Leading multiple successful
-                ventures across Indonesia.
+                {t("about.founder.description")}
               </p>
 
               {/* Timeline */}
               <div className='mt-8'>
                 <h3 className='flex items-center gap-2 text-lg font-semibold text-foreground'>
                   <Calendar className='h-5 w-5 text-primary' />
-                  Entrepreneurship Timeline
+                  {t("about.timeline.title")}
                 </h3>
                 <ul className='mt-4 space-y-3'>
                   {TIMELINE.map((item) => (
@@ -253,10 +250,10 @@ export default function AboutPage({
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <motion.div {...fadeUp} className='text-center'>
             <h2 className='text-3xl font-bold tracking-tight text-foreground md:text-4xl'>
-              Awards &amp; Recognition
+              {t("about.awards.title")}
             </h2>
             <p className='mt-4 text-lg text-muted-foreground'>
-              Pengakuan atas dedikasi kami dalam inovasi teknologi.
+              {t("about.awards.description")}
             </p>
           </motion.div>
           <motion.div
@@ -290,17 +287,17 @@ export default function AboutPage({
           {/* Header */}
           <motion.div {...fadeUp} className='mx-auto max-w-3xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight text-foreground md:text-4xl'>
-              Our Team Culture
+              {t("about.team.title")}
             </h2>
             <p className='mt-4 text-lg text-muted-foreground'>
-              We foster a culture of excellence, innovation, and collaboration.
+              {t("about.team.description")}
             </p>
           </motion.div>
 
           {/* Core Values - D.I.M.A.T.A */}
           <div className='mt-14'>
             <h3 className='text-center text-xl font-semibold text-foreground'>
-              Core Values — <span className='text-primary'>D.I.M.A.T.A</span>
+              {t("about.coreValues.title")} <span className='text-primary'>D.I.M.A.T.A</span>
             </h3>
             <motion.div
               {...staggerContainer}
@@ -337,7 +334,7 @@ export default function AboutPage({
           {/* Team Composition */}
           <div className='mt-16'>
             <h3 className='text-center text-xl font-bold text-foreground'>
-              Team Composition
+              {t("about.teamComposition.title")}
             </h3>
             <motion.div
               {...staggerContainer}
@@ -363,10 +360,10 @@ export default function AboutPage({
           {/* Gallery */}
           <div className='mt-16'>
             <h3 className='text-center text-xl font-bold text-foreground'>
-              Our Moments
+              {t("about.gallery.title")}
             </h3>
             <p className='mt-2 text-center text-muted-foreground'>
-              Aktivitas dan kebersamaan tim DIMATA.
+              {t("about.gallery.description")}
             </p>
             <motion.div
               {...staggerContainer}

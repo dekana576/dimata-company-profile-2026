@@ -29,6 +29,7 @@ import {
   Star,
 } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ─── Animation Variants ─── */
 
@@ -387,6 +388,8 @@ function SolutionSection({
 /* ─── Page Component ─── */
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
+
   return (
     <main className="flex-1">
       {/* Hero */}
@@ -401,10 +404,10 @@ export default function ProductsPage() {
               className="mb-6 text-4xl font-bold text-foreground md:text-5xl lg:text-6xl"
               style={{ letterSpacing: "-0.02em" }}
             >
-              Produk &amp; Layanan Kami
+              {t("products.hero.title")}
             </h1>
             <p className="mx-auto max-w-3xl text-xl leading-relaxed text-muted-foreground md:text-2xl">
-              Solusi digital komprehensif untuk mengembangkan bisnis Anda
+              {t("products.hero.description")}
             </p>
           </motion.div>
         </div>
@@ -412,38 +415,38 @@ export default function ProductsPage() {
 
       {/* ERP Solutions */}
       <SolutionSection
-        title="ERP Solutions"
-        shortDescription="Simple and affordable ERP solutions for SME"
-        detailedDescription="Solusi ERP yang sederhana dan terjangkau dirancang khusus untuk UKM dengan fitur lengkap untuk mengelola operasional bisnis Anda. Tingkatkan efisiensi, kurangi biaya operasional, dan ambil keputusan bisnis yang lebih baik dengan data real-time."
-        ctaText="Pelajari Lebih Lanjut"
+        title={t("products.erp.title")}
+        shortDescription={t("products.erp.shortDescription")}
+        detailedDescription={t("products.erp.detailedDescription")}
+        ctaText={t("products.erp.cta")}
         features={ERP_FEATURES}
       />
 
       {/* Accommodation Solutions */}
       <SolutionSection
-        title="Accommodation Solutions"
-        shortDescription="Simple and practical accommodation solutions"
-        detailedDescription="Solusi akomodasi yang sederhana dan praktis untuk mengelola properti, tamu, dan reservasi dengan terintegrasi ke layanan outlet dan akuntansi. Berikan pengalaman menginap tak terlupakan bagi tamu Anda dengan operasional yang mulus."
-        ctaText="Pelajari Lebih Lanjut"
+        title={t("products.accommodation.title")}
+        shortDescription={t("products.accommodation.shortDescription")}
+        detailedDescription={t("products.accommodation.detailedDescription")}
+        ctaText={t("products.accommodation.cta")}
         features={ACCOMMODATION_FEATURES}
         withBg
       />
 
       {/* HR & Payroll */}
       <SolutionSection
-        title="Human Resources and Payroll Systems"
-        shortDescription="Business solutions for comprehensive HR management"
-        detailedDescription="Solusi HR dan payroll yang komprehensif untuk mengelola seluruh aspek manajemen sumber daya manusia dan penggajian karyawan. Otomatisasi tugas administratif HR agar tim Anda dapat fokus pada pengembangan talenta dan budaya perusahaan."
-        ctaText="Hubungi Kami"
+        title={t("products.hr.title")}
+        shortDescription={t("products.hr.shortDescription")}
+        detailedDescription={t("products.hr.detailedDescription")}
+        ctaText={t("products.hr.cta")}
         features={HR_FEATURES}
       />
 
       {/* Plantation Solutions */}
       <SolutionSection
-        title="Plantation Information and Management Solutions"
-        shortDescription="Comprehensive solutions for plantation and agricultural management"
-        detailedDescription="Solusi manajemen perkebunan yang komprehensif untuk mengelola proyek, area, tanaman, inventori, dan biaya produksi. Tingkatkan produktivitas lahan dan efisiensi operasional perkebunan Anda dengan pemantauan berbasis data."
-        ctaText="Hubungi Kami"
+        title={t("products.plantation.title")}
+        shortDescription={t("products.plantation.shortDescription")}
+        detailedDescription={t("products.plantation.detailedDescription")}
+        ctaText={t("products.plantation.cta")}
         features={PLANTATION_FEATURES}
         withBg
       />
@@ -456,15 +459,13 @@ export default function ProductsPage() {
               className="mb-4 text-3xl font-bold text-foreground md:text-4xl"
               style={{ letterSpacing: "-0.02em" }}
             >
-              Accounting Systems
+              {t("products.accounting.title")}
             </h2>
             <p className="mb-6 text-xl font-medium text-primary">
-              Flexible accounting solutions for various business types
+              {t("products.accounting.shortDescription")}
             </p>
             <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
-              Sistem akuntansi yang fleksibel dan powerful untuk berbagai jenis
-              bisnis dengan fitur-fitur canggih. Dapatkan visibilitas penuh atas
-              arus kas dan performa finansial perusahaan Anda.
+              {t("products.accounting.detailedDescription")}
             </p>
           </motion.div>
 
@@ -478,11 +479,10 @@ export default function ProductsPage() {
               className="flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm transition-shadow duration-300 hover:shadow-md"
             >
               <h3 className="mb-3 text-2xl font-bold text-foreground">
-                General Purpose Accounting
+                {t("products.accounting.general.title")}
               </h3>
               <p className="mb-8 leading-relaxed text-muted-foreground">
-                Solusi akuntansi umum untuk semua jenis bisnis, dirancang untuk
-                menyederhanakan pembukuan dan pelaporan keuangan.
+                {t("products.accounting.general.description")}
               </p>
               <div className="mb-10 flex-1 space-y-6">
                 {GENERAL_ACCOUNTING_FEATURES.map((feature) => {
@@ -508,7 +508,7 @@ export default function ProductsPage() {
                 href="/contact"
                 className="inline-flex w-full items-center justify-center gap-2 self-start rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 active:scale-[0.98] sm:w-auto"
               >
-                Hubungi Kami
+                {t("products.accounting.general.cta")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -522,19 +522,18 @@ export default function ProductsPage() {
               className="flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm transition-shadow duration-300 hover:shadow-md"
             >
               <h3 className="mb-3 text-2xl font-bold text-foreground">
-                Travel Agent Business Accounting
+                {t("products.accounting.travel.title")}
               </h3>
               <p className="mb-8 leading-relaxed text-muted-foreground">
-                Sistem akuntansi khusus untuk bisnis travel agent, dilengkapi
-                dengan fitur manajemen komisi dan integrasi vendor.
+                {t("products.accounting.travel.description")}
               </p>
               <div className="mb-10 flex-1 space-y-6">
                 {TRAVEL_ACCOUNTING_FEATURES.map((feature) => {
                   const Icon = feature.icon;
                   return (
                     <div key={feature.title} className="flex items-start space-x-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-secondary/10">
-                        <Icon className="h-6 w-6 text-secondary" />
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green/10">
+                        <Icon className="h-6 w-6 text-green" />
                       </div>
                       <div>
                         <p className="mb-1 font-semibold text-foreground">
@@ -552,7 +551,7 @@ export default function ProductsPage() {
                 href="/contact"
                 className="inline-flex w-full items-center justify-center gap-2 self-start rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 active:scale-[0.98] sm:w-auto"
               >
-                Hubungi Kami
+                {t("products.accounting.travel.cta")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -570,13 +569,10 @@ export default function ProductsPage() {
                 className="mb-6 text-3xl font-bold md:text-4xl"
                 style={{ letterSpacing: "-0.02em" }}
               >
-                Mengapa Memilih Solusi DIMATA?
+                {t("products.whyChoose.title")}
               </h2>
               <p className="mb-8 text-lg leading-relaxed text-primary-foreground/80">
-                Kami tidak hanya menyediakan perangkat lunak, tetapi juga
-                menjadi mitra strategis dalam perjalanan transformasi digital
-                bisnis Anda. Sistem kami dirancang untuk tumbuh bersama
-                kesuksesan Anda.
+                {t("products.whyChoose.description")}
               </p>
               <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {BENEFITS.map((benefit) => (
@@ -590,9 +586,9 @@ export default function ProductsPage() {
               </div>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-lg bg-secondary px-6 py-3 text-sm font-medium text-secondary-foreground transition-all duration-200 hover:bg-secondary/90 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-lg bg-green px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-green/90 active:scale-[0.98]"
               >
-                Hubungi Tim Sales Kami
+                {t("products.whyChoose.cta")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -612,7 +608,7 @@ export default function ProductsPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
-                    <p className="mt-3 text-xs text-muted-foreground">Klien Aktif</p>
+                    <p className="mt-3 text-xs text-muted-foreground">{t("products.stats.activeClients")}</p>
                     <p className="text-2xl font-bold text-foreground">197+</p>
                   </motion.div>
 
@@ -626,7 +622,7 @@ export default function ProductsPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10">
                       <Star className="h-5 w-5 text-yellow-500" />
                     </div>
-                    <p className="mt-3 text-xs text-muted-foreground">Rating Klien</p>
+                    <p className="mt-3 text-xs text-muted-foreground">{t("products.stats.clientRating")}</p>
                     <p className="text-2xl font-bold text-foreground">4.9/5</p>
                   </motion.div>
                 </div>
@@ -640,19 +636,18 @@ export default function ProductsPage() {
                   className="rounded-xl border border-primary-foreground/10 bg-background p-6 shadow-xl"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10">
-                      <TrendingUp className="h-6 w-6 text-secondary" />
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green/10">
+                      <TrendingUp className="h-6 w-6 text-green" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">
-                        Pertumbuhan Bisnis
+                        {t("products.stats.businessGrowth")}
                       </p>
                       <p className="text-3xl font-bold text-foreground">+45%</p>
                     </div>
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    Rata-rata peningkatan efisiensi klien kami setelah 3 bulan
-                    implementasi.
+                    {t("products.stats.businessGrowthDescription")}
                   </p>
                 </motion.div>
 
@@ -668,8 +663,8 @@ export default function ProductsPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                       <Clock className="h-5 w-5 text-primary" />
                     </div>
-                    <p className="mt-3 text-xs text-muted-foreground">Pengalaman</p>
-                    <p className="text-2xl font-bold text-foreground">20+ Tahun</p>
+                    <p className="mt-3 text-xs text-muted-foreground">{t("products.stats.experience")}</p>
+                    <p className="text-2xl font-bold text-foreground">{t("products.stats.experienceValue")}</p>
                   </motion.div>
 
                   <motion.div
@@ -679,10 +674,10 @@ export default function ProductsPage() {
                     transition={{ duration: 0.5, delay: 0.6 }}
                     className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
-                      <Shield className="h-5 w-5 text-secondary" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green/10">
+                      <Shield className="h-5 w-5 text-green" />
                     </div>
-                    <p className="mt-3 text-xs text-muted-foreground">Support</p>
+                    <p className="mt-3 text-xs text-muted-foreground">{t("products.stats.support")}</p>
                     <p className="text-2xl font-bold text-foreground">24/7</p>
                   </motion.div>
                 </div>

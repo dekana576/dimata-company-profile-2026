@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ─── Animation Variants ─── */
 
@@ -81,6 +82,8 @@ const SOLUTIONS = [
 /* ─── Page Component ─── */
 
 export default function SolutionsPage() {
+  const { t } = useLanguage();
+
   return (
     <main className="flex-1">
       {/* Hero */}
@@ -98,12 +101,11 @@ export default function SolutionsPage() {
             className="mx-auto max-w-3xl text-center"
           >
             <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Solusi Cerdas untuk Bisnis yang{" "}
-              <span className="text-primary">Lebih Tertata</span>
+              {t("solutions.hero.title")}{" "}
+              <span className="text-primary">{t("solutions.hero.titleHighlight")}</span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Kelola bisnis lebih efisien dan modern dengan sistem digital yang
-              dirancang khusus untuk kebutuhan perusahaan Anda.
+              {t("solutions.hero.description")}
             </p>
           </motion.div>
         </div>
@@ -150,17 +152,16 @@ export default function SolutionsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-              Ready to transform your business?
+              {t("solutions.cta.title")}
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Contact us today to learn how our solutions can help streamline
-              your operations and drive growth.
+              {t("solutions.cta.description")}
             </p>
             <Link
               href="/contact"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Get Started
+              {t("solutions.cta.button")}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>

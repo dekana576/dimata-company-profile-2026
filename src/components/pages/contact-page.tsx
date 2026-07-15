@@ -13,6 +13,7 @@ import {
   XCircle,
 } from "lucide-react";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ─── Animation ─── */
 
@@ -62,6 +63,7 @@ export default function ContactPage() {
     message: string;
   }>({ type: "idle", message: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { t } = useLanguage();
 
   const validate = (data: { name: string; email: string; message: string }) => {
     const e: Record<string, string> = {};
@@ -144,11 +146,10 @@ export default function ContactPage() {
             className='mx-auto max-w-3xl text-center'
           >
             <h1 className='text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl'>
-              Get in <span className='text-primary'>Touch</span>
+              {t("contact.hero.title")} <span className='text-primary'>{t("contact.hero.titleHighlight")}</span>
             </h1>
             <p className='mt-6 text-lg leading-relaxed text-muted-foreground'>
-              Have questions about our solutions? We&apos;re here to help. Reach
-              out to us and we&apos;ll respond as soon as possible.
+              {t("contact.hero.description")}
             </p>
           </motion.div>
         </div>
@@ -161,11 +162,10 @@ export default function ContactPage() {
             {/* Left — Contact Information */}
             <motion.div {...fadeUp}>
               <h2 className='text-2xl font-bold text-foreground md:text-3xl'>
-                Contact Information
+                {t("contact.info.title")}
               </h2>
               <p className='mt-3 text-muted-foreground'>
-                Feel free to reach out through any of these channels. Our team
-                is ready to assist you.
+                {t("contact.info.description")}
               </p>
 
               <ul className='mt-8 space-y-5'>
@@ -204,7 +204,7 @@ export default function ContactPage() {
 
               <div className='mt-8 rounded-xl border border-border bg-muted/50 p-5'>
                 <p className='text-sm text-muted-foreground'>
-                  Butuh bantuan segera? Hubungi kami langsung:
+                  {t("contact.info.urgent")}
                 </p>
                 <div className='mt-2 flex flex-wrap gap-3'>
                   <a
@@ -229,7 +229,7 @@ export default function ContactPage() {
             <motion.div {...fadeUp}>
               <div className='rounded-2xl border border-border bg-card p-8'>
                 <h2 className='text-2xl font-bold text-foreground'>
-                  Send us a Message
+                  {t("contact.form.title")}
                 </h2>
 
                 <form onSubmit={handleSubmit} className='mt-6 space-y-5'>
@@ -239,14 +239,14 @@ export default function ContactPage() {
                       htmlFor='name'
                       className='block text-sm font-medium text-foreground'
                     >
-                      Name
+                      {t("contact.form.name")}
                     </label>
                     <input
                       id='name'
                       name='name'
                       type='text'
                       required
-                      placeholder='Your name'
+                      placeholder={t("contact.form.namePlaceholder")}
                       className='mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                     />
                     {errors.name && (
@@ -285,14 +285,14 @@ export default function ContactPage() {
                       htmlFor='subject'
                       className='block text-sm font-medium text-foreground'
                     >
-                      Subject{" "}
-                      <span className='text-muted-foreground'>(Optional)</span>
+                      {t("contact.form.subject")}{" "}
+                      <span className='text-muted-foreground'>({t("contact.form.optional")})</span>
                     </label>
                     <input
                       id='subject'
                       name='subject'
                       type='text'
-                      placeholder='How can we help you?'
+                      placeholder={t("contact.form.subjectPlaceholder")}
                       className='mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                     />
                   </div>
@@ -303,14 +303,14 @@ export default function ContactPage() {
                       htmlFor='message'
                       className='block text-sm font-medium text-foreground'
                     >
-                      Message
+                      {t("contact.form.message")}
                     </label>
                     <textarea
                       id='message'
                       name='message'
                       rows={5}
                       required
-                      placeholder='Tell us about your project or inquiry...'
+                      placeholder={t("contact.form.messagePlaceholder")}
                       className='mt-1.5 w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                     />
                     {errors.message && (
@@ -327,10 +327,10 @@ export default function ContactPage() {
                     className='inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50'
                   >
                     {status.type === "loading" ? (
-                      "Sending..."
+                      t("contact.form.sending")
                     ) : (
                       <>
-                        Send Message
+                        {t("contact.form.submit")}
                         <Send className='h-4 w-4' />
                       </>
                     )}
@@ -365,11 +365,10 @@ export default function ContactPage() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <motion.div {...fadeUp} className='mx-auto max-w-3xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight text-foreground md:text-4xl'>
-              Visit Our Office
+              {t("contact.visit.title")}
             </h2>
             <p className='mt-4 text-lg text-muted-foreground'>
-              We&apos;re located in the heart of Denpasar, Bali. Schedule a
-              visit to discuss your project in person.
+              {t("contact.visit.description")}
             </p>
           </motion.div>
 

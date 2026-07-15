@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Shield, Headphones, HelpCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 /* ─── Animation Variants ─── */
 
@@ -24,45 +25,11 @@ const staggerItem = {
   transition: { duration: 0.4, ease: "easeOut" as const },
 };
 
-/* ─── Data ─── */
-
-const VISION_TEXT =
-  "Menjadi penyedia solusi teknologi informasi terdepan yang memberdayakan bisnis di seluruh Indonesia untuk mencapai transformasi digital yang berkelanjutan.";
-
-const VISION_DESCRIPTION =
-  "Kami berkomitmen untuk terus berinovasi dan menghadirkan solusi yang tidak hanya memenuhi kebutuhan saat ini, tetapi juga mengantisipasi tantangan masa depan.";
-
-const MISSION_ITEMS = [
-  "Mengembangkan solusi teknologi yang inovatif, handal, dan mudah digunakan",
-  "Memberikan layanan pelanggan yang responsif dan berkualitas tinggi",
-  "Membangun kemitraan jangka panjang dengan klien melalui kepercayaan dan hasil nyata",
-  "Terus belajar dan beradaptasi dengan perkembangan teknologi terkini",
-];
-
-const SUPPORT_SERVICES = [
-  {
-    icon: Shield,
-    title: "Data Security",
-    description:
-      "Enterprise-grade security measures to protect your business data with encryption and regular backups.",
-  },
-  {
-    icon: Headphones,
-    title: "24/7 Support",
-    description:
-      "Round-the-clock technical support to ensure your systems run smoothly without interruption.",
-  },
-  {
-    icon: HelpCircle,
-    title: "Online Help",
-    description:
-      "Comprehensive online documentation and help resources to assist you whenever you need guidance.",
-  },
-];
-
 /* ─── Page Component ─── */
 
 export default function VisionMissionPage() {
+  const { t } = useLanguage();
+
   return (
     <main className="flex-1">
       {/* Hero */}
@@ -80,10 +47,10 @@ export default function VisionMissionPage() {
             className="mx-auto max-w-3xl text-center"
           >
             <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Vision &amp; <span className="text-primary">Mission</span>
+              {t("vision.hero.title")} <span className="text-primary">{t("vision.hero.titleHighlight")}</span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Our commitment to excellence drives everything we do.
+              {t("vision.hero.description")}
             </p>
           </motion.div>
         </div>
@@ -102,13 +69,13 @@ export default function VisionMissionPage() {
               className="rounded-2xl border border-border bg-card p-8"
             >
               <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                VISI
+                {t("vision.vision.title")}
               </h2>
               <p className="mt-4 text-base leading-relaxed text-foreground/80">
-                {VISION_TEXT}
+                {t("vision.vision.text")}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {VISION_DESCRIPTION}
+                {t("vision.vision.description")}
               </p>
             </motion.div>
 
@@ -121,16 +88,16 @@ export default function VisionMissionPage() {
               className="rounded-2xl border border-border bg-card p-8"
             >
               <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                MISI
+                {t("vision.mission.title")}
               </h2>
               <ul className="mt-6 space-y-4">
-                {MISSION_ITEMS.map((item, index) => (
+                {[1, 2, 3, 4].map((index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-                      {index + 1}
+                      {index}
                     </span>
                     <span className="text-sm leading-relaxed text-foreground/80">
-                      {item}
+                      {t(`vision.mission.items.${index}`)}
                     </span>
                   </li>
                 ))}
@@ -145,10 +112,10 @@ export default function VisionMissionPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-              Our Support Services
+              {t("vision.support.title")}
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              We provide comprehensive support to ensure your success.
+              {t("vision.support.subtitle")}
             </p>
           </motion.div>
 
@@ -156,11 +123,15 @@ export default function VisionMissionPage() {
             {...staggerContainer}
             className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3"
           >
-            {SUPPORT_SERVICES.map((service) => {
+            {[
+              { key: "dataSecurity", icon: Shield },
+              { key: "support247", icon: Headphones },
+              { key: "onlineHelp", icon: HelpCircle },
+            ].map((service) => {
               const Icon = service.icon;
               return (
                 <motion.div
-                  key={service.title}
+                  key={service.key}
                   {...staggerItem}
                   className="rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
@@ -168,10 +139,10 @@ export default function VisionMissionPage() {
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-foreground">
-                    {service.title}
+                    {t(`vision.support.${service.key}.title`)}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {service.description}
+                    {t(`vision.support.${service.key}.description`)}
                   </p>
                 </motion.div>
               );

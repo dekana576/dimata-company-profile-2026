@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 import type { SVGProps } from "react";
 import { ThemeLogo } from "@/components/ui/theme-logo";
+import { useLanguage } from "@/contexts/language-context";
 
 /**
  * lucide-react sudah menghapus ikon brand/logo (Facebook, Instagram,
@@ -50,7 +51,6 @@ export interface SocialLink {
 export interface FooterProps {
   brandName?: string;
   tagline?: string;
-  description?: string;
   quickLinks?: FooterLink[];
   email?: string;
   phone?: string;
@@ -60,12 +60,12 @@ export interface FooterProps {
 }
 
 const DEFAULT_QUICK_LINKS: FooterLink[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Produk & Layanan", href: "/products" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Vision & Mission", href: "/vision-mission" },
-  { label: "Contact", href: "/contact" },
+  { label: "nav.home", href: "/" },
+  { label: "nav.about", href: "/about" },
+  { label: "nav.products", href: "/products" },
+  { label: "nav.solutions", href: "/solutions" },
+  { label: "nav.visionMission", href: "/vision-mission" },
+  { label: "nav.contact", href: "/contact" },
 ];
 
 const DEFAULT_SOCIALS: SocialLink[] = [
@@ -83,7 +83,6 @@ const SOCIAL_ICON_MAP = {
 export function Footer({
   brandName = "DIMATA",
   tagline = "IT Solutions",
-  description = "Digitalization for All. Helping businesses grow since 2002 with innovative IT solutions.",
   quickLinks = DEFAULT_QUICK_LINKS,
   email = "marketing@dimata.com",
   phone = "+62 81125031177",
@@ -91,6 +90,7 @@ export function Footer({
   socialLinks = DEFAULT_SOCIALS,
   companyName = "DIMATA IT Solutions",
 }: FooterProps) {
+  const { t } = useLanguage();
   const year = new Date().getFullYear();
 
   return (
@@ -105,14 +105,14 @@ export function Footer({
             />
           </Link>
           <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-foreground/60">
-            {description}
+            {t("footer.description")}
           </p>
         </div>
 
         {/* Quick Links */}
         <div className="md:col-span-3 lg:col-span-3">
           <h3 className="text-[15px] font-semibold text-foreground">
-            Quick Links
+            {t("footer.quickLinks")}
           </h3>
           <ul className="mt-5 flex flex-col gap-3.5">
             {quickLinks.map((link) => (
@@ -121,7 +121,7 @@ export function Footer({
                   href={link.href}
                   className="text-[15px] text-foreground/60 transition-colors hover:text-blue-400"
                 >
-                  {link.label}
+                  {t(link.label)}
                 </Link>
               </li>
             ))}
@@ -131,7 +131,7 @@ export function Footer({
         {/* Contact Information */}
         <div className="md:col-span-4 lg:col-span-5">
           <h3 className="text-[15px] font-semibold text-foreground">
-            Contact Information
+            {t("footer.contactInfo")}
           </h3>
           <ul className="mt-5 flex flex-col gap-3.5">
             <li>
@@ -183,20 +183,20 @@ export function Footer({
       <div className="border-t border-separator">
         <div className="mx-auto flex w-full max-w-7xl flex-col-reverse items-center gap-4 px-4 py-6 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <p className="text-[14px] text-foreground/60">
-            &copy; {year} {companyName}. All rights reserved.
+            &copy; {year} {companyName}. {t("footer.allRights")}
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="/privacy-policy"
               className="text-[14px] text-foreground/60 transition-colors hover:text-accent"
             >
-              Privacy Policy
+              {t("footer.privacy")}
             </Link>
             <Link
               href="/terms-of-service"
               className="text-[14px] text-foreground/60 transition-colors hover:text-accent"
             >
-              Terms of Service
+              {t("footer.terms")}
             </Link>
           </div>
         </div>

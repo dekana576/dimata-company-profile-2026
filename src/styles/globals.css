@@ -53,6 +53,7 @@
   --hero-foreground: 0 0% 98%;
   --mint: 220 70% 96%;
   --teal: 220 40% 88%;
+  --green: 142 76% 36%;
 }
 
 /* ─── Dark Mode ─── */
@@ -81,6 +82,7 @@
   --hero-foreground: 0 0% 98%;
   --mint: 220 30% 14%;
   --teal: 220 20% 24%;
+  --green: 142 76% 42%;
 }
 
 @theme inline {
@@ -107,6 +109,7 @@
   --color-hero-foreground: hsl(var(--hero-foreground));
   --color-mint: hsl(var(--mint));
   --color-teal: hsl(var(--teal));
+  --color-green: hsl(var(--green));
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -120,4 +123,9 @@
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }

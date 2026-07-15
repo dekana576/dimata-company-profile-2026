@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -16,6 +18,7 @@ import type { LucideIcon } from "lucide-react";
 import { Chip, Card } from "@heroui/react";
 import { Reveal, Counter } from "@/components/scroll-motion";
 import { SystemDiagram } from "@/components/system-diagram";
+import { useLanguage } from "@/contexts/language-context";
 
 /**
  * Homepage — DIMATA IT Solutions
@@ -201,6 +204,8 @@ function StatusChip({ className = "" }: { className?: string }) {
 }
 
 export default function HomePage() {
+  const { t } = useLanguage();
+
   return (
     <>
       {/* ================= HERO — ikut tema light/dark ================= */}
@@ -221,16 +226,13 @@ export default function HomePage() {
             {/* <StatusChip /> */}
 
             <h1 className="mt-7 font-display text-[42px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[58px] lg:text-[68px]">
-              One system.
+              {t("home.hero.titleLine1")}
               <br />
-              Every branch, <span className="text-primary">in sync</span>.
+              {t("home.hero.titleLine2")} <span className="text-primary">{t("home.hero.titleHighlight")}</span>.
             </h1>
 
             <p className="mt-7 max-w-xl text-[17px] leading-relaxed text-foreground/60">
-              DIMATA connects operations, point-of-sale, staff attendance,
-              and financial reporting into a single live suite — so what
-              happens on the floor shows up on your dashboard the same
-              minute, at every location.
+              {t("home.hero.description")}
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -238,14 +240,14 @@ export default function HomePage() {
                 href="/contact"
                 className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:-translate-y-0.5"
               >
-                Book a Demo
+                {t("home.hero.ctaDemo")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/solutions"
                 className="inline-flex items-center justify-center gap-1.5 rounded-full border border-foreground/20 px-7 py-3.5 text-[15px] font-medium text-foreground transition-colors hover:bg-foreground/10"
               >
-                See the Platform
+                {t("home.hero.ctaPlatform")}
               </Link>
             </div>
 
@@ -280,7 +282,7 @@ export default function HomePage() {
           href="#why-us"
           className="group absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[13px] font-medium text-foreground/50 transition-colors hover:text-foreground/80"
         >
-          Scroll untuk selengkapnya
+          {t("home.scrollCue")}
           <span className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 transition-transform group-hover:translate-y-1">
             <ArrowDown className="h-4 w-4" />
           </span>
@@ -291,7 +293,7 @@ export default function HomePage() {
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
         <div className="flex items-center gap-3 whitespace-nowrap">
           <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
-            Built for
+            {t("home.builtFor")}
           </span>
           <div className="flex animate-[marquee_28s_linear_infinite] gap-3 motion-reduce:animate-none">
             {[...INDUSTRIES, ...INDUSTRIES].map((industry, i) => (
@@ -304,7 +306,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        <style>{`@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
       </section>
 
       {/* ================= STATS ("Why choose DIMATA?") — ikut tema light/dark ================= */}
@@ -312,14 +313,13 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
           <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/60">
-              Our impact
+              {t("home.stats.label")}
             </span>
             <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
-              Why choose <span className="text-primary">DIMATA</span>
+              {t("home.stats.title")} <span className="text-primary">DIMATA</span>
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-foreground/60">
-              Since 2002, we have been helping businesses grow through
-              innovative technology solutions and dedicated support.
+              {t("home.stats.description")}
             </p>
           </Reveal>
 
@@ -360,14 +360,13 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
           <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/50">
-              Rollout
+              {t("home.howItWorks.label")}
             </span>
             <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
-              From kickoff to live dashboard
+              {t("home.howItWorks.title")}
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-foreground/55">
-              A three-step path we run with every client — the same
-              sequence, whether you're onboarding one outlet or fifty.
+              {t("home.howItWorks.description")}
             </p>
           </Reveal>
 
@@ -402,16 +401,14 @@ export default function HomePage() {
             <div>
               <span className="inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                The suite
+                {t("home.products.label")}
               </span>
               <h2 className="mt-3 max-w-xl font-display text-[32px] font-bold leading-tight tracking-tight text-foreground sm:text-[40px]">
-                Four modules. One shared source of truth.
+                {t("home.products.title")}
               </h2>
             </div>
             <p className="max-w-sm text-[15px] leading-relaxed text-foreground/60">
-              Each module works standalone, but the real value shows up
-              when they talk to each other — data entered once, reflected
-              everywhere.
+              {t("home.products.description")}
             </p>
           </Reveal>
 
@@ -461,7 +458,7 @@ export default function HomePage() {
                       {/* Encodes real suite architecture — which modules this one exchanges data with */}
                       <div className="mt-4 flex flex-wrap items-center gap-1.5">
                         <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground/35">
-                          Connects to
+                          {t("home.products.connectsTo")}
                         </span>
                         {connectsTo.map((c) => (
                           <Chip
@@ -478,7 +475,7 @@ export default function HomePage() {
                         href="/solutions"
                         className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
                       >
-                        Baca Selengkapnya
+                        {t("home.products.readMore")}
                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-foreground/30 group-hover:text-white">
                           <ArrowRight className="h-3.5 w-3.5" />
                         </span>
@@ -508,18 +505,17 @@ export default function HomePage() {
         <Reveal className="relative mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
           {/* <StatusChip /> */}
           <h2 className="mt-7 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[42px]">
-            Ready to run every branch from one screen?
+            {t("home.cta.title")}
           </h2>
           <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-foreground/60">
-            Talk to our team about which modules fit your operation first —
-            most clients are live within weeks, not quarters.
+            {t("home.cta.description")}
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/contact"
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary py-3.5 pl-7 pr-3 text-[15px] font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5"
             >
-              Book a Demo
+              {t("home.cta.ctaDemo")}
               <span className="flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
                 <ArrowRight className="h-4 w-4" />
               </span>
@@ -528,7 +524,7 @@ export default function HomePage() {
               href="/solutions"
               className="inline-flex items-center justify-center gap-1.5 rounded-full border border-foreground/20 px-7 py-3.5 text-[15px] font-medium text-foreground transition-colors hover:bg-foreground/10"
             >
-              Explore Our Solutions
+              {t("home.cta.ctaSolutions")}
             </Link>
           </div>
         </Reveal>

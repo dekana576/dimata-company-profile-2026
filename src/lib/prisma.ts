@@ -1,19 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { parseDatabaseUrl } from "./db-config";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 function createPrismaClient() {
-  const adapter = new PrismaMariaDb({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "BaliDewata",
-    database: "dimata_cms",
-    connectionLimit: 5,
-  });
+  const adapter = new PrismaMariaDb(parseDatabaseUrl());
   return new PrismaClient({ adapter });
 }
 

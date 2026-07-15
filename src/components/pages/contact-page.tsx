@@ -12,6 +12,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
+import WhatsAppFloat from "@/components/ui/whatsapp-float";
 
 /* ─── Animation ─── */
 
@@ -127,6 +128,7 @@ export default function ContactPage() {
 
   return (
     <main className='flex-1'>
+      <WhatsAppFloat />
       {/* Hero */}
       <motion.section
         initial={{ opacity: 0 }}

@@ -150,6 +150,7 @@ dimata-company-profile-2026/
 │   └── middleware.ts           # Auth middleware
 ├── .env                       # Environment variables
 ├── .env.example               # Environment template
+├── deployment.md              # VPS deployment guide
 └── package.json
 ```
 
@@ -174,16 +175,23 @@ dimata-company-profile-2026/
 
 ## Deployment
 
-1. Set environment variables on hosting platform
-2. Ensure MySQL database is accessible
-3. Run `npx prisma migrate deploy`
-4. Run `npx prisma db seed` (first time only)
-5. Build and start:
+### Quick Start
 
 ```bash
 npm run build
 npm run start
 ```
+
+### VPS Deployment (Ubuntu 22.04 + Nginx)
+
+For production deployment to VPS, see [deployment.md](deployment.md).
+
+Covers:
+- Server setup (Node.js, PM2, Nginx, MySQL)
+- SSL certificate (Let's Encrypt)
+- PM2 process management
+- Nginx reverse proxy configuration
+- Backup and troubleshooting
 
 ## License
 

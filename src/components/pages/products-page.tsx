@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import {
   Check,
   ArrowRight,
@@ -26,6 +25,8 @@ import {
   Sprout,
   BarChart3,
   TrendingUp,
+  Shield,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -389,18 +390,7 @@ export default function ProductsPage() {
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1656167202634-4001cd7aabed"
-            alt="Modern office technology"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        </div>
+      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5">
         <div className="relative z-10 max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -607,30 +597,95 @@ export default function ProductsPage() {
               </Link>
             </motion.div>
 
-            {/* Right: Image + Floating Stat */}
-            <motion.div {...fadeRight} className="relative">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-primary-foreground/10 shadow-2xl">
-                <Image
-                  src="https://images.unsplash.com/photo-1656167202634-4001cd7aabed"
-                  alt="Business dashboard interface"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-primary/20 mix-blend-multiply" />
-              </div>
-              {/* Floating stat card */}
-              <div className="absolute -bottom-8 -left-8 hidden max-w-xs rounded-xl border border-border bg-background p-6 shadow-xl md:block">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
-                  <TrendingUp className="h-6 w-6 text-secondary" />
+            {/* Right: Stat Cards */}
+            <motion.div {...fadeRight}>
+              <div className="flex flex-col gap-4">
+                {/* Top row */}
+                <div className="grid grid-cols-2 gap-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                      <Users className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">Klien Aktif</p>
+                    <p className="text-2xl font-bold text-foreground">197+</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10">
+                      <Star className="h-5 w-5 text-yellow-500" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">Rating Klien</p>
+                    <p className="text-2xl font-bold text-foreground">4.9/5</p>
+                  </motion.div>
                 </div>
-                <p className="mt-3 text-sm font-medium text-muted-foreground">
-                  Pertumbuhan Bisnis
-                </p>
-                <p className="text-2xl font-bold text-foreground">+45%</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Rata-rata peningkatan efisiensi klien kami setelah 3 bulan
-                  implementasi.
-                </p>
+
+                {/* Center card - highlighted */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="rounded-xl border border-primary-foreground/10 bg-background p-6 shadow-xl"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10">
+                      <TrendingUp className="h-6 w-6 text-secondary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Pertumbuhan Bisnis
+                      </p>
+                      <p className="text-3xl font-bold text-foreground">+45%</p>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    Rata-rata peningkatan efisiensi klien kami setelah 3 bulan
+                    implementasi.
+                  </p>
+                </motion.div>
+
+                {/* Bottom row */}
+                <div className="grid grid-cols-2 gap-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                      <Clock className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">Pengalaman</p>
+                    <p className="text-2xl font-bold text-foreground">20+ Tahun</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                    className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
+                      <Shield className="h-5 w-5 text-secondary" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">Support</p>
+                    <p className="text-2xl font-bold text-foreground">24/7</p>
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
           </div>

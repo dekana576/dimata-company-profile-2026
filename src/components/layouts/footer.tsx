@@ -119,7 +119,7 @@ export function Footer({
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-[15px] text-foreground/60 transition-colors hover:text-accent"
+                  className="text-[15px] text-foreground/60 transition-colors hover:text-blue-400"
                 >
                   {link.label}
                 </Link>
@@ -137,7 +137,7 @@ export function Footer({
             <li>
               <a
                 href={`mailto:${email}`}
-                className="flex items-center gap-3 text-[15px] text-foreground/60 transition-colors hover:text-accent"
+                className="flex items-center gap-3 text-[15px] text-foreground/60 transition-colors hover:text-blue-400"
               >
                 <Mail className="h-4.5 w-4.5 shrink-0" />
                 {email}
@@ -146,7 +146,7 @@ export function Footer({
             <li>
               <a
                 href={`tel:${phone.replace(/\s+/g, "")}`}
-                className="flex items-center gap-3 text-[15px] text-foreground/60 transition-colors hover:text-accent"
+                className="flex items-center gap-3 text-[15px] text-foreground/60 transition-colors hover:text-blue-400"
               >
                 <Phone className="h-4.5 w-4.5 shrink-0" />
                 {phone}

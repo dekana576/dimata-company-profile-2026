@@ -12,6 +12,7 @@ import {
   Users,
   Zap,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
@@ -140,14 +141,23 @@ const GALLERY = [
 
 /* ─── Page Component ─── */
 
+export interface GalleryItem {
+  id: number;
+  path: string;
+  description: string | null;
+}
+
 export interface AboutPageProps {
   founderImage?: string;
+  galleryImages?: GalleryItem[];
 }
 
 export default function AboutPage({
   founderImage = "/img/founder.jpg",
+  galleryImages = [],
 }: AboutPageProps) {
   const [imgError, setImgError] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<GalleryItem | null>(null);
   const { t } = useLanguage();
   const showImage = founderImage && !imgError;
 
@@ -365,31 +375,87 @@ export default function AboutPage({
             <p className='mt-2 text-center text-muted-foreground'>
               {t("about.gallery.description")}
             </p>
-            <motion.div
-              {...staggerContainer}
-              className='mt-8 grid grid-cols-2 gap-4 md:grid-cols-3'
-            >
-              {GALLERY.map((img) => (
-                <motion.div
-                  key={img.src}
-                  {...staggerItem}
-                  className='group relative aspect-[3/2] overflow-hidden rounded-2xl'
-                >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
-                  />
-                  <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                  <span className='absolute bottom-3 left-3 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
-                    {img.alt}
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
+            {galleryImages.length > 0 ? (
+              <motion.div
+                {...staggerContainer}
+                className='mt-8 grid grid-cols-2 gap-4 md:grid-cols-3'
+              >
+                {galleryImages.map((img) => (
+                  <motion.div
+                    key={img.id}
+                    {...staggerItem}
+                    className='group relative aspect-[3/2] cursor-pointer overflow-hidden rounded-2xl'
+                    onClick={() => setExpandedImage(img)}
+                  >
+                    <img
+                      src={img.path}
+                      alt={img.description || "Gallery image"}
+                      className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                    />
+                    <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <span className='absolute bottom-3 left-3 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+                      {img.description}
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                {...staggerContainer}
+                className='mt-8 grid grid-cols-2 gap-4 md:grid-cols-3'
+              >
+                {GALLERY.map((img) => (
+                  <motion.div
+                    key={img.src}
+                    {...staggerItem}
+                    className='group relative aspect-[3/2] overflow-hidden rounded-2xl'
+                  >
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                    />
+                    <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <span className='absolute bottom-3 left-3 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+                      {img.alt}
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
           </div>
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      {expandedImage && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4'
+          onClick={() => setExpandedImage(null)}
+        >
+          <button
+            className='absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20'
+            onClick={() => setExpandedImage(null)}
+          >
+            <X className='h-6 w-6' />
+          </button>
+          <div
+            className='relative max-h-[85vh] max-w-[90vw]'
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={expandedImage.path}
+              alt={expandedImage.description || "Gallery image"}
+              className='max-h-[85vh] max-w-[90vw] rounded-lg object-contain'
+            />
+            {expandedImage.description && (
+              <div className='absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/60 p-4'>
+                <p className='text-center text-sm text-white'>{expandedImage.description}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

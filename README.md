@@ -1,42 +1,190 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dimata Company Profile 2026
 
-## Getting Started
+Company profile website for Dimata IT Solutions, built with Next.js App Router.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **React**: 19.2
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS v4
+- **UI Library**: HeroUI v3
+- **Animation**: Framer Motion
+- **ORM**: Prisma 7 (MySQL adapter)
+- **Auth**: JWT (jose) + httpOnly cookie
+- **Image Crop**: react-easy-crop
+
+## Prerequisites
+
+- Node.js 18+
+- MySQL 8 running on localhost:3306
+- npm or yarn
+
+## Installation
 
 ```bash
+# Clone the repository
+git clone <repo-url>
+cd dimata-company-profile-2026
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env
+# Edit .env with your actual values
+
+# Run database migration
+npx prisma migrate dev
+
+# Seed admin user
+npx prisma db seed
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All variables are in a single `.env` file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | MySQL connection string | `mysql://root:password@localhost:3306/dimata_cms` |
+| `SMTP_HOST` | Gmail SMTP host | `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP port | `587` |
+| `SMTP_USER` | Gmail address | `your-email@gmail.com` |
+| `SMTP_PASS` | Gmail app password | `your-16-char-app-password` |
+| `SMTP_FROM` | Sender email | `your-email@gmail.com` |
+| `SMTP_TO` | Recipient email | `recipient@gmail.com` |
+| `CMS_ADMIN_EMAIL` | CMS login email | `admin@dimata.com` |
+| `CMS_ADMIN_PASSWORD` | CMS login password | `your-secure-password` |
+| `JWT_SECRET` | JWT signing secret (min 32 chars) | `your-random-secret` |
 
-## Learn More
+> **Note**: If you also have `.env.local`, it will override `.env` values. This is useful for local development with different settings.
 
-To learn more about Next.js, take a look at the following resources:
+## Database Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Create database and run migrations
+npx prisma migrate dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Seed admin user (reads CMS_ADMIN_EMAIL & CMS_ADMIN_PASSWORD from .env)
+npx prisma db seed
 
-## Deploy on Vercel
+# Open Prisma Studio (visual DB browser)
+npx prisma studio
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The seed script creates an admin user with credentials from `.env`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development
 
+```bash
+npm run dev       # Start dev server on http://localhost:3000
+npm run build     # Production build
+npm run start     # Start production server
+npm run lint      # Run ESLint
+```
 
-color pallete: https://colorhunt.co/palette/f5f5f5dff1f1bbd5daff0000
-NextJS 16.2.10
-HeroUI v3
-lucide-react
+## CMS Admin
+
+Access the CMS at `/cms`.
+
+| Field | Value |
+|-------|-------|
+| URL | `http://localhost:3000/cms` |
+| Email | From `CMS_ADMIN_EMAIL` in `.env` |
+| Password | From `CMS_ADMIN_PASSWORD` in `.env` |
+
+### Features
+
+- **Dashboard**: Overview stats
+- **Gallery**: Upload, edit, delete, reorder images
+- **Image Crop**: Crop images before upload
+- **Sort Order**: Lower number = displayed first (0 = first, 1 = second, ...)
+- **Toggle Visibility**: Show/hide images on public site
+
+## Project Structure
+
+```
+dimata-company-profile-2026/
+├── prisma/
+│   ├── schema.prisma          # Database schema
+│   ├── seed.ts                # Seed admin user
+│   └── migrations/            # Migration files
+├── public/
+│   └── uploads/gallery/       # Uploaded gallery images
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── login/     # POST: login
+│   │   │   │   ├── logout/    # POST: logout
+│   │   │   │   └── me/        # GET: current user
+│   │   │   ├── gallery/       # CRUD gallery images
+│   │   │   └── upload/        # POST: file upload
+│   │   ├── about/             # About page (SSR gallery)
+│   │   ├── cms/
+│   │   │   ├── login/         # CMS login page
+│   │   │   └── gallery/       # Gallery management
+│   │   ├── contact/           # Contact page
+│   │   ├── products/          # Products page
+│   │   ├── solutions/         # Solutions page
+│   │   └── vision-mission/    # Vision & Mission page
+│   ├── components/
+│   │   ├── layouts/           # Navbar, Footer
+│   │   ├── pages/             # Page components
+│   │   └── ui/                # Reusable UI components
+│   ├── contexts/
+│   │   └── language-context.tsx  # i18n (ID/EN)
+│   ├── lib/
+│   │   ├── auth.ts            # JWT helpers
+│   │   ├── gallery.ts         # Gallery DB queries
+│   │   ├── mail.ts            # Nodemailer setup
+│   │   ├── prisma.ts          # Prisma client
+│   │   └── upload.ts          # File upload helpers
+│   ├── locales/               # Translation files
+│   │   ├── id.json
+│   │   └── en.json
+│   └── middleware.ts           # Auth middleware
+├── .env                       # Environment variables
+├── .env.example               # Environment template
+└── package.json
+```
+
+## Features
+
+### Public Pages
+
+- **Home**: Hero, stats, products, CTA
+- **About**: Founder, timeline, team, gallery (SSR from DB)
+- **Products**: 4 solution sections, accounting, why choose us
+- **Solutions**: Overview cards
+- **Vision & Mission**: Visi/Misi cards, support services
+- **Contact**: Form with email notification
+
+### Technical
+
+- **i18n**: Indonesian (default) / English toggle
+- **Dark Mode**: System preference + manual toggle
+- **SSR Gallery**: Server-side rendered for SEO
+- **Image Optimization**: Client-side crop + resize
+- **Auth**: JWT + httpOnly cookie, protected routes
+
+## Deployment
+
+1. Set environment variables on hosting platform
+2. Ensure MySQL database is accessible
+3. Run `npx prisma migrate deploy`
+4. Run `npx prisma db seed` (first time only)
+5. Build and start:
+
+```bash
+npm run build
+npm run start
+```
+
+## License
+
+Private - Dimata IT Solutions

@@ -203,6 +203,13 @@ function StatusChip({ className = "" }: { className?: string }) {
   );
 }
 
+const productNodes = [
+    { label: "Prochain", imageSrc: "/img/products/prochain-logo-no-text.png" }, // Top
+    { label: "aiso", imageSrc: "/img/products/aiso-logo-no-text.png" },   // Right
+    { label: "hairisma", imageSrc: "/img/products/hairisma-logo-no-text.png" },   // Bottom
+    { label: "hanoman", imageSrc: "/img/products/hanoman-logo-no-text.png" },     // Left
+  ];
+
 export default function HomePage() {
   const { t } = useLanguage();
 
@@ -272,7 +279,7 @@ export default function HomePage() {
           {/* Right — signature animated system diagram */}
           <Reveal from="right" className="relative mx-auto aspect-square w-full max-w-[440px]">
             <SystemDiagram
-              nodes={PRODUCTS.map((p) => ({ icon: p.icon, label: p.name }))}
+              nodes={productNodes}
             />
           </Reveal>
         </div>

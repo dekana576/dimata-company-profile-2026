@@ -1,7 +1,5 @@
-import type { LucideIcon } from "lucide-react";
-
 interface DiagramNode {
-  icon: LucideIcon;
+  imageSrc: string;
   label: string;
   /** position on a 480x480 canvas */
   x: number;
@@ -9,16 +7,16 @@ interface DiagramNode {
 }
 
 const NODE_POSITIONS: { x: number; y: number }[] = [
-  { x: 240, y: 70 }, // top
-  { x: 410, y: 240 }, // right
-  { x: 240, y: 410 }, // bottom
-  { x: 70, y: 240 }, // left
+  { x: 240, y: 60 },  // top
+  { x: 420, y: 240 }, // right
+  { x: 240, y: 420 }, // bottom
+  { x: 60, y: 240 },  // left
 ];
 
 export function SystemDiagram({
   nodes,
 }: {
-  nodes: { icon: LucideIcon; label: string }[];
+  nodes: { imageSrc: string; label: string }[];
 }) {
   const placed: DiagramNode[] = nodes
     .slice(0, 4)
@@ -46,8 +44,8 @@ export function SystemDiagram({
       </style>
 
       {/* faint concentric guides */}
-      <circle cx="240" cy="240" r="150" className="fill-none stroke-hero-foreground/10" strokeWidth="1" />
-      <circle cx="240" cy="240" r="95" className="fill-none stroke-hero-foreground/10" strokeWidth="1" />
+      <circle cx="240" cy="240" r="150" className="fill-none stroke-foreground/10" strokeWidth="1" />
+      <circle cx="240" cy="240" r="95" className="fill-none stroke-foreground/10" strokeWidth="1" />
 
       {/* connectors */}
       {placed.map((n, i) => (
@@ -68,12 +66,12 @@ export function SystemDiagram({
       <circle cx="240" cy="240" r="46" className="dimata-ring fill-none stroke-primary/60" strokeWidth="1.5" />
 
       {/* central hub */}
-      <circle cx="240" cy="240" r="42" className="fill-black stroke-hero-foreground/25" strokeWidth="1" />
+      <circle cx="240" cy="240" r="70" className="fill-accent/70 stroke-foreground/25" strokeWidth="1" />
       <text
         x="240"
-        y="236"
+        y="240"
         textAnchor="middle"
-        className="fill-hero-foreground font-mono text-[11px] font-semibold tracking-[0.08em]"
+        className="fill-foreground font-mono text-[15px] font-semibold tracking-[0.08em]"
       >
         DIMATA
       </text>
@@ -81,28 +79,38 @@ export function SystemDiagram({
         x="240"
         y="252"
         textAnchor="middle"
-        className="fill-hero-foreground/50 font-mono text-[8px] tracking-[0.12em]"
+        className="fill-foreground/50 font-mono text-[10px] tracking-[0.12em]"
       >
         CORE
       </text>
 
-      {/* module nodes */}
-      {placed.map(({ icon: Icon, label, x, y }) => (
+      {/* module nodes with product images */}
+      {placed.map(({ imageSrc, label, x, y }) => (
         <g key={label}>
-          <circle cx={x} cy={y} r="30" className="fill-hero stroke-hero-foreground/20" strokeWidth="1" />
-          <foreignObject x={x - 12} y={y - 12} width="24" height="24">
-            <div className="flex h-6 w-6 items-center justify-center text-hero-foreground">
-              <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+          {/* Latar lingkaran diperbesar dari r="30" menjadi r="40" (diameter 80px) */}
+          <circle cx={x} cy={y} r="59" className="fill-accent stroke-foreground/20" strokeWidth="1.5" />
+          
+          {/* Area gambar produk diperbesar menjadi 48x48 (posisi offset -24 dari titik pusat x, y) */}
+          <foreignObject x={x - 45} y={y - 45} width="90" height="90">
+            <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+              <img
+                src={imageSrc}
+                alt={label}
+                className="h-full w-full object-contain"
+                loading="lazy"
+              />
             </div>
           </foreignObject>
-          <text
+
+          {/* Posisi teks digeser ke bawah (y + 54) agar tidak menabrak batas lingkaran yang baru */}
+          {/* <text
             x={x}
-            y={y + 44}
+            y={y + 54}
             textAnchor="middle"
             className="fill-hero-foreground/70 font-mono text-[9px] tracking-[0.06em]"
           >
             {label.toUpperCase()}
-          </text>
+          </text> */}
         </g>
       ))}
     </svg>

@@ -457,10 +457,24 @@
   "products.erp.detailedDescription": "Solusi ERP yang sederhana dan terjangkau dirancang khusus untuk UKM dengan fitur lengkap untuk mengelola operasional bisnis Anda. Tingkatkan efisiensi, kurangi biaya operasional, dan ambil keputusan bisnis yang lebih baik dengan data real-time.",
   "products.erp.cta": "Pelajari Lebih Lanjut",
 
+  "products.erp.purchasing.description": "Kelola proses pengadaan barang dengan efisien, mulai dari permintaan pembelian hingga penerimaan barang.",
+  "products.erp.inventory.description": "Pantau stok barang secara real-time, kelola pergerakan barang, dan optimalkan tingkat persediaan Anda.",
+  "products.erp.products.description": "Sentralisasi data produk dan hitung biaya produksi secara akurat untuk menentukan harga jual yang kompetitif.",
+  "products.erp.accounting.description": "Otomatisasi pencatatan keuangan, hasilkan laporan akurat, dan pantau kesehatan finansial bisnis Anda.",
+  "products.erp.web.description": "Akses sistem ERP Anda kapan saja dan di mana saja melalui perangkat web maupun aplikasi mobile.",
+  
+
   "products.accommodation.title": "Solusi Akomodasi",
   "products.accommodation.shortDescription": "Solusi akomodasi sederhana dan praktis",
   "products.accommodation.detailedDescription": "Solusi akomodasi yang sederhana dan praktis untuk mengelola properti, tamu, dan reservasi dengan terintegrasi ke layanan outlet dan akuntansi. Berikan pengalaman menginap tak terlupakan bagi tamu Anda dengan operasional yang mulus.",
   "products.accommodation.cta": "Pelajari Lebih Lanjut",
+
+  "products.accommodation.property.description": "Kelola seluruh aspek properti Anda, mulai dari status kamar, pemeliharaan, hingga housekeeping.",
+  "products.accommodation.guest.description": "Simpan profil tamu, riwayat menginap, dan preferensi untuk memberikan layanan yang lebih personal.",
+  "products.accommodation.reservation.description": "Sistem reservasi terpusat yang memudahkan proses booking, check-in, dan check-out tamu.",
+  "products.accommodation.integrated.description": "Integrasi mulus dengan layanan restoran, spa, dan fasilitas lainnya untuk kemudahan penagihan.",
+  "products.accommodation.accounting.description": "Laporan keuangan komprehensif yang terintegrasi langsung dengan seluruh transaksi operasional.",
+
 
   "products.hr.title": "Sistem Sumber Daya Manusia dan Penggajian",
   "products.hr.shortDescription": "Solusi bisnis untuk manajemen HR komprehensif",

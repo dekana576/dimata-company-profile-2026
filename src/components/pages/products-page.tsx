@@ -66,38 +66,33 @@ const staggerItem = {
   transition: { duration: 0.5, ease: "easeOut" as const },
 };
 
-/* ─── Data ─── */
+/* ─── Data (Title Tetap Asli, Description Menggunakan Key) ─── */
 
 const ERP_FEATURES = [
   {
     icon: ShoppingCart,
     title: "Purchasing",
-    description:
-      "Kelola proses pengadaan barang dengan efisien, mulai dari permintaan pembelian hingga penerimaan barang.",
+    descriptionKey: "products.erp.purchasing.description",
   },
   {
     icon: Package,
     title: "Inventory",
-    description:
-      "Pantau stok barang secara real-time, kelola pergerakan barang, dan optimalkan tingkat persediaan Anda.",
+    descriptionKey: "products.erp.inventory.description",
   },
   {
     icon: Boxes,
     title: "Products Master & Costing",
-    description:
-      "Sentralisasi data produk dan hitung biaya produksi secara akurat untuk menentukan harga jual yang kompetitif.",
+    descriptionKey: "products.erp.products.description",
   },
   {
     icon: Calculator,
     title: "Accounting",
-    description:
-      "Otomatisasi pencatatan keuangan, hasilkan laporan akurat, dan pantau kesehatan finansial bisnis Anda.",
+    descriptionKey: "products.erp.accounting.description",
   },
   {
     icon: Smartphone,
     title: "Web & Mobile Solutions",
-    description:
-      "Akses sistem ERP Anda kapan saja dan di mana saja melalui perangkat web maupun aplikasi mobile.",
+    descriptionKey: "products.erp.web.description",
   },
 ];
 
@@ -105,32 +100,27 @@ const ACCOMMODATION_FEATURES = [
   {
     icon: Building2,
     title: "Property Management",
-    description:
-      "Kelola seluruh aspek properti Anda, mulai dari status kamar, pemeliharaan, hingga housekeeping.",
+    descriptionKey: "products.accommodation.property.description",
   },
   {
     icon: Users,
     title: "Guest Management",
-    description:
-      "Simpan profil tamu, riwayat menginap, dan preferensi untuk memberikan layanan yang lebih personal.",
+    descriptionKey: "products.accommodation.guest.description",
   },
   {
     icon: CalendarCheck,
     title: "Reservation & Registration Management",
-    description:
-      "Sistem reservasi terpusat yang memudahkan proses booking, check-in, dan check-out tamu.",
+    descriptionKey: "products.accommodation.reservation.description",
   },
   {
     icon: Briefcase,
     title: "Integrated Outlet Services",
-    description:
-      "Integrasi mulus dengan layanan restoran, spa, dan fasilitas lainnya untuk kemudahan penagihan.",
+    descriptionKey: "products.accommodation.integrated.description",
   },
   {
     icon: Calculator,
     title: "Accounting",
-    description:
-      "Laporan keuangan komprehensif yang terintegrasi langsung dengan seluruh transaksi operasional.",
+    descriptionKey: "products.accommodation.accounting.description",
   },
 ];
 
@@ -138,80 +128,67 @@ const HR_FEATURES = [
   {
     icon: Users,
     title: "Recruitment",
-    description:
-      "Kelola proses rekrutmen dan pelamaran dengan sistem pelacakan kandidat yang terstruktur.",
+    descriptionKey: "products.hr.recruitment.description",
   },
   {
     icon: GraduationCap,
     title: "Onboarding",
-    description:
-      "Proses orientasi karyawan baru yang terstruktur untuk memastikan transisi yang mulus.",
+    descriptionKey: "products.hr.onboarding.description",
   },
   {
     icon: Settings,
     title: "Training",
-    description:
-      "Manajemen program pelatihan dan pengembangan untuk meningkatkan kompetensi tim.",
+    descriptionKey: "products.hr.training.description",
   },
   {
     icon: Settings,
     title: "Operations",
-    description:
-      "Kelola operasional HR sehari-hari dengan efisien dalam satu platform terpusat.",
+    descriptionKey: "products.hr.operations.description",
   },
   {
     icon: CalendarCheck,
     title: "Leave & Scheduling",
-    description:
-      "Manajemen cuti dan jadwal kerja yang fleksibel dan mudah diakses oleh karyawan.",
+    descriptionKey: "products.hr.leave.description",
   },
   {
     icon: TrendingUp,
     title: "Appraisals & Recognition",
-    description:
-      "Sistem penilaian kinerja dan penghargaan untuk memotivasi dan mempertahankan talenta terbaik.",
+    descriptionKey: "products.hr.appraisals.description",
   },
   {
     icon: Briefcase,
     title: "Company Structure",
-    description:
-      "Kelola struktur organisasi perusahaan, departemen, dan hierarki pelaporan dengan visualisasi yang jelas.",
+    descriptionKey: "products.hr.structure.description",
   },
   {
     icon: Workflow,
     title: "Workflow",
-    description:
-      "Otomasi workflow dan approval process untuk mempercepat pengambilan keputusan.",
+    descriptionKey: "products.hr.workflow.description",
   },
   {
     icon: FileLock,
     title: "Company Documents",
-    description:
-      "Manajemen dokumen perusahaan yang aman dengan kontrol akses yang dapat disesuaikan.",
+    descriptionKey: "products.hr.documents.description",
   },
   {
     icon: Clock,
     title: "Overtime",
-    description:
-      "Kelola data lembur karyawan dengan perhitungan otomatis yang terintegrasi ke payroll.",
+    descriptionKey: "products.hr.overtime.description",
   },
   {
     icon: FileText,
     title: "Employee Contract Management",
-    description:
-      "Manajemen kontrak karyawan dengan pengingat otomatis untuk perpanjangan atau evaluasi.",
+    descriptionKey: "products.hr.contracts.description",
   },
   {
     icon: CreditCard,
     title: "Payroll",
-    description:
-      "Sistem penggajian terintegrasi yang akurat, mematuhi regulasi pajak, dan tepat waktu.",
+    descriptionKey: "products.hr.payroll.description",
   },
   {
     icon: Link2,
     title: "Integration to Accounting",
-    description:
-      "Terintegrasi langsung dengan sistem akuntansi untuk pencatatan beban gaji yang otomatis.",
+    descriptionKey: "products.hr.integration.description",
   },
 ];
 
@@ -219,32 +196,27 @@ const PLANTATION_FEATURES = [
   {
     icon: Briefcase,
     title: "Projects Management",
-    description:
-      "Kelola proyek perkebunan dengan efisien, dari perencanaan hingga eksekusi dan evaluasi.",
+    descriptionKey: "products.plantation.projects.description",
   },
   {
     icon: MapPin,
     title: "Areas Management",
-    description:
-      "Manajemen area dan lahan perkebunan dengan pemetaan blok dan blok tanam yang detail.",
+    descriptionKey: "products.plantation.areas.description",
   },
   {
     icon: Sprout,
     title: "Plants Management",
-    description:
-      "Kelola data tanaman, siklus pertumbuhan, jadwal pemupukan, dan perawatan secara sistematis.",
+    descriptionKey: "products.plantation.plants.description",
   },
   {
     icon: Package,
     title: "Inventory & Cost Management",
-    description:
-      "Manajemen inventori pupuk, bibit, alat, serta pelacakan biaya produksi per blok lahan.",
+    descriptionKey: "products.plantation.inventory.description",
   },
   {
     icon: BarChart3,
     title: "Production Tracking",
-    description:
-      "Pantau hasil produksi panen secara real-time dan analisis tren produktivitas lahan.",
+    descriptionKey: "products.plantation.production.description",
   },
 ];
 
@@ -252,26 +224,22 @@ const GENERAL_ACCOUNTING_FEATURES = [
   {
     icon: Calculator,
     title: "Flash Finance Report Generation",
-    description:
-      "Laporan keuangan cepat dari data Excel untuk analisis instan.",
+    descriptionKey: "products.accounting.general.flash.description",
   },
   {
     icon: Settings,
     title: "AI-based Supporting Bookkeeping",
-    description:
-      "Dukungan pembukuan berbasis AI untuk meminimalisir kesalahan input.",
+    descriptionKey: "products.accounting.general.ai.description",
   },
   {
     icon: BarChart3,
     title: "Real-time Financial Reports",
-    description:
-      "Laporan keuangan real-time untuk pengambilan keputusan yang lebih cepat.",
+    descriptionKey: "products.accounting.general.realtime.description",
   },
   {
     icon: CreditCard,
     title: "Multi-currency Support",
-    description:
-      "Dukungan multi-mata uang untuk transaksi bisnis internasional.",
+    descriptionKey: "products.accounting.general.multicurrency.description",
   },
 ];
 
@@ -279,36 +247,32 @@ const TRAVEL_ACCOUNTING_FEATURES = [
   {
     icon: Users,
     title: "Commission Management",
-    description:
-      "Manajemen komisi dan insentif agen yang akurat dan transparan.",
+    descriptionKey: "products.accounting.travel.commission.description",
   },
   {
     icon: ShoppingCart,
     title: "Booking & Invoice Integration",
-    description:
-      "Integrasi mulus antara sistem booking dan pembuatan invoice.",
+    descriptionKey: "products.accounting.travel.booking.description",
   },
   {
     icon: BarChart3,
     title: "Travel-specific Reporting",
-    description:
-      "Laporan khusus industri travel untuk memantau profitabilitas paket wisata.",
+    descriptionKey: "products.accounting.travel.reporting.description",
   },
   {
     icon: Users,
     title: "Multi-vendor Management",
-    description:
-      "Manajemen multi-vendor (airlines, hotels, dll) dalam satu dashboard.",
+    descriptionKey: "products.accounting.travel.multivendor.description",
   },
 ];
 
 const BENEFITS = [
-  "Implementasi cepat dan mudah",
-  "Dukungan teknis 24/7",
-  "Skalabilitas tinggi untuk bisnis berkembang",
-  "Keamanan data terjamin",
-  "Kustomisasi sesuai kebutuhan spesifik",
-  "Pelatihan komprehensif untuk tim Anda",
+  "products.benefits.0",
+  "products.benefits.1",
+  "products.benefits.2",
+  "products.benefits.3",
+  "products.benefits.4",
+  "products.benefits.5",
 ];
 
 /* ─── Solution Section Component ─── */
@@ -325,9 +289,15 @@ function SolutionSection({
   shortDescription: string;
   detailedDescription: string;
   ctaText: string;
-  features: { icon: React.ComponentType<{ className?: string }>; title: string; description: string }[];
+  features: {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    descriptionKey: string;
+  }[];
   withBg?: boolean;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className={withBg ? "bg-muted/30" : ""}>
       <section className="border-b border-border py-20 last:border-0">
@@ -369,11 +339,13 @@ function SolutionSection({
                   <div className="mb-5 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
+                  {/* Title ditampilkan asli tanpa fungsi t() */}
                   <h4 className="mb-3 text-lg font-semibold text-foreground">
                     {feature.title}
                   </h4>
+                  {/* Description diterjemahkan menggunakan fungsi t() */}
                   <p className="mt-auto text-sm leading-relaxed text-muted-foreground">
-                    {feature.description}
+                    {t(feature.descriptionKey)}
                   </p>
                 </motion.div>
               );
@@ -493,11 +465,13 @@ export default function ProductsPage() {
                         <Icon className="h-6 w-6 text-primary" />
                       </div>
                       <div>
+                        {/* Title ditampilkan asli tanpa fungsi t() */}
                         <p className="mb-1 font-semibold text-foreground">
                           {feature.title}
                         </p>
+                        {/* Description diterjemahkan menggunakan fungsi t() */}
                         <p className="text-sm leading-relaxed text-muted-foreground">
-                          {feature.description}
+                          {t(feature.descriptionKey)}
                         </p>
                       </div>
                     </div>
@@ -536,11 +510,13 @@ export default function ProductsPage() {
                         <Icon className="h-6 w-6 text-green" />
                       </div>
                       <div>
+                        {/* Title ditampilkan asli tanpa fungsi t() */}
                         <p className="mb-1 font-semibold text-foreground">
                           {feature.title}
                         </p>
+                        {/* Description diterjemahkan menggunakan fungsi t() */}
                         <p className="text-sm leading-relaxed text-muted-foreground">
-                          {feature.description}
+                          {t(feature.descriptionKey)}
                         </p>
                       </div>
                     </div>
@@ -575,11 +551,11 @@ export default function ProductsPage() {
                 {t("products.whyChoose.description")}
               </p>
               <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {BENEFITS.map((benefit) => (
-                  <div key={benefit} className="flex items-start space-x-3">
+                {BENEFITS.map((benefitKey) => (
+                  <div key={benefitKey} className="flex items-start space-x-3">
                     <Check className="mt-0.5 h-6 w-6 flex-shrink-0 text-primary-foreground/90" />
                     <span className="font-medium text-primary-foreground/90">
-                      {benefit}
+                      {t(benefitKey)}
                     </span>
                   </div>
                 ))}
@@ -675,7 +651,7 @@ export default function ProductsPage() {
                     className="rounded-xl border border-primary-foreground/10 bg-background p-5 shadow-xl"
                   >
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green/10">
-                      <Shield className="h-5 w-5 text-green" />
+                      <Shield className="h-6 w-6 text-green" />
                     </div>
                     <p className="mt-3 text-xs text-muted-foreground">{t("products.stats.support")}</p>
                     <p className="text-2xl font-bold text-foreground">24/7</p>

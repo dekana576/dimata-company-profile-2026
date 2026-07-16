@@ -456,10 +456,22 @@
   "products.erp.detailedDescription": "Simple and affordable ERP solutions designed specifically for SMEs with comprehensive features to manage your business operations. Increase efficiency, reduce operational costs, and make better business decisions with real-time data.",
   "products.erp.cta": "Learn More",
 
+  "products.erp.purchasing.description": "Efficiently manage your procurement processes, from initial purchase requests to goods receipt.",
+  "products.erp.inventory.description": "Monitor stock in real time, track inventory movements, and optimize your overall inventory levels.",
+  "products.erp.products.description": "Centralize product data and accurately calculate production costs to set competitive selling prices.",
+  "products.erp.accounting.description": "Automate financial record-keeping, generate accurate reports, and monitor your business's financial health.",
+  "products.erp.web.description": "Access your ERP system anytime, anywhere via web browsers and mobile applications.",
+
   "products.accommodation.title": "Accommodation Solutions",
   "products.accommodation.shortDescription": "Simple and practical accommodation solutions",
   "products.accommodation.detailedDescription": "Simple and practical accommodation solutions to manage properties, guests, and reservations with integration to outlet services and accounting. Deliver an unforgettable stay experience for your guests with seamless operations.",
   "products.accommodation.cta": "Learn More",
+
+  "products.accommodation.property.description": "Manage all aspects of your property, from room status and maintenance to housekeeping operations.",
+  "products.accommodation.guest.description": "Store guest profiles, stay histories, and preferences to deliver a more personalized service experience.",
+  "products.accommodation.reservation.description": "A centralized reservation system that streamlines the booking, check-in, and check-out process.",
+  "products.accommodation.integrated.description": "Seamless integration with restaurant, spa, and other on-site facility services for simplified billing.",
+  "products.accommodation.accounting.description": "Comprehensive financial reporting directly integrated with all operational transactions.",
 
   "products.hr.title": "Human Resources and Payroll Systems",
   "products.hr.shortDescription": "Business solutions for comprehensive HR management",

@@ -296,7 +296,46 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
+{/* ================= TRUST STRIP — industries served, ikut tema ================= */}
+      <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
+        <div className="flex items-center gap-3 whitespace-nowrap">
+          <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
+            {t("home.builtFor")}
+          </span>
+          
+          {/* Wrapper utama untuk menampung 2 track agar sejajar */}
+          <div className="flex overflow-hidden">
+            {/* Track 1: Ditambahkan _reverse & duplikasi array agar aman di layar lebar */}
+            <div className="flex shrink-0 animate-[marquee_28s_linear_infinite] items-center gap-3 pr-3 motion-reduce:animate-caret-none">
+              {[...INDUSTRIES, ...INDUSTRIES].map((industry, i) => (
+                <span
+                  key={`track1-${industry}-${i}`}
+                  className="shrink-0 rounded-full border border-teal bg-mint px-4 py-1.5 text-[13px] font-medium text-foreground/70"
+                >
+                  {industry}
+                </span>
+              ))}
+            </div>
+
+            {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
+            <div
+              aria-hidden="true"
+              className="flex shrink-0 animate-[marquee_28s_linear_infinite] items-center gap-3 pr-3 motion-reduce:animate-caret-none"
+            >
+              {[...INDUSTRIES, ...INDUSTRIES].map((industry, i) => (
+                <span
+                  key={`track2-${industry}-${i}`}
+                  className="shrink-0 rounded-full border border-teal bg-mint px-4 py-1.5 text-[13px] font-medium text-foreground/70"
+                >
+                  {industry}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TRUST STRIP — industries served, ikut tema =================
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
         <div className="flex items-center gap-3 whitespace-nowrap">
           <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
@@ -313,7 +352,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ================= STATS ("Why choose DIMATA?") — ikut tema light/dark ================= */}
       <section id="why-us" className="bg-foreground/7">

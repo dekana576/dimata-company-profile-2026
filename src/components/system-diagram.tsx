@@ -23,96 +23,193 @@ export function SystemDiagram({
     .map((n, i) => ({ ...n, ...NODE_POSITIONS[i] }));
 
   const CENTER = { x: 240, y: 240 };
+  const NODE_R = 59; // unchanged — keeps product images large
+  const HUB_R = 70; // unchanged — same footprint as the original hub
 
   return (
     <svg
       viewBox="0 0 480 480"
       className="h-full w-full"
       role="img"
-      aria-label="Diagram of DIMATA's four connected product modules feeding into one central system"
+      aria-label="Diagram of DIMATA's four connected product modules orbiting one central system"
     >
+      <defs>
+        <radialGradient id="dimata-glow-a" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="dimata-glow-b" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0" />
+        </radialGradient>
+
+        {/* frosted-glass core fill */}
+        <linearGradient id="dimata-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0.55" />
+        </linearGradient>
+
+        <radialGradient id="dimata-shine" cx="32%" cy="26%" r="45%">
+          <stop offset="0%" stopColor="white" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="white" stopOpacity="0" />
+        </radialGradient>
+
+        <filter id="dimata-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="18" />
+        </filter>
+        <filter id="dimata-glow-sm" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="3" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="dimata-card-shadow" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="3" stdDeviation="5" floodOpacity="0.16" />
+        </filter>
+      </defs>
+
       <style>
         {`
-          @keyframes dimata-flow { to { stroke-dashoffset: -24; } }
-          @keyframes dimata-pulse-ring { 0% { opacity: .45; transform: scale(1); } 100% { opacity: 0; transform: scale(1.9); } }
-          .dimata-edge { animation: dimata-flow 1.6s linear infinite; }
-          .dimata-ring { animation: dimata-pulse-ring 2.6s ease-out infinite; transform-origin: 240px 240px; }
+          @keyframes dimata-spin { to { transform: rotate(360deg); } }
+          @keyframes dimata-spin-rev { to { transform: rotate(-360deg); } }
+          @keyframes dimata-drift { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(10px,-8px); } }
+          @keyframes dimata-shimmer { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+          @keyframes dimata-rise {
+            from { opacity: 0; transform: translateY(6px) scale(.92); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+          }
+          .dimata-status-ring { animation: dimata-spin 7s linear infinite; }
+          .dimata-hub-ring { animation: dimata-spin-rev 22s linear infinite; transform-origin: 240px 240px; }
+          .dimata-blob { animation: dimata-drift 9s ease-in-out infinite; }
+          .dimata-shimmer { animation: dimata-shimmer 3s ease-in-out infinite; }
+          .dimata-card { animation: dimata-rise .55s ease-out backwards; }
           @media (prefers-reduced-motion: reduce) {
-            .dimata-edge, .dimata-ring { animation: none; }
+            .dimata-status-ring, .dimata-hub-ring, .dimata-blob, .dimata-shimmer, .dimata-card { animation: none; }
           }
         `}
       </style>
 
-      {/* faint concentric guides */}
-      <circle cx="240" cy="240" r="150" className="fill-none stroke-foreground/10" strokeWidth="1" />
-      <circle cx="240" cy="240" r="95" className="fill-none stroke-foreground/10" strokeWidth="1" />
+      {/* ambient background glow — soft, drifting light instead of a hard grid */}
+      <circle cx="150" cy="150" r="140" fill="url(#dimata-glow-a)" filter="url(#dimata-blur-lg)" className="dimata-blob" />
+      <circle cx="340" cy="330" r="150" fill="url(#dimata-glow-b)" filter="url(#dimata-blur-lg)" style={{ animationDelay: "-4.5s" }} className="dimata-blob" />
 
-      {/* connectors */}
-      {placed.map((n, i) => (
-        <line
-          key={`edge-${n.label}`}
-          x1={CENTER.x}
-          y1={CENTER.y}
-          x2={n.x}
-          y2={n.y}
-          className="dimata-edge stroke-primary/70"
-          strokeWidth="1.5"
-          strokeDasharray="4 8"
-          style={{ animationDelay: `${i * 0.15}s` }}
+      {/* orbital guide rings */}
+      <circle cx="240" cy="240" r="180" className="fill-none stroke-foreground/[0.07]" strokeWidth="1" />
+      <circle cx="240" cy="240" r="118" className="fill-none stroke-foreground/[0.07]" strokeWidth="1" strokeDasharray="2 6" />
+
+      {/* curved connections, each bowed the same direction for a pinwheel / orbital feel */}
+      {placed.map((n, i) => {
+        const path = arcPath(CENTER.x, CENTER.y, n.x, n.y, 34);
+        return (
+          <g key={`link-${n.label}`}>
+            <path d={path} className="stroke-foreground/[0.08]" strokeWidth="3" fill="none" strokeLinecap="round" />
+            <path
+              d={path}
+              className="stroke-primary/60"
+              strokeWidth="1.25"
+              strokeDasharray="1 7"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <circle r="3.5" className="fill-primary" filter="url(#dimata-glow-sm)">
+              <animateMotion path={path} dur="3.2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+            </circle>
+          </g>
+        );
+      })}
+
+      {/* central hub — frosted glass orb */}
+      <circle cx="240" cy="240" r={HUB_R + 30} fill="url(#dimata-glow-a)" className="dimata-shimmer" />
+      <circle
+        cx="240"
+        cy="240"
+        r={HUB_R + 9}
+        className="fill-none stroke-primary/40"
+        strokeWidth="1.5"
+        strokeDasharray="1 6"
+        style={{ transformOrigin: "240px 240px" }}
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0 240 240"
+          to="360 240 240"
+          dur="26s"
+          repeatCount="indefinite"
         />
-      ))}
+      </circle>
 
-      {/* pulse rings behind the hub */}
-      <circle cx="240" cy="240" r="46" className="dimata-ring fill-none stroke-primary/60" strokeWidth="1.5" />
+      <g filter="url(#dimata-card-shadow)">
+        <circle cx="240" cy="240" r={HUB_R} fill="url(#dimata-glass)" className="stroke-foreground/10" strokeWidth="1" />
+        <circle cx="240" cy="240" r={HUB_R} fill="url(#dimata-shine)" />
+      </g>
 
-      {/* central hub */}
-      <circle cx="240" cy="240" r="70" className="fill-accent/70 stroke-foreground/25" strokeWidth="1" />
       <text
         x="240"
-        y="240"
+        y="234"
         textAnchor="middle"
-        className="fill-foreground font-mono text-[15px] font-semibold tracking-[0.08em]"
+        className="fill-primary-foreground font-mono text-[15px] font-bold tracking-[0.1em]"
       >
         DIMATA
       </text>
       <text
         x="240"
-        y="252"
+        y="250"
         textAnchor="middle"
-        className="fill-foreground/50 font-mono text-[10px] tracking-[0.12em]"
+        className="fill-primary-foreground/75 font-mono text-[10px] tracking-[0.25em]"
       >
         CORE
       </text>
 
-      {/* module nodes with product images */}
-      {placed.map(({ imageSrc, label, x, y }) => (
-        <g key={label}>
-          {/* Latar lingkaran diperbesar dari r="30" menjadi r="40" (diameter 80px) */}
-          <circle cx={x} cy={y} r="59" className="fill-accent stroke-foreground/20" strokeWidth="1.5" />
-          
-          {/* Area gambar produk diperbesar menjadi 48x48 (posisi offset -24 dari titik pusat x, y) */}
-          <foreignObject x={x - 45} y={y - 45} width="90" height="90">
+      {/* module nodes — glass cards with a spinning status ring, images unchanged in size */}
+      {placed.map(({ imageSrc, label, x, y }, i) => (
+        <g key={label} className="dimata-card" style={{ animationDelay: `${0.12 + i * 0.1}s` }}>
+          <circle
+            cx={x}
+            cy={y}
+            r={NODE_R}
+            fill="url(#dimata-glass)"
+            className="stroke-foreground/10"
+            strokeWidth="1"
+            filter="url(#dimata-card-shadow)"
+            opacity="0.14"
+          />
+          <circle cx={x} cy={y} r={NODE_R} className="fill-accent stroke-foreground/15" strokeWidth="1.5" />
+
+          {/* spinning status ring — reads as "live" without adding any radius */}
+          <circle
+            cx={x}
+            cy={y}
+            r={NODE_R - 1.5}
+            className="dimata-status-ring fill-none stroke-primary"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray={`${Math.PI * 2 * (NODE_R - 1.5) * 0.16} ${Math.PI * 2 * (NODE_R - 1.5)}`}
+            style={{ transformOrigin: `${x}px ${y}px`, animationDelay: `${i * -1.8}s` }}
+          />
+
+          <foreignObject x={x - NODE_R} y={y - NODE_R} width={NODE_R * 2} height={NODE_R * 2}>
             <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
-              <img
-                src={imageSrc}
-                alt={label}
-                className="h-full w-full object-contain"
-                loading="lazy"
-              />
+              <img src={imageSrc} alt={label} className="h-full w-full object-contain" loading="lazy" />
             </div>
           </foreignObject>
-
-          {/* Posisi teks digeser ke bawah (y + 54) agar tidak menabrak batas lingkaran yang baru */}
-          {/* <text
-            x={x}
-            y={y + 54}
-            textAnchor="middle"
-            className="fill-hero-foreground/70 font-mono text-[9px] tracking-[0.06em]"
-          >
-            {label.toUpperCase()}
-          </text> */}
         </g>
       ))}
     </svg>
   );
+}
+
+/** quadratic bezier path bowed to one consistent side, for a pinwheel/orbital connector look */
+function arcPath(cx: number, cy: number, nx: number, ny: number, bow: number): string {
+  const mx = (cx + nx) / 2;
+  const my = (cy + ny) / 2;
+  const dx = nx - cx;
+  const dy = ny - cy;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+  const px = -dy / len;
+  const py = dx / len;
+  const ctrlX = mx + px * bow;
+  const ctrlY = my + py * bow;
+  return `M${cx},${cy} Q${ctrlX},${ctrlY} ${nx},${ny}`;
 }

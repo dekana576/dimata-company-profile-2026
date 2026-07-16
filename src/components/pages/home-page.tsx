@@ -262,7 +262,7 @@ export default function HomePage() {
 
             {/* Mono readout strip — signature motif reused in later sections */}
             <div className="mt-14 flex w-full max-w-md flex-wrap gap-x-10 gap-y-5 border-t border-foreground/10 pt-7">
-              {HERO_METRICS.map((m) => (
+              {/* {HERO_METRICS.map((m) => (
                 <div key={m.label} className="flex flex-col gap-1">
                   <Counter
                     value={m.value}
@@ -274,7 +274,27 @@ export default function HomePage() {
                     {m.label}
                   </span>
                 </div>
-              ))}
+              ))} */}
+              <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8">
+                <Image
+                  src="/img/partners/odoo_logo.png"
+                  alt="Odoo"
+                  width={100}
+                  height={75}
+                  className="h-9 w-auto object-contain"
+                />
+
+                <div className="h-9 w-px bg-border" aria-hidden="true" />
+
+                <div className="flex flex-col gap-1 leading-none">
+                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                    Official
+                  </span>
+                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
+                    Partner
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -480,10 +500,10 @@ export default function HomePage() {
                         <Image
                           src={iconPath}
                           alt={`${name} logo`}
-                          /* 1. Naikkan resolusi dasar menjadi 120 atau 160 agar tajam di layar Retina */
                           width={160}
                           height={160}
-                          quality={100}
+                          quality={75}
+                          loading={i === 0 ? "eager" : "lazy"}
                           className="h-3/5 w-3/5 object-contain transition-all duration-300"
                         />
                       </span>

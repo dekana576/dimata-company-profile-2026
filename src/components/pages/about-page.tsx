@@ -53,80 +53,71 @@ const AWARDS = [
   { year: "2010", title: "Telkom Indigo Fellowship" },
 ];
 
+// PERBAIKAN 1: Simpan translation key (string) di dalam array, bukan memanggil fungsi t()
 const CORE_VALUES = [
   {
     letter: "D",
     label: "Discipline",
     icon: ShieldCheck,
-    description:
-      "Kedisiplinan adalah fondasi untuk mencapai konsistensi dan hasil terbaik dalam setiap proyek.",
+    descriptionKey: "about.corevalue.description.d",
   },
   {
     letter: "I",
     label: "Innovative",
     icon: Lightbulb,
-    description:
-      "Selalu berinovasi untuk menghadirkan solusi teknologi yang relevan dan masa depan.",
+    descriptionKey: "about.corevalue.description.i",
   },
   {
     letter: "M",
     label: "Motivated",
     icon: Rocket,
-    description:
-      "Semangat tinggi untuk terus berkembang dan memberikan yang terbaik bagi klien.",
+    descriptionKey: "about.corevalue.description.m",
   },
   {
     letter: "A",
     label: "Agile",
     icon: Zap,
-    description:
-      "Fleksibel dan cepat beradaptasi dengan perubahan kebutuhan bisnis dan teknologi.",
+    descriptionKey: "about.corevalue.description.a",
   },
   {
     letter: "T",
     label: "Teamwork",
     icon: Users,
-    description:
-      "Bekerja sama secara sinergis untuk menghasilkan solusi yang lebih besar dari individu.",
+    descriptionKey: "about.corevalue.description.t",
   },
   {
     letter: "A",
     label: "Aware",
     icon: Heart,
-    description:
-      "Peduli terhadap kebutuhan klien, lingkungan kerja, dan dampak teknologi bagi masyarakat.",
+    descriptionKey: "about.corevalue.description.a2",
   },
 ];
 
+// PERBAIKAN TEAMS: Ubah properti menjadi descriptionKey untuk konsistensi (tanpa mengubah nama/title)
 const TEAMS = [
   {
     name: "Development Team",
-    description:
-      "Mengembangkan dan memelihara solusi software berkualitas tinggi.",
+    descriptionKey: "about.teamcomposition.description.development",
   },
   {
     name: "Quality Assurance",
-    description:
-      "Memastikan setiap produk memenuhi standar kualitas tertinggi.",
+    descriptionKey: "about.teamcomposition.description.quality",
   },
   {
     name: "Customer Support",
-    description:
-      "Memberikan bantuan teknis 24/7 untuk kelancaran operasional klien.",
+    descriptionKey: "about.teamcomposition.description.customer",
   },
   {
     name: "Sales & Marketing",
-    description: "Menghubungkan solusi kami dengan bisnis yang membutuhkannya.",
+    descriptionKey: "about.teamcomposition.description.sales",
   },
   {
     name: "Finance & Administration",
-    description:
-      "Mengelola operasional internal dengan akuntabel dan transparan.",
+    descriptionKey: "about.teamcomposition.description.finance",
   },
   {
     name: "Product Management",
-    description:
-      "Merancang dan mengarahkan pengembangan produk sesuai kebutuhan pasar.",
+    descriptionKey: "about.teamcomposition.description.product",
   },
 ];
 
@@ -332,8 +323,9 @@ export default function AboutPage({
                         </span>
                       </div>
                     </div>
+                    {/* PERBAIKAN 2: Panggil fungsi t() di dalam JSX menggunakan v.descriptionKey */}
                     <p className='mt-3 text-sm leading-relaxed text-muted-foreground'>
-                      {v.description}
+                      {t(v.descriptionKey)}
                     </p>
                   </motion.div>
                 );
@@ -350,17 +342,18 @@ export default function AboutPage({
               {...staggerContainer}
               className='mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
             >
-              {TEAMS.map((t) => (
+              {/* PERBAIKAN 3: Mengubah parameter dari (t) menjadi (team) agar tidak menimpa fungsi t(), dan memanggil t(team.descriptionKey) */}
+              {TEAMS.map((team) => (
                 <motion.div
-                  key={t.name}
+                  key={team.name}
                   {...staggerItem}
                   className='rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg'
                 >
                   <h4 className='text-base font-semibold text-foreground'>
-                    {t.name}
+                    {team.name}
                   </h4>
                   <p className='mt-2 text-sm leading-relaxed text-muted-foreground'>
-                    {t.description}
+                    {t(team.descriptionKey)}
                   </p>
                 </motion.div>
               ))}

@@ -390,6 +390,27 @@
   "about.awards.title": "Awards & Recognition",
   "about.awards.description": "Recognition of our dedication to technological innovation.",
 
+  "about.corevalue.description.d": "Discipline is the foundation for achieving consistency and delivering optimal results in every project.",
+  "about.corevalue.description.i": "Continuously innovating to deliver relevant and future-ready technology solutions.",
+  "about.corevalue.description.m": "Driven by a strong passion to continuously grow and provide the best for our clients.",
+  "about.corevalue.description.a": "Flexible and swift in adapting to evolving business requirements and technological landscapes.",
+  "about.corevalue.description.t": "Collaborating synergistically to generate impactful solutions that are greater than the sum of individual efforts.",
+  "about.corevalue.description.a2": "Mindful of client needs, our work environment, and the broader societal impact of technology.",
+
+  "about.teamcomposition.title.development": "Development Team",
+  "about.teamcomposition.title.quality": "Quality Assurance",
+  "about.teamcomposition.title.customer": "Customer Support",
+  "about.teamcomposition.title.sales": "Sales & Marketing",
+  "about.teamcomposition.title.finance": "Finance & Administration",
+  "about.teamcomposition.title.product": "Product Management",
+
+  "about.teamcomposition.description.development": "Developing and maintaining high-quality software solutions.",
+  "about.teamcomposition.description.quality": "Ensuring every product meets the highest quality standards.",
+  "about.teamcomposition.description.customer": "Providing 24/7 technical support to ensure seamless client operations.",
+  "about.teamcomposition.description.sales": "Connecting our solutions with the businesses that need them.",
+  "about.teamcomposition.description.finance": "Managing internal operations with accountability and transparency.",
+  "about.teamcomposition.description.product": "Designing and guiding product development to align with market demands.",
+
   "about.team.title": "Our Team Culture",
   "about.team.description": "We foster a culture of excellence, innovation, and collaboration.",
 

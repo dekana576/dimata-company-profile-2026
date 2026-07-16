@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { parseDatabaseUrl } from "../src/lib/db-config";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaMariaDb(parseDatabaseUrl());
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const email = process.env.CMS_ADMIN_EMAIL;

@@ -1,19 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image"; // 1. Ditambahkan impor Image dari Next.js
 import {
   ArrowRight,
   ArrowDown,
   Award,
   Users,
   Clock,
-  Workflow,
-  Fingerprint,
-  LineChart,
   Cable,
   RadioTower,
   ShieldCheck,
-} from "lucide-react";
+} from "lucide-react"; // 2. Dibersihkan impor ikon yang tidak terpakai
 import type { LucideIcon } from "lucide-react";
 import { Chip, Card } from "@heroui/react";
 import { Reveal, Counter } from "@/components/scroll-motion";
@@ -29,17 +27,17 @@ import { useLanguage } from "@/contexts/language-context";
  * (ProChain / Hanoman / Hairisma / AISO). Every new element on this
  * page leans on that one idea — a live "system" that businesses plug
  * into — instead of generic SaaS-marketing furniture:
- *   - Hero: an animated node diagram (see components/system-diagram.tsx)
- *     showing the four modules feeding one core, plus a mono "readout"
- *     status strip (uptime / latency / businesses live) instead of a
- *     plain stat row.
- *   - Products: each card now states which other modules it exchanges
- *     data with ("Connects to ..."), so the numbering (01–04) encodes
- *     real suite architecture rather than decorative sequencing.
- *   - How it works: a genuine 3-step rollout sequence, connected by a
- *     single vertical/horizontal line that draws itself in on scroll.
- *   - A recurring "SYSTEM ONLINE" status chip ties hero, products and
- *     the closing CTA together as one visual signature.
+ * - Hero: an animated node diagram (see components/system-diagram.tsx)
+ * showing the four modules feeding one core, plus a mono "readout"
+ * status strip (uptime / latency / businesses live) instead of a
+ * plain stat row.
+ * - Products: each card now states which other modules it exchanges
+ * data with ("Connects to ..."), so the numbering (01–04) encodes
+ * real suite architecture rather than decorative sequencing.
+ * - How it works: a genuine 3-step rollout sequence, connected by a
+ * single vertical/horizontal line that draws itself in on scroll.
+ * - A recurring "SYSTEM ONLINE" status chip ties hero, products and
+ * the closing CTA together as one visual signature.
  *
  * Motion: all scroll-triggered animation goes through the <Reveal> and
  * <Counter> primitives in components/scroll-motion.tsx (plain CSS
@@ -111,7 +109,7 @@ interface Product {
   number: string;
   name: string;
   description: string;
-  icon: LucideIcon;
+  icon: string;
   connectsTo: string[];
 }
 
@@ -121,7 +119,7 @@ const PRODUCTS: Product[] = [
     name: "ProChain",
     description:
       "Operational structure management — branches, roles, and SOPs kept in sync across every location.",
-    icon: Workflow,
+    icon: "/img/products/prochain-logo-no-text.png", // Sesuaikan ekstensi file (.png/.svg/.webp)
     connectsTo: ["Hairisma", "AISO"],
   },
   {
@@ -129,7 +127,7 @@ const PRODUCTS: Product[] = [
     name: "Hanoman",
     description:
       "Guest data and POS management — every transaction and guest profile captured at the point of service.",
-    icon: Users,
+    icon: "/img/products/hanoman-logo-no-text.png",
     connectsTo: ["AISO", "ProChain"],
   },
   {
@@ -137,7 +135,7 @@ const PRODUCTS: Product[] = [
     name: "Hairisma",
     description:
       "Attendance and performance tracking — clock-ins, shift coverage, and staff performance in one view.",
-    icon: Fingerprint,
+    icon: "/img/products/hairisma-logo-no-text.png",
     connectsTo: ["ProChain", "AISO"],
   },
   {
@@ -145,7 +143,7 @@ const PRODUCTS: Product[] = [
     name: "AISO",
     description:
       "Real-time financial reporting — revenue, payroll, and costs reconciled automatically as data comes in.",
-    icon: LineChart,
+    icon: "/img/products/aiso-logo-no-text.png",
     connectsTo: ["Hanoman", "Hairisma"],
   },
 ];
@@ -204,11 +202,11 @@ function StatusChip({ className = "" }: { className?: string }) {
 }
 
 const productNodes = [
-    { label: "Prochain", imageSrc: "/img/products/prochain-logo-no-text.png" }, // Top
-    { label: "aiso", imageSrc: "/img/products/aiso-logo-no-text.png" },   // Right
-    { label: "hairisma", imageSrc: "/img/products/hairisma-logo-no-text.png" },   // Bottom
-    { label: "hanoman", imageSrc: "/img/products/hanoman-logo-no-text.png" },     // Left
-  ];
+  { label: "Prochain", imageSrc: "/img/products/prochain-logo-no-text.png" }, // Top
+  { label: "aiso", imageSrc: "/img/products/aiso-logo-no-text.png" }, // Right
+  { label: "hairisma", imageSrc: "/img/products/hairisma-logo-no-text.png" }, // Bottom
+  { label: "hanoman", imageSrc: "/img/products/hanoman-logo-no-text.png" }, // Left
+];
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -235,7 +233,11 @@ export default function HomePage() {
             <h1 className="mt-7 font-display text-[42px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[58px] lg:text-[68px]">
               {t("home.hero.titleLine1")}
               <br />
-              {t("home.hero.titleLine2")} <span className="text-primary">{t("home.hero.titleHighlight")}</span>.
+              {t("home.hero.titleLine2")}{" "}
+              <span className="text-primary">
+                {t("home.hero.titleHighlight")}
+              </span>
+              .
             </h1>
 
             <p className="mt-7 max-w-xl text-[17px] leading-relaxed text-foreground/60">
@@ -277,10 +279,11 @@ export default function HomePage() {
           </div>
 
           {/* Right — signature animated system diagram */}
-          <Reveal from="right" className="relative mx-auto aspect-square w-full max-w-[440px]">
-            <SystemDiagram
-              nodes={productNodes}
-            />
+          <Reveal
+            from="right"
+            className="relative mx-auto aspect-square w-full max-w-[440px]"
+          >
+            <SystemDiagram nodes={productNodes} />
           </Reveal>
         </div>
 
@@ -296,13 +299,13 @@ export default function HomePage() {
         </a>
       </section>
 
-{/* ================= TRUST STRIP — industries served, ikut tema ================= */}
+      {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
         <div className="flex items-center gap-3 whitespace-nowrap">
           <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
             {t("home.builtFor")}
           </span>
-          
+
           {/* Wrapper utama untuk menampung 2 track agar sejajar */}
           <div className="flex overflow-hidden">
             {/* Track 1: Ditambahkan _reverse & duplikasi array agar aman di layar lebar */}
@@ -335,25 +338,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TRUST STRIP — industries served, ikut tema =================
-      <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
-        <div className="flex items-center gap-3 whitespace-nowrap">
-          <span className="shrink-0 pl-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:pl-6 lg:pl-8">
-            {t("home.builtFor")}
-          </span>
-          <div className="flex animate-[marquee_28s_linear_infinite] gap-3 motion-reduce:animate-none">
-            {[...INDUSTRIES, ...INDUSTRIES].map((industry, i) => (
-              <span
-                key={`${industry}-${i}`}
-                className="shrink-0 rounded-full border border-teal bg-mint px-4 py-1.5 text-[13px] font-medium text-foreground/70"
-              >
-                {industry}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* ================= STATS ("Why choose DIMATA?") — ikut tema light/dark ================= */}
       <section id="why-us" className="bg-foreground/7">
         <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
@@ -362,7 +346,8 @@ export default function HomePage() {
               {t("home.stats.label")}
             </span>
             <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
-              {t("home.stats.title")} <span className="text-primary">DIMATA</span>
+              {t("home.stats.title")}{" "}
+              <span className="text-primary">DIMATA</span>
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-foreground/60">
               {t("home.stats.description")}
@@ -423,7 +408,11 @@ export default function HomePage() {
               className="absolute left-0 right-0 top-6 hidden h-px bg-foreground/15 sm:block"
             />
             {STEPS.map(({ number, title, description, icon: Icon }, i) => (
-              <Reveal key={number} delay={i * 150} className="relative flex flex-col items-start gap-4">
+              <Reveal
+                key={number}
+                delay={i * 150}
+                className="relative flex flex-col items-start gap-4"
+              >
                 <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-foreground/20 bg-background font-mono text-[13px] text-foreground/70">
                   {number}
                 </span>
@@ -460,80 +449,95 @@ export default function HomePage() {
 
           {/* Bento grid: kartu 1 & 4 lebar (8 kolom), kartu 2 & 3 sempit (4 kolom) — checkerboard, bukan sekadar grid rata */}
           <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12">
-            {PRODUCTS.map(({ number, name, description, icon: Icon, connectsTo }, i) => (
-              <Reveal
-                key={name}
-                delay={(i % 2) * 120}
-                className={i % 3 === 0 ? "lg:col-span-8" : "lg:col-span-4"}
-              >
-                <Card
-                  variant="transparent"
-                  className="group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-teal bg-background transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-black/5"
+            {/* 3. Parameter icon diubah menjadi iconPath agar jelas bahwa tipe datanya adalah string url */}
+            {PRODUCTS.map(
+              (
+                { number, name, description, icon: iconPath, connectsTo },
+                i,
+              ) => (
+                <Reveal
+                  key={name}
+                  delay={(i % 2) * 120}
+                  className={i % 3 === 0 ? "lg:col-span-8" : "lg:col-span-4"}
                 >
-                  {/* Blok ikon — pakai token hero (selalu gelap) supaya kontras & konsisten walau tema situs berganti */}
-                  <div className="relative flex h-44 items-center justify-center overflow-hidden bg-hero sm:h-52">
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-0 opacity-[0.08] bg-dot-grid text-white"
-                    />
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero via-transparent to-transparent opacity-60"
-                    />
+                  <Card
+                    variant="transparent"
+                    className="group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-teal bg-background transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-black/5"
+                  >
+                    {/* Blok ikon — pakai token hero (selalu gelap) supaya kontras & konsisten walau tema situs berganti */}
+                    <div className="relative flex h-44 items-center justify-center overflow-hidden bg-accent/20 sm:h-52">
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 opacity-[0.08] bg-dot-grid text-white"
+                      />
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero via-transparent to-transparent opacity-60"
+                      />
 
-                    <span className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-hero-foreground/10 text-hero-foreground backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/15 group-hover:text-primary">
-                      <Icon className="h-7 w-7" strokeWidth={1.5} />
-                    </span>
+                      {/* 4. Diganti dari <Icon /> menjadi komponen <Image /> dari Next.js */}
+                      <span className="relative flex h-full w-full items-center justify-center rounded-2xl bg-accent/20 p-1.5 text-hero-foreground backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/15 group-hover:text-primary">
+                        <Image
+                          src={iconPath}
+                          alt={`${name} logo`}
+                          /* 1. Naikkan resolusi dasar menjadi 120 atau 160 agar tajam di layar Retina */
+                          width={160}
+                          height={160}
+                          quality={100}
+                          className="h-3/5 w-3/5 object-contain transition-all duration-300"
+                        />
+                      </span>
 
-                    <span className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-hero-foreground/10 font-mono text-[12px] font-medium text-hero-foreground/70 backdrop-blur-sm">
-                      {number}
-                    </span>
-                  </div>
+                      <span className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-hero-foreground/10 font-mono text-[12px] font-medium text-hero-foreground/70 backdrop-blur-sm">
+                        {number}
+                      </span>
+                    </div>
 
-                  <div className="flex flex-1 flex-col p-7">
-                    <Card.Header className="p-0">
-                      <Card.Title className="font-display text-[21px] font-semibold text-foreground">
-                        {name}
-                      </Card.Title>
-                    </Card.Header>
-                    <Card.Content className="flex-1 p-0">
-                      <p className="mt-2 text-[15px] leading-relaxed text-foreground/60">
-                        {description}
-                      </p>
+                    <div className="flex flex-1 flex-col p-7">
+                      <Card.Header className="p-0">
+                        <Card.Title className="font-display text-[21px] font-semibold text-foreground">
+                          {name}
+                        </Card.Title>
+                      </Card.Header>
+                      <Card.Content className="flex-1 p-0">
+                        <p className="mt-2 text-[15px] leading-relaxed text-foreground/60">
+                          {description}
+                        </p>
 
-                      {/* Encodes real suite architecture — which modules this one exchanges data with */}
-                      <div className="mt-4 flex flex-wrap items-center gap-1.5">
-                        <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground/35">
-                          {t("home.products.connectsTo")}
-                        </span>
-                        {connectsTo.map((c) => (
-                          <Chip
-                            key={c}
-                            className="rounded-full border border-teal bg-mint px-2.5 py-0.5 text-[11px] font-medium text-foreground/60"
-                          >
-                            {c}
-                          </Chip>
-                        ))}
-                      </div>
-                    </Card.Content>
-                    <Card.Footer className="mt-5 p-0">
-                      <Link
-                        href="/solutions"
-                        className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
-                      >
-                        {t("home.products.readMore")}
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-foreground/30 group-hover:text-white">
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </span>
-                      </Link>
-                    </Card.Footer>
-                  </div>
+                        {/* Encodes real suite architecture — which modules this one exchanges data with */}
+                        <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                          <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground/35">
+                            {t("home.products.connectsTo")}
+                          </span>
+                          {connectsTo.map((c) => (
+                            <Chip
+                              key={c}
+                              className="rounded-full border border-teal bg-mint px-2.5 py-0.5 text-[11px] font-medium text-foreground/60"
+                            >
+                              {c}
+                            </Chip>
+                          ))}
+                        </div>
+                      </Card.Content>
+                      <Card.Footer className="mt-5 p-0">
+                        <Link
+                          href="/solutions"
+                          className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
+                        >
+                          {t("home.products.readMore")}
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-foreground/30 group-hover:text-white">
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </span>
+                        </Link>
+                      </Card.Footer>
+                    </div>
 
-                  {/* Garis aksen tipis yang muncul di tepi kiri saat hover */}
-                  <span className="pointer-events-none absolute inset-y-0 left-0 w-1 origin-top scale-y-0 bg-primary transition-transform duration-300 group-hover:scale-y-100" />
-                </Card>
-              </Reveal>
-            ))}
+                    {/* Garis aksen tipis yang muncul di tepi kiri saat hover */}
+                    <span className="pointer-events-none absolute inset-y-0 left-0 w-1 origin-top scale-y-0 bg-primary transition-transform duration-300 group-hover:scale-y-100" />
+                  </Card>
+                </Reveal>
+              ),
+            )}
           </div>
         </div>
       </section>

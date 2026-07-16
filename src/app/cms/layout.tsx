@@ -18,6 +18,16 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checking, setChecking] = useState(true);
 
+  // Force light theme for CMS
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.remove("dark");
+    html.classList.add("light");
+    return () => {
+      html.classList.remove("light");
+    };
+  }, []);
+
   useEffect(() => {
     if (pathname === "/cms/login") {
       setChecking(false);
@@ -133,7 +143,7 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <main className="flex-1 overflow-auto lg:ml-64">
-        <div className="p-6 pt-16 lg:pt-6">{children}</div>
+        <div className="p-6 pt-16 lg:pt-6 text-gray-900">{children}</div>
       </main>
     </div>
   );

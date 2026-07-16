@@ -276,25 +276,31 @@ export default function HomePage() {
                 </div>
               ))} */}
               <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8">
-                <Image
-                  src="/img/partners/odoo_logo.png"
-                  alt="Odoo"
-                  width={100}
-                  height={75}
-                  className="h-9 w-auto object-contain"
-                />
+  <div className="relative isolate flex items-center justify-center">
+    <div
+      aria-hidden
+      className="absolute inset-0 -z-10 scale-100 rounded-full bg-primary/30 blur-xl"
+    />
+    <Image
+      src="/img/partners/odoo_logo.png"
+      alt="Odoo"
+      width={100}
+      height={75}
+      className="relative h-9 w-auto object-contain"
+    />
+  </div>
 
-                <div className="h-9 w-px bg-border" aria-hidden="true" />
+  <div className="h-9 w-px bg-border" aria-hidden="true" />
 
-                <div className="flex flex-col gap-1 leading-none">
-                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                    Official
-                  </span>
-                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
-                    Partner
-                  </span>
-                </div>
-              </div>
+  <div className="flex flex-col gap-1 leading-none">
+    <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+      Official
+    </span>
+    <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
+      Partner
+    </span>
+  </div>
+</div>
             </div>
           </div>
 

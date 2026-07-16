@@ -190,7 +190,7 @@ export function SystemDiagram({
           />
 
           <foreignObject x={x - NODE_R} y={y - NODE_R} width={NODE_R * 2} height={NODE_R * 2}>
-            <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+            <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full p-[14%]">
               <img src={imageSrc} alt={label} className="h-full w-full object-contain" loading="lazy" />
             </div>
           </foreignObject>

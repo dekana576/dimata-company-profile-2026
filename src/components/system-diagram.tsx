@@ -98,9 +98,9 @@ export function SystemDiagram({
       <circle cx="240" cy="240" r="180" className="fill-none stroke-foreground/[0.07]" strokeWidth="1" />
       <circle cx="240" cy="240" r="118" className="fill-none stroke-foreground/[0.07]" strokeWidth="1" strokeDasharray="2 6" />
 
-      {/* curved connections, each bowed the same direction for a pinwheel / orbital feel */}
+      {/* straight connections from the hub to each module */}
       {placed.map((n, i) => {
-        const path = arcPath(CENTER.x, CENTER.y, n.x, n.y, 34);
+        const path = `M${CENTER.x},${CENTER.y} L${n.x},${n.y}`;
         return (
           <g key={`link-${n.label}`}>
             <path d={path} className="stroke-foreground/[0.08]" strokeWidth="3" fill="none" strokeLinecap="round" />
@@ -198,18 +198,4 @@ export function SystemDiagram({
       ))}
     </svg>
   );
-}
-
-/** quadratic bezier path bowed to one consistent side, for a pinwheel/orbital connector look */
-function arcPath(cx: number, cy: number, nx: number, ny: number, bow: number): string {
-  const mx = (cx + nx) / 2;
-  const my = (cy + ny) / 2;
-  const dx = nx - cx;
-  const dy = ny - cy;
-  const len = Math.sqrt(dx * dx + dy * dy) || 1;
-  const px = -dy / len;
-  const py = dx / len;
-  const ctrlX = mx + px * bow;
-  const ctrlY = my + py * bow;
-  return `M${cx},${cy} Q${ctrlX},${ctrlY} ${nx},${ny}`;
 }

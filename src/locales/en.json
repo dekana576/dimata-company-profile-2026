@@ -4,6 +4,7 @@
   "nav.products": "Products & Services",
   "nav.solutions": "Solutions",
   "nav.visionMission": "Vision & Mission",
+  "nav.events": "Events",
   "nav.contact": "Contact",
   "nav.lightMode": "Light Mode",
   "nav.darkMode": "Dark Mode",
@@ -349,6 +350,10 @@
 
   "whatsapp.label": "Chat via WhatsApp",
   "whatsapp.message": "Hello DIMATA, I would like to inquire about your products and services.",
+
+  "events.hero.title": "Events",
+  "events.hero.description": "Discover the latest events and activities from DIMATA IT Solutions. Join our seminars, workshops, and networking events.",
+  "events.detail.back": "Back to Events",
 
   "home.hero.titleLine1": "Complete ",
   "home.hero.titleLine2": "Business",

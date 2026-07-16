@@ -41,6 +41,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   { label: "nav.products", href: "/products" },
   { label: "nav.solutions", href: "/solutions" },
   { label: "nav.visionMission", href: "/vision-mission" },
+  { label: "nav.events", href: "/events" },
 ];
 
 const DEFAULT_CTA: NavItem = { label: "nav.contact", href: "/contact" };

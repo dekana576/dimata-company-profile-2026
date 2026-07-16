@@ -4,6 +4,7 @@
   "nav.products": "Produk & Layanan",
   "nav.solutions": "Solusi",
   "nav.visionMission": "Visi & Misi",
+  "nav.events": "Acara",
   "nav.contact": "Hubungi Kami",
   "nav.lightMode": "Mode Terang",
   "nav.darkMode": "Mode Gelap",
@@ -349,6 +350,10 @@
 
   "whatsapp.label": "Chat via WhatsApp",
   "whatsapp.message": "Halo DIMATA, saya ingin menanyakan produk dan layanan Anda.",
+
+  "events.hero.title": "Acara",
+  "events.hero.description": "Temukan acara dan kegiatan terbaru dari DIMATA IT Solutions. Ikuti seminar, workshop, dan networking event bersama kami.",
+  "events.detail.back": "Kembali ke Acara",
 
   "home.hero.titleLine1": "Solusi",
   "home.hero.titleLine2": "Software",

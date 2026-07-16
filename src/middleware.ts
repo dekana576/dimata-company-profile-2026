@@ -53,8 +53,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect CMS API routes (gallery POST/PUT/DELETE, upload)
-  if (pathname.startsWith("/api/gallery") || pathname.startsWith("/api/upload")) {
+  // Protect CMS API routes (gallery POST/PUT/DELETE, upload, events POST/PUT/DELETE)
+  if (pathname.startsWith("/api/gallery") || pathname.startsWith("/api/upload") || pathname.startsWith("/api/events")) {
+    // Allow GET requests to events API (for public display)
+    if (pathname.startsWith("/api/events") && request.method === "GET") {
+      return NextResponse.next();
+    }
+
     const token = request.cookies.get("cms-token")?.value;
 
     if (!token) {
@@ -82,5 +87,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cms/:path*", "/api/gallery/:path*", "/api/upload/:path*"],
+  matcher: ["/cms/:path*", "/api/gallery/:path*", "/api/upload/:path*", "/api/events/:path*"],
 };

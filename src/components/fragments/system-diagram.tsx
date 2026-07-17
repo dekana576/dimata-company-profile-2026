@@ -1,5 +1,6 @@
 interface DiagramNode {
   imageSrc: string;
+  imageSrcDark?: string; // Properti opsional untuk dark mode
   label: string;
   /** position on a 480x480 canvas */
   x: number;
@@ -16,7 +17,7 @@ const NODE_POSITIONS: { x: number; y: number }[] = [
 export function SystemDiagram({
   nodes,
 }: {
-  nodes: { imageSrc: string; label: string }[];
+  nodes: { imageSrc: string; imageSrcDark?: string; label: string }[];
 }) {
   const placed: DiagramNode[] = nodes
     .slice(0, 4)
@@ -163,7 +164,7 @@ export function SystemDiagram({
       </text>
 
       {/* module nodes — glass cards with a spinning status ring, images unchanged in size */}
-      {placed.map(({ imageSrc, label, x, y }, i) => (
+      {placed.map(({ imageSrc, imageSrcDark, label, x, y }, i) => (
         <g key={label} className="dimata-card" style={{ animationDelay: `${0.12 + i * 0.1}s` }}>
           <circle
             cx={x}
@@ -191,7 +192,21 @@ export function SystemDiagram({
 
           <foreignObject x={x - NODE_R} y={y - NODE_R} width={NODE_R * 2} height={NODE_R * 2}>
             <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full p-[14%]">
-              <img src={imageSrc} alt={label} className="h-full w-full object-contain" loading="lazy" />
+              <img 
+                src={imageSrc} 
+                alt={label} 
+                className={`h-full w-full object-contain ${imageSrcDark ? "dark:hidden" : ""}`} 
+                loading="lazy" 
+              />
+              {/* Gambar khusus saat dark mode jika properti imageSrcDark tersedia */}
+              {imageSrcDark && (
+                <img 
+                  src={imageSrcDark} 
+                  alt={`${label} dark`} 
+                  className="hidden h-full w-full object-contain dark:block" 
+                  loading="lazy" 
+                />
+              )}
             </div>
           </foreignObject>
         </g>

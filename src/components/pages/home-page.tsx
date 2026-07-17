@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image"; // 1. Ditambahkan impor Image dari Next.js
+import Image from "next/image";
 import {
   ArrowRight,
   ArrowDown,
@@ -11,14 +11,13 @@ import {
   Cable,
   RadioTower,
   ShieldCheck,
-} from "lucide-react"; // 2. Dibersihkan impor ikon yang tidak terpakai
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Chip, Card } from "@heroui/react";
 import { Reveal, Counter } from "@/components/fragments/scroll-motion";
 import { SystemDiagram } from "@/components/fragments/system-diagram";
 import { AnimatedBackground } from "@/components/fragments/animated-background";
 import { useLanguage } from "@/contexts/language-context";
-import { Lanyard } from "../fragments/lanyard";
 
 /**
  * Homepage — DIMATA IT Solutions
@@ -116,6 +115,7 @@ interface Product {
   name: string;
   description: string;
   icon: string;
+  iconDark?: string; // Tambahan untuk gambar khusus dark mode
   connectsTo: string[];
 }
 
@@ -125,7 +125,7 @@ const PRODUCTS: Product[] = [
     name: "ProChain",
     description:
       "Operational structure management — branches, roles, and SOPs kept in sync across every location.",
-    icon: "/img/products/prochain-logo-no-text.png", // Sesuaikan ekstensi file (.png/.svg/.webp)
+    icon: "/img/products/prochain-logo-no-text.png",
     connectsTo: ["Hairisma", "AISO"],
   },
   {
@@ -142,6 +142,7 @@ const PRODUCTS: Product[] = [
     description:
       "Attendance and performance tracking — clock-ins, shift coverage, and staff performance in one view.",
     icon: "/img/products/hairisma-logo-no-text.png",
+    iconDark: "/img/products/hairisma-logo-no-text-darkmode.png", // Properti iconDark khusus Hairisma
     connectsTo: ["ProChain", "AISO"],
   },
   {
@@ -207,10 +208,15 @@ function StatusChip({ className = "" }: { className?: string }) {
   );
 }
 
+// Tambahkan imageSrcDark untuk mendistribusikan dark mode logo ke System Diagram
 const productNodes = [
   { label: "Prochain", imageSrc: "/img/products/prochain-logo-no-text.png" }, // Top
   { label: "aiso", imageSrc: "/img/products/aiso-logo-no-text.png" }, // Right
-  { label: "hairisma", imageSrc: "/img/products/hairisma-logo-no-text.png" }, // Bottom
+  { 
+    label: "hairisma", 
+    imageSrc: "/img/products/hairisma-logo-no-text.png",
+    imageSrcDark: "/img/products/hairisma-logo-no-text-darkmode.png" 
+  }, // Bottom
   { label: "hanoman", imageSrc: "/img/products/hanoman-logo-no-text.png" }, // Left
 ];
 
@@ -500,7 +506,7 @@ export default function HomePage() {
             {/* 3. Parameter icon diubah menjadi iconPath agar jelas bahwa tipe datanya adalah string url */}
             {PRODUCTS.map(
               (
-                { number, name, description, icon: iconPath, connectsTo },
+                { number, name, description, icon: iconPath, iconDark, connectsTo },
                 i,
               ) => (
                 <Reveal
@@ -532,8 +538,22 @@ export default function HomePage() {
                           height={160}
                           quality={75}
                           loading={i === 0 ? "eager" : "lazy"}
-                          className="h-3/5 w-3/5 object-contain transition-all duration-300"
+                          className={`h-3/5 w-3/5 object-contain transition-all duration-300 ${
+                            iconDark ? "dark:hidden" : ""
+                          }`}
                         />
+                        {/* Menampilkan gambar khusus darkmode apabila iconDark tersedia */}
+                        {iconDark && (
+                          <Image
+                            src={iconDark}
+                            alt={`${name} logo dark`}
+                            width={160}
+                            height={160}
+                            quality={75}
+                            loading={i === 0 ? "eager" : "lazy"}
+                            className="hidden h-3/5 w-3/5 object-contain transition-all duration-300 dark:block"
+                          />
+                        )}
                       </span>
 
                       <span className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-hero-foreground/10 font-mono text-[12px] font-medium text-hero-foreground/70 backdrop-blur-sm">

@@ -14,10 +14,11 @@ import {
 } from "lucide-react"; // 2. Dibersihkan impor ikon yang tidak terpakai
 import type { LucideIcon } from "lucide-react";
 import { Chip, Card } from "@heroui/react";
-import { Reveal, Counter } from "@/components/scroll-motion";
-import { SystemDiagram } from "@/components/system-diagram";
-import { AnimatedBackground } from "@/components/animated-background";
+import { Reveal, Counter } from "@/components/fragments/scroll-motion";
+import { SystemDiagram } from "@/components/fragments/system-diagram";
+import { AnimatedBackground } from "@/components/fragments/animated-background";
 import { useLanguage } from "@/contexts/language-context";
+import { Lanyard } from "../fragments/lanyard";
 
 /**
  * Homepage — DIMATA IT Solutions
@@ -222,6 +223,7 @@ export default function HomePage() {
       <section className="relative isolate flex min-h-[92vh] items-center overflow-hidden bg-background text-foreground">
         {/* animated background — always-on drifting gradient orbs (behind everything) */}
         <AnimatedBackground />
+        
 
         {/* dot-grid ambience */}
         <div
@@ -235,6 +237,7 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-4 py-24 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
           {/* Left — copy */}
+          
           <div className="flex flex-col items-start text-left">
             {/* <StatusChip /> */}
 
@@ -444,6 +447,10 @@ export default function HomePage() {
               aria-hidden
               className="absolute left-0 right-0 top-6 hidden h-px bg-foreground/15 sm:block"
             />
+            <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[160px]"
+        />
             {STEPS.map(({ number, title, description, icon: Icon }, i) => (
               <Reveal
                 key={number}
@@ -469,7 +476,11 @@ export default function HomePage() {
       {/* ================= PRODUCTS — bento grid asimetris, ikut tema light/dark ================= */}
       <section id="products" className="bg-mint">
         <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+
+          
           <Reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+
+            
             <div>
               <span className="inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-foreground/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -590,7 +601,7 @@ export default function HomePage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[160px]"
         />
         <Reveal className="relative mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
           {/* <StatusChip /> */}

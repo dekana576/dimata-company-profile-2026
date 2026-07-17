@@ -175,7 +175,7 @@ export function SystemDiagram({
             filter="url(#dimata-card-shadow)"
             opacity="0.14"
           />
-          <circle cx={x} cy={y} r={NODE_R} className="fill-accent stroke-foreground/15" strokeWidth="1.5" />
+          <circle cx={x} cy={y} r={NODE_R} className="fill-accent/50 stroke-foreground/15" strokeWidth="1.5" />
 
           {/* spinning status ring — reads as "live" without adding any radius */}
           <circle

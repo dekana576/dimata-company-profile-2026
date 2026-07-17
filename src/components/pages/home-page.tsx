@@ -16,6 +16,7 @@ import type { LucideIcon } from "lucide-react";
 import { Chip, Card } from "@heroui/react";
 import { Reveal, Counter } from "@/components/scroll-motion";
 import { SystemDiagram } from "@/components/system-diagram";
+import { AnimatedBackground } from "@/components/animated-background";
 import { useLanguage } from "@/contexts/language-context";
 
 /**
@@ -39,11 +40,15 @@ import { useLanguage } from "@/contexts/language-context";
  * - A recurring "SYSTEM ONLINE" status chip ties hero, products and
  * the closing CTA together as one visual signature.
  *
- * Motion: all scroll-triggered animation goes through the <Reveal> and
+ * Motion: scroll-triggered animation goes through the <Reveal> and
  * <Counter> primitives in components/scroll-motion.tsx (plain CSS
  * transitions + IntersectionObserver, no animation library — matching
  * HeroUI v3's own "native CSS transitions, no JS animation runtime"
- * philosophy). Both respect prefers-reduced-motion.
+ * philosophy). A separate, always-on layer — <AnimatedBackgroundd /> in
+ * components/animated-background.tsx — drifts slow blurred gradient
+ * orbs behind the Hero, "How it works" and closing CTA sections using
+ * pure CSS keyframes (same no-JS-runtime philosophy). Both respect
+ * prefers-reduced-motion.
  *
  * PENTING soal dark/light mode (v3): SELURUH halaman sekarang ikut tema
  * situs — Hero, "How it works", dan CTA penutup dulunya sengaja dikunci
@@ -214,7 +219,10 @@ export default function HomePage() {
   return (
     <>
       {/* ================= HERO — ikut tema light/dark ================= */}
-      <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-background text-foreground">
+      <section className="relative isolate flex min-h-[92vh] items-center overflow-hidden bg-background text-foreground">
+        {/* animated background — always-on drifting gradient orbs (behind everything) */}
+        <AnimatedBackground />
+
         {/* dot-grid ambience */}
         <div
           aria-hidden
@@ -275,32 +283,32 @@ export default function HomePage() {
                   </span>
                 </div>
               ))} */}
-              <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8">
-  <div className="relative isolate flex items-center justify-center">
-    <div
-      aria-hidden
-      className="absolute inset-0 -z-10 scale-100 rounded-full bg-primary/30 blur-xl"
-    />
-    <Image
-      src="/img/partners/odoo_logo.png"
-      alt="Odoo"
-      width={100}
-      height={75}
-      className="relative h-9 w-auto object-contain"
-    />
-  </div>
+              <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8 w-full justify-center sm:justify-start">
+                <div className="relative isolate flex items-center justify-center">
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 -z-10 scale-100 rounded-full bg-primary/20 blur-xl"
+                  />
+                  <Image
+                    src="/img/partners/odoo_logo.png"
+                    alt="Odoo"
+                    width={100}
+                    height={75}
+                    className="relative h-9 w-auto object-contain"
+                  />
+                </div>
 
-  <div className="h-9 w-px bg-border" aria-hidden="true" />
+                <div className="h-9 w-px bg-border" aria-hidden="true" />
 
-  <div className="flex flex-col gap-1 leading-none">
-    <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-      Official
-    </span>
-    <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
-      Partner
-    </span>
-  </div>
-</div>
+                <div className="flex flex-col gap-1 leading-none">
+                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                    Official
+                  </span>
+                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
+                    Partner
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -409,7 +417,10 @@ export default function HomePage() {
       </section>
 
       {/* ================= HOW IT WORKS — proses nyata (Connect → Automate → Oversee), ikut tema light/dark ================= */}
-      <section className="relative overflow-hidden bg-background text-foreground">
+      <section className="relative isolate overflow-hidden bg-background text-foreground">
+        {/* animated background — always-on drifting gradient orbs (behind everything) */}
+        <AnimatedBackground />
+
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.06] bg-dot-grid text-foreground"
@@ -569,7 +580,10 @@ export default function HomePage() {
       </section>
 
       {/* ================= CLOSING CTA — ikut tema light/dark ================= */}
-      <section className="relative overflow-hidden bg-background text-foreground">
+      <section className="relative isolate overflow-hidden bg-background text-foreground">
+        {/* animated background — always-on drifting gradient orbs (behind everything) */}
+        <AnimatedBackground />
+
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.07] bg-dot-grid text-foreground"

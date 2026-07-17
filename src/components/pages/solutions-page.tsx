@@ -27,54 +27,50 @@ const staggerItem = {
 };
 
 /* ─── Data ─── */
-
+/* Updated: Store translation keys as string identifiers */
 const SOLUTIONS = [
   {
     title: "ProChain",
-    description:
-      "Comprehensive operational structure management system for streamlined business processes.",
-    features: [
-      "Purchase order management",
-      "Sales tracking and reporting",
-      "Inventory control system",
-      "Supplier management",
-      "Real-time stock monitoring",
+    descriptionKey: "solutions.prochain.description",
+    featureKeys: [
+      "solutions.prochain.features.0",
+      "solutions.prochain.features.1",
+      "solutions.prochain.features.2",
+      "solutions.prochain.features.3",
+      "solutions.prochain.features.4",
     ],
   },
   {
     title: "Hanoman",
-    description:
-      "Complete guest data management solution with integrated POS and reservation system.",
-    features: [
-      "Guest profile management",
-      "Point of Sale (POS) system",
-      "Reservation and booking",
-      "Customer relationship tracking",
-      "Payment processing",
+    descriptionKey: "solutions.hanoman.description",
+    featureKeys: [
+      "solutions.hanoman.features.0",
+      "solutions.hanoman.features.1",
+      "solutions.hanoman.features.2",
+      "solutions.hanoman.features.3",
+      "solutions.hanoman.features.4",
     ],
   },
   {
     title: "Hairisma",
-    description:
-      "Advanced attendance and administrative system with performance monitoring capabilities.",
-    features: [
-      "Employee attendance tracking",
-      "Leave management",
-      "Performance monitoring",
-      "Administrative workflows",
-      "HR analytics dashboard",
+    descriptionKey: "solutions.hairisma.description",
+    featureKeys: [
+      "solutions.hairisma.features.0",
+      "solutions.hairisma.features.1",
+      "solutions.hairisma.features.2",
+      "solutions.hairisma.features.3",
+      "solutions.hairisma.features.4",
     ],
   },
   {
     title: "AISO",
-    description:
-      "Real-time financial reporting system with comprehensive accounting features.",
-    features: [
-      "Real-time financial reports",
-      "Cash flow management",
-      "Accounting automation",
-      "Budget tracking",
-      "Financial analytics",
+    descriptionKey: "solutions.aiso.description",
+    featureKeys: [
+      "solutions.aiso.features.0",
+      "solutions.aiso.features.1",
+      "solutions.aiso.features.2",
+      "solutions.aiso.features.3",
+      "solutions.aiso.features.4",
     ],
   },
 ];
@@ -127,17 +123,19 @@ export default function SolutionsPage() {
                 <h3 className="text-xl font-bold tracking-tight text-foreground">
                   {solution.title}
                 </h3>
+                {/* Updated: Wrap the descriptionKey in the t() function */}
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {solution.description}
+                  {t(solution.descriptionKey)}
                 </p>
                 <ul className="mt-5 flex flex-1 flex-col gap-2.5">
-                  {solution.features.map((feature) => (
+                  {/* Updated: Map through featureKeys and wrap each key in t() */}
+                  {solution.featureKeys.map((featureKey) => (
                     <li
-                      key={feature}
+                      key={featureKey}
                       className="flex items-center gap-2.5 text-sm text-foreground/80"
                     >
                       <Check className="h-4 w-4 shrink-0 text-primary" />
-                      {feature}
+                      {t(featureKey)}
                     </li>
                   ))}
                 </ul>

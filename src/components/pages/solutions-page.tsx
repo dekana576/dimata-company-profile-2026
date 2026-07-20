@@ -411,7 +411,7 @@ export default function ProductsPage() {
               {t("solutions.hero.title")}
             </h1>
             <p className="mx-auto max-w-3xl text-xl leading-relaxed text-muted-foreground md:text-2xl">
-              {t("solutions.hero.description")}
+              {t("products.hero.description")}
             </p>
           </motion.div>
         </div>

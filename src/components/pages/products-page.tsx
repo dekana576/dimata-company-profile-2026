@@ -98,10 +98,10 @@ export default function SolutionsPage() {
           >
             <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
               {t("products.hero.title")}{" "}
-              <span className="text-primary">{t("solutions.hero.titleHighlight")}</span>
+              {/* <span className="text-primary">{t("solutions.hero.titleHighlight")}</span> */}
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              {t("products.hero.description")}
+              {t("solutions.hero.description")}
             </p>
           </motion.div>
         </div>

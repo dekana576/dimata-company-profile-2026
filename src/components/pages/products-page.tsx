@@ -27,6 +27,9 @@ import {
   TrendingUp,
   Shield,
   Star,
+  Cloud,
+  Zap,
+  RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/language-context";
@@ -93,6 +96,34 @@ const ERP_FEATURES = [
     icon: Smartphone,
     title: "Web & Mobile Solutions",
     descriptionKey: "products.erp.web.description",
+  },
+];
+
+const SAAS_FEATURES = [
+  {
+    icon: Boxes,
+    title: "Modular App Selection",
+    descriptionKey: "products.saas.modular.description",
+  },
+  {
+    icon: Cloud,
+    title: "SaaS (Cloud Subscription)",
+    descriptionKey: "products.saas.cloud.description",
+  },
+  {
+    icon: Shield,
+    title: "On-Premise Deployment",
+    descriptionKey: "products.saas.onpremise.description",
+  },
+  {
+    icon: TrendingUp,
+    title: "Pay-as-You-Grow",
+    descriptionKey: "products.saas.growth.description",
+  },
+  {
+    icon: Link2,
+    title: "Unified Ecosystem",
+    descriptionKey: "products.saas.ecosystem.description",
   },
 ];
 
@@ -300,6 +331,7 @@ function SolutionSection({
 
   return (
     <div className={withBg ? "bg-muted/30" : ""}>
+      
       <section className="border-b border-border py-20 last:border-0">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="mb-16 max-w-3xl">
@@ -394,6 +426,16 @@ export default function ProductsPage() {
         features={ERP_FEATURES}
       />
 
+      {/* ─── NEW: SaaS Solutions Section (withBg enabled for contrast) ─── */}
+      <SolutionSection
+        title={t("products.saas.title")}
+        shortDescription={t("products.saas.shortDescription")}
+        detailedDescription={t("products.saas.detailedDescription")}
+        ctaText={t("products.saas.cta")}
+        features={SAAS_FEATURES}
+        withBg
+      />
+
       {/* Accommodation Solutions */}
       <SolutionSection
         title={t("products.accommodation.title")}
@@ -401,7 +443,6 @@ export default function ProductsPage() {
         detailedDescription={t("products.accommodation.detailedDescription")}
         ctaText={t("products.accommodation.cta")}
         features={ACCOMMODATION_FEATURES}
-        withBg
       />
 
       {/* HR & Payroll */}
@@ -411,6 +452,7 @@ export default function ProductsPage() {
         detailedDescription={t("products.hr.detailedDescription")}
         ctaText={t("products.hr.cta")}
         features={HR_FEATURES}
+        withBg
       />
 
       {/* Plantation Solutions */}
@@ -420,11 +462,10 @@ export default function ProductsPage() {
         detailedDescription={t("products.plantation.detailedDescription")}
         ctaText={t("products.plantation.cta")}
         features={PLANTATION_FEATURES}
-        withBg
       />
 
       {/* Accounting Systems */}
-      <section className="border-b border-border py-20">
+      <section className="border-b border-border py-20 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="mb-16 max-w-3xl">
             <h2

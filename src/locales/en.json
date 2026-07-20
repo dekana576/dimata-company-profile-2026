@@ -448,6 +448,7 @@
   "contact.visit.title": "Visit Our Office",
   "contact.visit.description": "We're located in the heart of Denpasar, Bali. Schedule a visit to discuss your project in person.",
 
+
   "products.hero.title": "Our Products & Services",
   "products.hero.description": "Comprehensive digital solutions to grow your business",
 
@@ -462,6 +463,16 @@
   "products.erp.accounting.description": "Automate financial record-keeping, generate accurate reports, and monitor your business's financial health.",
   "products.erp.web.description": "Access your ERP system anytime, anywhere via web browsers and mobile applications.",
 
+  "products.saas.title": "SaaS & On-Premise",
+  "products.saas.shortDescription": "Purchase individual apps as you need them, with the flexibility of Cloud (SaaS) or Local Server (On-Premise) deployment.",
+  "products.saas.detailedDescription": "All DIMATA products can be purchased individually or as an integrated suite. Choose our SaaS subscription for instant, hassle-free cloud access without server management, or opt for an On-Premise license for ultimate control over your IT infrastructure and local data.",
+  "products.saas.cta": "Consult Modules & Pricing",
+
+  "products.saas.modular.description": "Purchase and activate only the specific apps your business needs today—such as POS, HR, or Accounting—without paying for a massive, costly ERP bundle.",
+  "products.saas.cloud.description": "A convenient, ready-to-use cloud subscription with zero upfront server investment, complete with automated maintenance and routine system updates.",
+  "products.saas.onpremise.description": "Install directly onto your company's local servers or private cloud to meet strict corporate security policies and maintain total data governance.",
+  "products.saas.growth.description": "Start with a single app to solve a specific operational challenge, and effortlessly add more connected modules as your business scales.",
+  "products.saas.ecosystem.description": "Whether deployed as SaaS or On-Premise, all individual DIMATA apps are natively engineered to integrate and share data seamlessly in real time.",
   "products.accommodation.title": "Accommodation Solutions",
   "products.accommodation.shortDescription": "Simple and practical accommodation solutions",
   "products.accommodation.detailedDescription": "Simple and practical accommodation solutions to manage properties, guests, and reservations with integration to outlet services and accounting. Deliver an unforgettable stay experience for your guests with seamless operations.",

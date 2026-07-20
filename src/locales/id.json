@@ -50,7 +50,7 @@
   "home.howItWorks.step2.description": "Satu dashboard memberikan pembacaan live di setiap cabang, shift, dan rupiah — dengan meja dukungan siaga 24/7.",
 
   "home.products.theSuite": "Suite kami",
-  "home.products.title": "Empat modul. Satu sumber kebenaran bersama.",
+  "home.products.title": "Empat modul. Satu sumber data terintegrasi.",
   "home.products.subtitle": "Setiap modul berdiri sendiri, tetapi nilai nyata muncul saat mereka saling berkomunikasi — data dimasukkan sekali, terpantau di mana-mana.",
   "home.products.connectsTo": "Terhubung ke",
   "home.products.readMore": "Baca Selengkapnya",
@@ -373,7 +373,7 @@
   "home.howItWorks.description": "Jalur tiga langkah yang kami jalankan dengan setiap klien — urutan yang sama, apakah Anda onboarding satu outlet atau lima puluh.",
 
   "home.products.label": "Suite Kami",
-  "home.products.title": "Empat modul. Satu sumber kebenaran bersama.",
+  "home.products.title": "Empat modul. Satu sumber data terintegrasi.",
   "home.products.description": "Setiap modul berdiri sendiri, tetapi nilai nyata muncul saat modul-modul ini berkomunikasi satu sama lain — data dimasukkan sekali, terpantul di mana-mana.",
   "home.products.connectsTo": "Terhubung ke",
   "home.products.readMore": "Baca Selengkapnya",
@@ -449,6 +449,8 @@
   "contact.visit.title": "Kunjungi Kantor Kami",
   "contact.visit.description": "Kami berlokasi di jantung Denpasar, Bali. Jadwalkan kunjungan untuk mendiskusikan proyek Anda secara langsung.",
 
+
+
   "products.hero.title": "Produk & Layanan Kami",
   "products.hero.description": "Solusi digital komprehensif untuk mengembangkan bisnis Anda",
 
@@ -463,7 +465,17 @@
   "products.erp.accounting.description": "Otomatisasi pencatatan keuangan, hasilkan laporan akurat, dan pantau kesehatan finansial bisnis Anda.",
   "products.erp.web.description": "Akses sistem ERP Anda kapan saja dan di mana saja melalui perangkat web maupun aplikasi mobile.",
   
+  "products.saas.title": "SaaS & On-Premise",
+  "products.saas.shortDescription": "Beli produk secara satuan sesuai kebutuhan Anda, dengan fleksibilitas pilihan berbasis Cloud (SaaS) atau Server Lokal (On-Premise).",
+  "products.saas.detailedDescription": "Seluruh lini produk DIMATA dapat dibeli secara satuan maupun terintegrasi. Pilih model langganan SaaS agar langsung siap pakai tanpa repot memikirkan server, atau pilih lisensi On-Premise untuk kontrol infrastruktur dan data sepenuhnya di server internal perusahaan Anda.",
+  "products.saas.cta": "Konsultasi Modul & Harga",
 
+  "products.saas.modular.description": "Beli dan aktifkan hanya produk yang bisnis Anda butuhkan saat ini—seperti POS, HR, atau Akuntansi—tanpa harus membayar paket ERP keseluruhan yang mahal.",
+  "products.saas.cloud.description": "Langganan praktis berbasis cloud yang langsung siap pakai tanpa biaya investasi server awal, sudah termasuk pemeliharaan dan pembaruan sistem rutin.",
+  "products.saas.onpremise.description": "Opsi instalasi langsung pada server lokal atau private cloud perusahaan Anda untuk memenuhi kebijakan keamanan khusus dan kontrol data mutlak.",
+  "products.saas.growth.description": "Mulai dari satu modul untuk menyelesaikan masalah operasional spesifik, lalu tambahkan produk lainnya dengan mudah seiring bertumbuhnya bisnis Anda.",
+  "products.saas.ecosystem.description": "Baik dijalankan secara SaaS maupun On-Premise, seluruh produk satuan DIMATA dirancang untuk terintegrasi dan berbagi data secara mulus tanpa silika.",
+  
   "products.accommodation.title": "Solusi Akomodasi",
   "products.accommodation.shortDescription": "Solusi akomodasi sederhana dan praktis",
   "products.accommodation.detailedDescription": "Solusi akomodasi yang sederhana dan praktis untuk mengelola properti, tamu, dan reservasi dengan terintegrasi ke layanan outlet dan akuntansi. Berikan pengalaman menginap tak terlupakan bagi tamu Anda dengan operasional yang mulus.",

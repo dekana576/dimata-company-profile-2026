@@ -91,22 +91,22 @@ const STATS: Stat[] = [
     icon: Award,
     value: 20,
     suffix: "+",
-    label: "Years running",
-    caption: "In production since 2002 — not a recent rebrand.",
+    label: "home.stats.yearsRunning.label",
+    caption: "home.stats.yearsRunning.caption",
   },
   {
     icon: Users,
     value: 197,
     suffix: "+",
-    label: "Businesses onboard",
-    caption: "From single outlets to multi-branch operations.",
+    label: "home.stats.businessesOnboard.label",
+    caption: "home.stats.businessesOnboard.caption",
   },
   {
     icon: Clock,
     value: 24,
     suffix: "/7",
-    label: "Support desk",
-    caption: "A human on call, every hour your business runs.",
+    label: "home.stats.supportDesk.label",
+    caption: "home.stats.supportDesk.caption",
   },
 ];
 
@@ -124,7 +124,7 @@ const PRODUCTS: Product[] = [
     number: "01",
     name: "ProChain",
     description:
-      "Operational structure management — branches, roles, and SOPs kept in sync across every location.",
+      "home.products.01.description",
     icon: "/img/products/prochain-logo-no-text.png",
     connectsTo: ["Hairisma", "AISO"],
   },
@@ -132,7 +132,7 @@ const PRODUCTS: Product[] = [
     number: "02",
     name: "Hanoman",
     description:
-      "Guest data and POS management — every transaction and guest profile captured at the point of service.",
+      "home.products.02.description",
     icon: "/img/products/hanoman-logo-no-text.png",
     connectsTo: ["AISO", "ProChain"],
   },
@@ -140,7 +140,7 @@ const PRODUCTS: Product[] = [
     number: "03",
     name: "Hairisma",
     description:
-      "Attendance and performance tracking — clock-ins, shift coverage, and staff performance in one view.",
+      "home.products.03.description",
     icon: "/img/products/hairisma-logo-no-text.png",
     iconDark: "/img/products/hairisma-logo-no-text-darkmode.png", // Properti iconDark khusus Hairisma
     connectsTo: ["ProChain", "AISO"],
@@ -149,7 +149,7 @@ const PRODUCTS: Product[] = [
     number: "04",
     name: "AISO",
     description:
-      "Real-time financial reporting — revenue, payroll, and costs reconciled automatically as data comes in.",
+      "home.products.04.description",
     icon: "/img/products/aiso-logo-no-text.png",
     connectsTo: ["Hanoman", "Hairisma"],
   },
@@ -165,23 +165,23 @@ interface Step {
 const STEPS: Step[] = [
   {
     number: "01",
-    title: "Connect",
+    title: "home.howItWorks.step0.title",
     description:
-      "We map your branches, roles, and existing tools, then wire the relevant DIMATA modules into your daily operations.",
+      "home.howItWorks.step0.description",
     icon: Cable,
   },
   {
     number: "02",
-    title: "Automate",
+    title: "home.howItWorks.step1.title",
     description:
-      "Attendance, transactions, and structure changes sync automatically — no more re-entering the same data twice.",
+      "home.howItWorks.step1.description",
     icon: RadioTower,
   },
   {
     number: "03",
-    title: "Oversee",
+    title: "home.howItWorks.step2.title",
     description:
-      "One dashboard gives you a live read on every branch, shift, and rupiah — with a support desk on standby 24/7.",
+      "home.howItWorks.step2.description",
     icon: ShieldCheck,
   },
 ];
@@ -412,10 +412,10 @@ export default function HomePage() {
                   />
                   <div>
                     <p className="text-[14px] font-semibold text-foreground">
-                      {label}
+                      {t(label)}
                     </p>
                     <p className="mt-1 text-[13px] leading-relaxed text-foreground/55">
-                      {caption}
+                      {t(caption)}
                     </p>
                   </div>
                 </Card>
@@ -468,10 +468,10 @@ export default function HomePage() {
                 </span>
                 <Icon className="h-5 w-5 text-primary" strokeWidth={1.75} />
                 <h3 className="font-display text-[19px] font-semibold text-foreground">
-                  {title}
+                  {t(title)}
                 </h3>
                 <p className="text-[14px] leading-relaxed text-foreground/55">
-                  {description}
+                  {t(description)}
                 </p>
               </Reveal>
             ))}
@@ -569,7 +569,7 @@ export default function HomePage() {
                       </Card.Header>
                       <Card.Content className="flex-1 p-0">
                         <p className="mt-2 text-[15px] leading-relaxed text-foreground/60">
-                          {description}
+                          {t(description)}
                         </p>
 
                         {/* Encodes real suite architecture — which modules this one exchanges data with */}

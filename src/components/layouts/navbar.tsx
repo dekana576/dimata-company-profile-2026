@@ -14,18 +14,33 @@
  *    lewat `ctaLinkClass` supaya tampilannya tetap konsisten seperti tombol.
  */
 
-import { useEffect, startTransition, useSyncExternalStore, useState } from "react";
+import {
+  useEffect,
+  startTransition,
+  useSyncExternalStore,
+  useState,
+  useRef,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Button } from "@heroui/react";
-import { Menu, X, ArrowUpRight, Sun, Moon, Globe } from "lucide-react";
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  Sun,
+  Moon,
+  Globe,
+  ChevronDown,
+} from "lucide-react";
 import { ThemeLogo } from "@/components/ui/theme-logo";
 import { useLanguage } from "@/contexts/language-context";
 
 export interface NavItem {
   label: string;
   href: string;
+  children?: NavItem[]; // Ditambahkan untuk support Dropdown
 }
 
 export interface NavbarProps {
@@ -38,8 +53,14 @@ export interface NavbarProps {
 const DEFAULT_ITEMS: NavItem[] = [
   { label: "nav.home", href: "/" },
   { label: "nav.about", href: "/about" },
-  { label: "nav.products", href: "/products" },
-  { label: "nav.solutions", href: "/solutions" },
+  {
+    label: "nav.productsandsolutions", // Pastikan key terjemahan ini ada
+    href: "#",
+    children: [
+      { label: "nav.products", href: "/products" },
+      { label: "nav.solutions", href: "/solutions" },
+    ],
+  },
   { label: "nav.visionMission", href: "/vision-mission" },
   { label: "nav.events", href: "/events" },
 ];
@@ -58,13 +79,21 @@ export function Navbar({
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { locale, setLocale, t } = useLanguage();
+
+  // State menu utama & dropdown
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
+  const [mobileDropdownIndex, setMobileDropdownIndex] = useState<number | null>(null);
+
+  const dropdownRef = useRef<HTMLLIElement | null>(null);
+
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false,
+    () => false
   );
 
+  // Mencegah scroll body saat menu mobile terbuka
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
     return () => {
@@ -72,14 +101,35 @@ export function Navbar({
     };
   }, [isMenuOpen]);
 
+  // Tutup semua menu (mobile dan dropdown) saat path berubah
   useEffect(() => {
     startTransition(() => {
       setIsMenuOpen(false);
+      setOpenDropdownIndex(null);
+      setMobileDropdownIndex(null);
     });
   }, [pathname]);
 
+  // Tutup dropdown desktop saat klik di luar elemen
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdownIndex(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname?.startsWith(href);
+
+  // Mengecek apakah sub-menu aktif agar induknya mendapat styling active
+  const isChildActive = (children?: NavItem[]) =>
+    children?.some((child) => isActive(child.href)) ?? false;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-separator bg-background/80 backdrop-blur-lg">
@@ -103,8 +153,70 @@ export function Navbar({
 
         {/* Menu desktop */}
         <ul className="hidden items-center gap-1 md:flex">
-          {items.map((item) => {
-            const active = isActive(item.href);
+          {items.map((item, idx) => {
+            const hasChildren = item.children && item.children.length > 0;
+            const active = isActive(item.href) || isChildActive(item.children);
+
+            if (hasChildren) {
+              const isOpen = openDropdownIndex === idx;
+              return (
+                <li
+                  key={item.label}
+                  ref={dropdownRef}
+                  className="relative group"
+                  onMouseEnter={() => setOpenDropdownIndex(idx)}
+                  onMouseLeave={() => setOpenDropdownIndex(null)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenDropdownIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    className="group relative inline-flex items-center gap-1 px-3 py-2 text-[14px] font-medium text-foreground/70 transition-colors hover:text-primary data-[active=true]:text-foreground focus-visible:outline-none"
+                    data-active={active}
+                  >
+                    {t(item.label)}
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-primary" : ""
+                      }`}
+                    />
+                    <span
+                      className={`pointer-events-none absolute inset-x-3 -bottom-px h-0.5 origin-center scale-x-0 bg-primary transition-transform duration-200 ease-out group-hover:scale-x-100 ${
+                        active ? "scale-x-100" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {/* Desktop Dropdown Panel */}
+                  <div
+                    className={`absolute left-0 top-full min-w-[180px] pt-2 transition-all duration-200 ease-out ${
+                      isOpen
+                        ? "pointer-events-auto translate-y-0 opacity-100"
+                        : "pointer-events-none -translate-y-2 opacity-0"
+                    }`}
+                  >
+                    <ul className="flex flex-col gap-1 rounded-medium border border-separator bg-background/95 p-1.5 shadow-lg backdrop-blur-lg">
+                      {item.children?.map((child) => {
+                        const childActive = isActive(child.href);
+                        return (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              aria-current={childActive ? "page" : undefined}
+                              className="block rounded-small px-3 py-2 text-[14px] font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                              data-active={childActive}
+                            >
+                              {t(child.label)}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </li>
+              );
+            }
+
             return (
               <li key={item.href}>
                 <Link
@@ -194,8 +306,62 @@ export function Navbar({
       >
         <div className="min-h-0">
           <ul className="flex flex-col gap-1 px-4 py-4">
-            {items.map((item) => {
-              const active = isActive(item.href);
+            {items.map((item, idx) => {
+              const hasChildren = item.children && item.children.length > 0;
+              const active = isActive(item.href) || isChildActive(item.children);
+
+              if (hasChildren) {
+                const isMobileOpen = mobileDropdownIndex === idx;
+                return (
+                  <li key={item.label}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileDropdownIndex(isMobileOpen ? null : idx)
+                      }
+                      className="flex w-full items-center justify-between rounded-medium px-3 py-2.5 text-[15px] font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary data-[active=true]:text-primary"
+                      data-active={active}
+                    >
+                      <span>{t(item.label)}</span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isMobileOpen ? "rotate-180 text-primary" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {/* Mobile Accordion Dropdown */}
+                    <div
+                      className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${
+                        isMobileOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                      }`}
+                    >
+                      <div className="min-h-0">
+                        <ul className="mt-1 flex flex-col gap-1 pl-4 border-l border-separator ml-3">
+                          {item.children?.map((child) => {
+                            const childActive = isActive(child.href);
+                            return (
+                              <li key={child.href}>
+                                <Link
+                                  href={child.href}
+                                  aria-current={
+                                    childActive ? "page" : undefined
+                                  }
+                                  className="block rounded-medium px-3 py-2 text-[14px] font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                                  data-active={childActive}
+                                >
+                                  {t(child.label)}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                );
+              }
+
               return (
                 <li key={item.href}>
                   <Link
@@ -209,12 +375,14 @@ export function Navbar({
                 </li>
               );
             })}
+
             <li className="pt-2">
               <Link href={ctaItem.href} className={`w-full ${ctaLinkClass}`}>
                 {t(ctaItem.label)}
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
             </li>
+
             {mounted && (
               <>
                 <li className="pt-2">
@@ -223,8 +391,10 @@ export function Navbar({
                     variant="ghost"
                     size="sm"
                     aria-label="Toggle theme"
-                    onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="w-full"
+                    onPress={() =>
+                      setTheme(theme === "dark" ? "light" : "dark")
+                    }
+                    className="w-full justify-start px-3 gap-2"
                   >
                     {theme === "dark" ? (
                       <>
@@ -246,10 +416,12 @@ export function Navbar({
                     size="sm"
                     aria-label="Toggle language"
                     onPress={() => setLocale(locale === "id" ? "en" : "id")}
-                    className="w-full"
+                    className="w-full justify-start px-3 gap-2"
                   >
                     <Globe className="h-4 w-4" />
-                    <span>{locale === "id" ? "English" : "Bahasa Indonesia"}</span>
+                    <span>
+                      {locale === "id" ? "English" : "Bahasa Indonesia"}
+                    </span>
                   </Button>
                 </li>
               </>

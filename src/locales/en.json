@@ -1,7 +1,8 @@
 {
   "nav.home": "Home",
   "nav.about": "About",
-  "nav.products": "Products & Services",
+  "nav.productsandsolutions": "Products & Solutions",
+  "nav.products": "Featured Products",
   "nav.solutions": "Solutions",
   "nav.visionMission": "Vision & Mission",
   "nav.events": "Events",

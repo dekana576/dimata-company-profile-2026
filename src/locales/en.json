@@ -1,10 +1,32 @@
 {
   "nav.home": "Home",
   "nav.about": "About",
+  "nav.about.companyProfile": "Company Profile",
+  "nav.about.companyProfile.desc": "Our company profile and history",
+  "nav.visionMission": "Vision & Mission",
+  "nav.visionMission.desc": "Our vision and mission for the future",
+  "nav.about.footerNote": "Get to know our company better",
+  "nav.about.footerCta": "View all",
+
   "nav.productsandsolutions": "Products & Solutions",
   "nav.products": "Featured Products",
+  "nav.products.hairisma": "Hairisma",
+  "nav.products.hairisma.desc": "Advanced attendance and administration system with performance monitoring capabilities.",
+  "nav.products.prochain": "ProChain",
+  "nav.products.prochain.desc": "Comprehensive operational structure management system for streamlined business processes.",
+  "nav.products.hanoman": "Hanoman",
+  "nav.products.hanoman.desc": "Complete guest data management solution with integrated POS and reservation system.",
+  "nav.products.aiso": "AISO",
+  "nav.products.aiso.desc": "Real-time financial reporting system with comprehensive accounting features.",
   "nav.solutions": "Solutions",
-  "nav.visionMission": "Vision & Mission",
+  "nav.solutions.desc": "A comprehensive solution for your business needs.",
+
+  "nav.productsandsolutions.footerNote": "Software innovation for business management",
+  "nav.productsandsolutions.footerCta": "See all Products",
+
+
+  "nav.project": "Project",
+  "nav.pricing": "Pricing",
   "nav.events": "Events",
   "nav.contact": "Contact",
   "nav.lightMode": "Light Mode",

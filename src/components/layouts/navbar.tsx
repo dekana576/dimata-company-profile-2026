@@ -194,7 +194,8 @@ export function Navbar({
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [mobileDropdownIndex, setMobileDropdownIndex] = useState<number | null>(null);
 
-  const dropdownRef = useRef<HTMLLIElement | null>(null);
+  // DIPERBAIKI: Tipe ref diubah dari HTMLLIElement ke HTMLUListElement
+  const dropdownRef = useRef<HTMLUListElement | null>(null);
 
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -270,8 +271,8 @@ export function Navbar({
           </span>
         </Link>
 
-        {/* Menu desktop */}
-        <ul className="hidden items-center gap-1 md:flex">
+        {/* Menu desktop - DIPERBAIKI: ref={dropdownRef} dipindah ke tag <ul> di sini */}
+        <ul ref={dropdownRef} className="hidden items-center gap-1 md:flex">
           {items.map((item, idx) => {
             const hasChildren = item.children && item.children.length > 0;
             const active = isActive(item.href) || isChildActive(item.children);
@@ -281,7 +282,6 @@ export function Navbar({
               return (
                 <li
                   key={item.label}
-                  ref={dropdownRef}
                   className="relative group"
                   onMouseEnter={() => setOpenDropdownIndex(idx)}
                   onMouseLeave={() => setOpenDropdownIndex(null)}

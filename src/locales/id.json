@@ -12,7 +12,7 @@
   "nav.products": "Produk Unggulan",
   "nav.products.hairisma": "Hairisma",
   "nav.products.hairisma.desc": "Sistem kehadiran dan administrasi canggih dengan kemampuan pemantauan kinerja.",
-  "nav.products.prochain": "ProChain",
+  "nav.products.prochain": "ProChain & Kasir",
   "nav.products.prochain.desc": "Sistem manajemen struktur operasional yang komprehensif untuk proses bisnis yang lebih lancar.",
   "nav.products.hanoman": "Hanoman",
   "nav.products.hanoman.desc": "Solusi manajemen data tamu lengkap dengan sistem POS dan reservasi terintegrasi.",
@@ -49,6 +49,7 @@
   "home.hero.metric.avgResponse": "Rata-rata respons",
   "home.hero.metric.businessesLive": "Bisnis aktif",
 
+  "home.trustedBy": "Telah Dipercaya Oleh",
   "home.stats.builtFor": "Dirancang untuk",
   "home.stats.ourImpact": "Dampak kami",
   "home.stats.whyChoose": "Mengapa memilih",

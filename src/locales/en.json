@@ -12,7 +12,7 @@
   "nav.products": "Featured Products",
   "nav.products.hairisma": "Hairisma",
   "nav.products.hairisma.desc": "Advanced attendance and administration system with performance monitoring capabilities.",
-  "nav.products.prochain": "ProChain",
+  "nav.products.prochain": "ProChain & Cashier",
   "nav.products.prochain.desc": "Comprehensive operational structure management system for streamlined business processes.",
   "nav.products.hanoman": "Hanoman",
   "nav.products.hanoman.desc": "Complete guest data management solution with integrated POS and reservation system.",
@@ -51,6 +51,7 @@
   "home.hero.metric.avgResponse": "Avg. response",
   "home.hero.metric.businessesLive": "Businesses live",
 
+  "home.trustedBy": "Trusted By",
   "home.stats.builtFor": "Built for",
   "home.stats.ourImpact": "Our impact",
   "home.stats.whyChoose": "Why choose",

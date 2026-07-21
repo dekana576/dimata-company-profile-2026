@@ -113,6 +113,7 @@ const STATS: Stat[] = [
 interface Product {
   number: string;
   name: string;
+  link: string;
   description: string;
   icon: string;
   iconDark?: string; // Tambahan untuk gambar khusus dark mode
@@ -123,6 +124,7 @@ const PRODUCTS: Product[] = [
   {
     number: "01",
     name: "ProChain",
+    link: "/products/prochain",
     description:
       "home.products.01.description",
     icon: "/img/products/prochain-logo-no-text.png",
@@ -131,6 +133,7 @@ const PRODUCTS: Product[] = [
   {
     number: "02",
     name: "Hanoman",
+    link: "/products/hanoman",
     description:
       "home.products.02.description",
     icon: "/img/products/hanoman-logo-no-text.png",
@@ -139,6 +142,7 @@ const PRODUCTS: Product[] = [
   {
     number: "03",
     name: "Hairisma",
+    link: "/products/hairisma",
     description:
       "home.products.03.description",
     icon: "/img/products/hairisma-logo-no-text.png",
@@ -148,6 +152,7 @@ const PRODUCTS: Product[] = [
   {
     number: "04",
     name: "AISO",
+    link: "/products/aiso",
     description:
       "home.products.04.description",
     icon: "/img/products/aiso-logo-no-text.png",
@@ -238,7 +243,7 @@ export default function HomePage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute right-[-10%] top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]"
+          className="pointer-events-none absolute right-[-10%] top-1/2 h-140 w-140 -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]"
         />
 
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-4 py-24 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
@@ -324,7 +329,7 @@ export default function HomePage() {
           {/* Right — signature animated system diagram */}
           <Reveal
             from="right"
-            className="relative mx-auto aspect-square w-full max-w-[440px]"
+            className="relative mx-auto aspect-square w-full max-w-120"
           >
             <SystemDiagram nodes={productNodes} />
           </Reveal>
@@ -455,7 +460,7 @@ export default function HomePage() {
             />
             <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[160px]"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[160px]"
         />
             {STEPS.map(({ number, title, description, icon: Icon }, i) => (
               <Reveal
@@ -506,7 +511,7 @@ export default function HomePage() {
             {/* 3. Parameter icon diubah menjadi iconPath agar jelas bahwa tipe datanya adalah string url */}
             {PRODUCTS.map(
               (
-                { number, name, description, icon: iconPath, iconDark, connectsTo },
+                { number, name, link, description, icon: iconPath, iconDark, connectsTo },
                 i,
               ) => (
                 <Reveal
@@ -526,7 +531,7 @@ export default function HomePage() {
                       />
                       <div
                         aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero via-transparent to-transparent opacity-60"
+                        className="pointer-events-none absolute inset-0 bg-linear-to-t from-hero via-transparent to-transparent opacity-60"
                       />
 
                       {/* 4. Diganti dari <Icon /> menjadi komponen <Image /> dari Next.js */}
@@ -589,7 +594,7 @@ export default function HomePage() {
                       </Card.Content>
                       <Card.Footer className="mt-5 p-0">
                         <Link
-                          href="/solutions"
+                          href={link}
                           className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
                         >
                           {t("home.products.readMore")}
@@ -621,7 +626,7 @@ export default function HomePage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[160px]"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[160px]"
         />
         <Reveal className="relative mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
           {/* <StatusChip /> */}

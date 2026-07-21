@@ -23,13 +23,14 @@
  *
  * Dropdown desktop berbentuk "mega menu" bergaya Mekari: setiap child punya
  * icon + judul + deskripsi singkat, dan panel ditutup dengan footer note +
- * link "lihat semua".
+ * link "lihat semua". Panel dibuat lebih lebar dan teksnya sedikit lebih
+ * besar supaya lebih mudah dibaca.
  *
  * ICON PRODUK PAKAI GAMBAR:
  * Item produk (Hairisma, Prochain, Hanoman, Aiso) memakai `iconSrc` yang
  * menunjuk ke file di /public/img/products/<nama_product>-logo-no-text.png.
  * Khusus Hairisma disediakan 2 varian logo (mengikuti tema aplikasi):
- *   - light: /img/products/hairisma-logo-no-text-lightmode.png
+ *   - light: /img/products/hairisma-logo-no-text.png
  *   - dark : /img/products/hairisma-logo-no-text-darkmode.png
  * Item non-produk (Company Profile, Visi Misi, Solutions) masih memakai
  * icon lucide-react biasa lewat field `icon`.
@@ -105,7 +106,7 @@ const DEFAULT_ITEMS: NavItem[] = [
     label: "nav.about",
     href: "#",
     eyebrow: "nav.about",
-    panelClassName: "w-80 grid-cols-1",
+    panelClassName: "w-96 grid-cols-1",
     footerNote: "nav.about.footerNote",
     footerCta: "nav.about.footerCta",
     footerHref: "/about",
@@ -130,7 +131,7 @@ const DEFAULT_ITEMS: NavItem[] = [
     label: "nav.productsandsolutions",
     href: "#",
     eyebrow: "nav.productsandsolutions",
-    panelClassName: "w-[560px] grid-cols-1 sm:grid-cols-2",
+    panelClassName: "w-[720px] grid-cols-1 sm:grid-cols-2",
     footerNote: "nav.productsandsolutions.footerNote",
     footerCta: "nav.productsandsolutions.footerCta",
     footerHref: "/products",
@@ -194,7 +195,6 @@ export function Navbar({
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [mobileDropdownIndex, setMobileDropdownIndex] = useState<number | null>(null);
 
-  // DIPERBAIKI: Tipe ref diubah dari HTMLLIElement ke HTMLUListElement
   const dropdownRef = useRef<HTMLUListElement | null>(null);
 
   const mounted = useSyncExternalStore(
@@ -271,7 +271,7 @@ export function Navbar({
           </span>
         </Link>
 
-        {/* Menu desktop - DIPERBAIKI: ref={dropdownRef} dipindah ke tag <ul> di sini */}
+        {/* Menu desktop */}
         <ul ref={dropdownRef} className="hidden items-center gap-1 md:flex">
           {items.map((item, idx) => {
             const hasChildren = item.children && item.children.length > 0;
@@ -315,18 +315,18 @@ export function Navbar({
                     }`}
                   >
                     <div
-                      className={`rounded-large border border-separator bg-background/95 p-4 shadow-xl backdrop-blur-lg ${
-                        item.panelClassName ?? "w-80 grid-cols-1"
+                      className={`rounded-large border border-separator bg-background/95 p-5 shadow-xl backdrop-blur-lg ${
+                        item.panelClassName ?? "w-96 grid-cols-1"
                       }`}
                     >
                       {item.eyebrow && (
-                        <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-foreground/40">
+                        <p className="mb-3 px-2 text-[12px] font-semibold uppercase tracking-wider text-foreground/40">
                           {t(item.eyebrow)}
                         </p>
                       )}
 
                       <div
-                        className={`grid gap-1 ${
+                        className={`grid gap-1.5 ${
                           item.panelClassName?.match(/grid-cols-\S+/g)?.join(" ") ??
                           "grid-cols-1"
                         }`}
@@ -340,35 +340,35 @@ export function Navbar({
                               key={child.href}
                               href={child.href}
                               aria-current={childActive ? "page" : undefined}
-                              className="group/item flex items-start gap-3 rounded-medium p-2.5 transition-colors hover:bg-primary/5 data-[active=true]:bg-primary/5"
+                              className="group/item flex items-start gap-3.5 rounded-medium p-3 transition-colors hover:bg-primary/5 data-[active=true]:bg-primary/5"
                               data-active={childActive}
                             >
                               {imgSrc ? (
-                                <span className="flex h-9 w-9 shrink-0 items-center justify-center">
+                                <span className="flex h-10 w-10 shrink-0 items-center justify-center">
                                   <img
                                     src={imgSrc}
                                     alt={t(child.label)}
-                                    className="h-9 w-9 object-contain"
+                                    className="h-10 w-10 object-contain"
                                   />
                                 </span>
                               ) : (
                                 ChildIcon && (
                                   <span
-                                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-medium ${
+                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-medium ${
                                       child.iconClassName ??
                                       "bg-primary/10 text-primary"
                                     }`}
                                   >
-                                    <ChildIcon className="h-[18px] w-[18px]" />
+                                    <ChildIcon className="h-5 w-5" />
                                   </span>
                                 )
                               )}
                               <span className="flex min-w-0 flex-col">
-                                <span className="text-[14px] font-semibold leading-tight text-foreground group-hover/item:text-primary">
+                                <span className="text-[15px] font-semibold leading-tight text-foreground group-hover/item:text-primary">
                                   {t(child.label)}
                                 </span>
                                 {child.description && (
-                                  <span className="mt-0.5 text-[12.5px] leading-snug text-foreground/50">
+                                  <span className="mt-1 text-[13.5px] leading-snug text-foreground/50">
                                     {t(child.description)}
                                   </span>
                                 )}
@@ -379,19 +379,19 @@ export function Navbar({
                       </div>
 
                       {(item.footerNote || item.footerCta) && (
-                        <div className="mt-3 flex items-center justify-between gap-4 border-t border-separator px-2 pt-3">
+                        <div className="mt-4 flex items-center justify-between gap-4 border-t border-separator px-2 pt-4">
                           {item.footerNote && (
-                            <span className="text-[12.5px] text-foreground/50">
+                            <span className="text-[13px] text-foreground/50">
                               {t(item.footerNote)}
                             </span>
                           )}
                           {item.footerCta && item.footerHref && (
                             <Link
                               href={item.footerHref}
-                              className="inline-flex shrink-0 items-center gap-1 text-[13px] font-medium text-primary hover:underline"
+                              className="inline-flex shrink-0 items-center gap-1 text-[14px] font-medium text-primary hover:underline"
                             >
                               {t(item.footerCta)}
-                              <ArrowRight className="h-3.5 w-3.5" />
+                              <ArrowRight className="h-4 w-4" />
                             </Link>
                           )}
                         </div>

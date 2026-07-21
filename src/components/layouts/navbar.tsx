@@ -104,7 +104,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   {
     label: "nav.about",
     href: "#",
-    eyebrow: "nav.about.eyebrow",
+    eyebrow: "nav.about",
     panelClassName: "w-80 grid-cols-1",
     footerNote: "nav.about.footerNote",
     footerCta: "nav.about.footerCta",
@@ -129,7 +129,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   {
     label: "nav.productsandsolutions",
     href: "#",
-    eyebrow: "nav.productsandsolutions.eyebrow",
+    eyebrow: "nav.productsandsolutions",
     panelClassName: "w-[560px] grid-cols-1 sm:grid-cols-2",
     footerNote: "nav.productsandsolutions.footerNote",
     footerCta: "nav.productsandsolutions.footerCta",

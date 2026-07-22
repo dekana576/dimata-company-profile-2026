@@ -8,8 +8,7 @@ import { Check, X, ArrowRight, Sparkles, Server, Cloud, ChevronDown, ChevronUp }
 import { Card, Button } from "@heroui/react";
 import { useLanguage } from "@/contexts/language-context";
 
-// ─── Dummy Data ────────────────────────────────────────────────
-// TODO: Replace with CMS data source
+// ─── Types ─────────────────────────────────────────────────────
 
 type Deployment = "saas" | "onpremise";
 type ProductKey = "prochain" | "hanoman" | "hairisma" | "aiso";
@@ -28,6 +27,10 @@ interface ProductPricing {
   tiers: PricingTier[];
 }
 
+type BundleTier = "Standard" | "Professional" | "Premium";
+
+// ─── Static metadata (not fetched from API) ────────────────────
+
 const PRODUCTS: { id: ProductKey; nameKey: string; icon: string; iconDark?: string }[] = [
   { id: "prochain", nameKey: "pricing.products.prochain", icon: "/img/products/prochain-logo-no-text.png" },
   { id: "hanoman", nameKey: "pricing.products.hanoman", icon: "/img/products/hanoman-logo-no-text.png" },
@@ -40,585 +43,15 @@ const DEPLOYMENTS: { id: Deployment; nameKey: string; icon: typeof Cloud }[] = [
   { id: "onpremise", nameKey: "pricing.deployments.onpremise", icon: Server },
 ];
 
-const PRICING_DATA: Record<Deployment, Record<ProductKey, ProductPricing>> = {
-  saas: {
-    prochain: {
-      id: "prochain",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 150.000",
-          period: "/bulan/outlet",
-          features: [
-            { label: "Manajemen pesanan pembelian", included: true },
-            { label: "Pelacakan stok real-time", included: true },
-            { label: "Laporan penjualan dasar", included: true },
-            { label: "1 lokasi / 1 pengguna", included: true },
-            { label: "Multi-cabang", included: false },
-            { label: "Integrasi akuntansi", included: false },
-            { label: "API kustom", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 350.000",
-          period: "/bulan/outlet",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Manajemen pesanan pembelian", included: true },
-            { label: "Pelacakan stok real-time", included: true },
-            { label: "Laporan penjualan lengkap", included: true },
-            { label: "Multi lokasi (hingga 10)", included: true },
-            { label: "Multi pengguna + role", included: true },
-            { label: "Integrasi akuntansi", included: true },
-            { label: "API kustom", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 650.000",
-          period: "/bulan/outlet",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Multi-cabang tanpa batas", included: true },
-            { label: "Integrasi akuntansi lengkap", included: true },
-            { label: "API kustom + Webhook", included: true },
-            { label: "Dedicated account manager", included: true },
-            { label: "SLA 99.9% uptime", included: true },
-            { label: "White-label opsional", included: true },
-          ],
-        },
-      ],
-    },
-    hanoman: {
-      id: "hanoman",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 175.000",
-          period: "/bulan/outlet",
-          features: [
-            { label: "Sistem POS dasar", included: true },
-            { label: "Manajemen profil tamu", included: true },
-            { label: "Pencetakan struk", included: true },
-            { label: "Pembayaran tunai & non-tunai", included: true },
-            { label: "Reservasi online", included: false },
-            { label: "CRM & loyalitas", included: false },
-            { label: "Integrasi marketplace", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 400.000",
-          period: "/bulan/outlet",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Reservasi & booking online", included: true },
-            { label: "CRM + deposit pelanggan", included: true },
-            { label: "Multi outlet (hingga 10)", included: true },
-            { label: "Denah meja interaktif", included: true },
-            { label: "Struk digital (WA/SMS)", included: true },
-            { label: "Integrasi marketplace", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 750.000",
-          period: "/bulan/outlet",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Multi outlet tanpa batas", included: true },
-            { label: "Integrasi marketplace", included: true },
-            { label: "Loyalty program lengkap", included: true },
-            { label: "Order online (GoFood/GrabFood)", included: true },
-            { label: "API + custom integration", included: true },
-            { label: "Dedicated support 24/7", included: true },
-          ],
-        },
-      ],
-    },
-    hairisma: {
-      id: "hairisma",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 125.000",
-          period: "/bulan/user",
-          features: [
-            { label: "Absensi online (foto)", included: true },
-            { label: "Jadwal shift dasar", included: true },
-            { label: "Laporan kehadiran", included: true },
-            { label: "Hingga 25 karyawan", included: true },
-            { label: "Manajemen cuti", included: false },
-            { label: "Payroll terintegrasi", included: false },
-            { label: "Rekrutmen & onboarding", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 275.000",
-          period: "/bulan/user",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Manajemen cuti & approval", included: true },
-            { label: "Absensi geolokasi", included: true },
-            { label: "Hingga 100 karyawan", included: true },
-            { label: "Laporan kinerja", included: true },
-            { label: "Integrasi payroll", included: true },
-            { label: "Rekrutmen & onboarding", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 500.000",
-          period: "/bulan/user",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Karyawan tanpa batas", included: true },
-            { label: "Rekrutmen & onboarding", included: true },
-            { label: "Penilaian kinerja", included: true },
-            { label: "Penggajian lengkap", included: true },
-            { label: "Struktur organisasi", included: true },
-            { label: "API + custom workflow", included: true },
-          ],
-        },
-      ],
-    },
-    aiso: {
-      id: "aiso",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 150.000",
-          period: "/bulan",
-          features: [
-            { label: "Pembukuan dasar", included: true },
-            { label: "Laporan laba rugi", included: true },
-            { label: "Laporan neraca", included: true },
-            { label: "1 bisnis / 1 akun", included: true },
-            { label: "Multi-mata uang", included: false },
-            { label: "Invoice & faktur otomatis", included: false },
-            { label: "Laporan pajak otomatis", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 350.000",
-          period: "/bulan",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Multi-mata uang", included: true },
-            { label: "Invoice & faktur otomatis", included: true },
-            { label: "Multi bisnis", included: true },
-            { label: "Laporan arus kas detail", included: true },
-            { label: "Integrasi bank", included: true },
-            { label: "Laporan pajak otomatis", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 650.000",
-          period: "/bulan",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Laporan pajak otomatis", included: true },
-            { label: "Audit trail lengkap", included: true },
-            { label: "Budgeting & forecasting", included: true },
-            { label: "Consolidation multi-cabang", included: true },
-            { label: "API + export kustom", included: true },
-            { label: "Dedicated accountant support", included: true },
-          ],
-        },
-      ],
-    },
-  },
-  onpremise: {
-    prochain: {
-      id: "prochain",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 5.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Instalasi server lokal", included: true },
-            { label: "Manajemen pesanan & stok", included: true },
-            { label: "Laporan penjualan dasar", included: true },
-            { label: "1 server + 3 user", included: true },
-            { label: "Multi-cabang", included: false },
-            { label: "Pembaruan otomatis", included: false },
-            { label: "Remote support", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 15.000.000",
-          period: "lisensi lokal",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Multi-cabang (hingga 10)", included: true },
-            { label: "Multi user tanpa batas", included: true },
-            { label: "Integrasi akuntansi", included: true },
-            { label: "Pembaruan berkala", included: true },
-            { label: "Remote support 12 bulan", included: true },
-            { label: "Custom report", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 35.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Multi-cabang tanpa batas", included: true },
-            { label: "Custom module & report", included: true },
-            { label: "Pembaruan seumur hidup", included: true },
-            { label: "On-site training", included: true },
-            { label: "Priority support 24 bulan", included: true },
-            { label: "Sumber kode tersedia", included: true },
-          ],
-        },
-      ],
-    },
-    hanoman: {
-      id: "hanoman",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 7.500.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "POS offline lengkap", included: true },
-            { label: "Manajemen meja & kasir", included: true },
-            { label: "Pencetakan struk", included: true },
-            { label: "1 server + 3 terminal", included: true },
-            { label: "Reservasi online", included: false },
-            { label: "CRM & loyalitas", included: false },
-            { label: "Multi-cabang", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 20.000.000",
-          period: "lisensi lokal",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Reservasi & booking", included: true },
-            { label: "CRM + loyalty dasar", included: true },
-            { label: "Multi terminal tanpa batas", included: true },
-            { label: "Multi-cabang (hingga 10)", included: true },
-            { label: "Remote support 12 bulan", included: true },
-            { label: "Integrasi marketplace", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 45.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Multi-cabang tanpa batas", included: true },
-            { label: "Integrasi marketplace", included: true },
-            { label: "Loyalty program lengkap", included: true },
-            { label: "On-site training", included: true },
-            { label: "Priority support 24 bulan", included: true },
-            { label: "Sumber kode tersedia", included: true },
-          ],
-        },
-      ],
-    },
-    hairisma: {
-      id: "hairisma",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 4.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Absensi fingerprint/web", included: true },
-            { label: "Jadwal shift dasar", included: true },
-            { label: "Laporan kehadiran", included: true },
-            { label: "Hingga 50 karyawan", included: true },
-            { label: "Manajemen cuti", included: false },
-            { label: "Payroll", included: false },
-            { label: "Multi-cabang", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 12.000.000",
-          period: "lisensi lokal",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Manajemen cuti & approval", included: true },
-            { label: "Hingga 200 karyawan", included: true },
-            { label: "Payroll integrasi", included: true },
-            { label: "Laporan kinerja", included: true },
-            { label: "Remote support 12 bulan", included: true },
-            { label: "Multi-cabang", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 25.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Karyawan tanpa batas", included: true },
-            { label: "Multi-cabang lengkap", included: true },
-            { label: "Rekrutmen & onboarding", included: true },
-            { label: "Penggajian lengkap", included: true },
-            { label: "On-site training", included: true },
-            { label: "Priority support 24 bulan", included: true },
-          ],
-        },
-      ],
-    },
-    aiso: {
-      id: "aiso",
-      tiers: [
-        {
-          name: "Standard",
-          price: "Rp 5.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Pembukuan dasar", included: true },
-            { label: "Laporan keuangan standar", included: true },
-            { label: "1 entitas bisnis", included: true },
-            { label: "1 server + 3 user", included: true },
-            { label: "Multi-mata uang", included: false },
-            { label: "Integrasi bank", included: false },
-            { label: "Pajak otomatis", included: false },
-          ],
-        },
-        {
-          name: "Professional",
-          price: "Rp 18.000.000",
-          period: "lisensi lokal",
-          highlighted: true,
-          badge: "Populer",
-          features: [
-            { label: "Semua fitur Standard", included: true },
-            { label: "Multi-mata uang", included: true },
-            { label: "Multi entitas bisnis", included: true },
-            { label: "Invoice & faktur otomatis", included: true },
-            { label: "Integrasi bank", included: true },
-            { label: "Remote support 12 bulan", included: true },
-            { label: "Pajak otomatis", included: false },
-          ],
-        },
-        {
-          name: "Premium",
-          price: "Rp 35.000.000",
-          period: "lisensi lokal",
-          features: [
-            { label: "Semua fitur Professional", included: true },
-            { label: "Pajak otomatis", included: true },
-            { label: "Audit trail lengkap", included: true },
-            { label: "Budgeting & forecasting", included: true },
-            { label: "On-site training", included: true },
-            { label: "Priority support 24 bulan", included: true },
-            { label: "Sumber kode tersedia", included: true },
-          ],
-        },
-      ],
-    },
-  },
-};
-
-// ─── Comparison table data ─────────────────────────────────────
-// TODO: Replace with CMS data source
-
-interface ComparisonFeature {
-  labelKey: string;
-  tiers: ("standard" | "professional" | "premium")[];
-}
-
-const COMPARISON_FEATURES: ComparisonFeature[] = [
-  { labelKey: "pricing.compare.cloudSync", tiers: ["standard", "professional", "premium"] },
-  { labelKey: "pricing.compare.multiUser", tiers: ["standard", "professional", "premium"] },
-  { labelKey: "pricing.compare.advancedReports", tiers: ["professional", "premium"] },
-  { labelKey: "pricing.compare.apiAccess", tiers: ["premium"] },
-  { labelKey: "pricing.compare.dedicatedSupport", tiers: ["premium"] },
-  { labelKey: "pricing.compare.customIntegration", tiers: ["premium"] },
-  { labelKey: "pricing.compare.whiteLabel", tiers: ["premium"] },
-  { labelKey: "pricing.compare.training", tiers: ["professional", "premium"] },
-];
-
-// ─── Bundle data ──────────────────────────────────────────────
-// TODO: Replace with CMS data source
-
-type BundleTier = "Standard" | "Professional" | "Premium";
-
 const BUNDLE_TIERS: { id: BundleTier; nameKey: string }[] = [
   { id: "Standard", nameKey: "pricing.bundle.tier.standard" },
   { id: "Professional", nameKey: "pricing.bundle.tier.professional" },
   { id: "Premium", nameKey: "pricing.bundle.tier.premium" },
 ];
 
-interface BundleApp {
-  id: ProductKey;
-  nameKey: string;
-  descriptionKey: string;
-  icon: string;
-  iconDark?: string;
-  prices: Record<Deployment, Record<BundleTier, number>>;
-  features: Record<BundleTier, string[]>;
-}
-
-const BUNDLE_APPS: BundleApp[] = [
-  {
-    id: "prochain",
-    nameKey: "pricing.products.prochain",
-    descriptionKey: "pricing.bundle.prochain.desc",
-    icon: "/img/products/prochain-logo-no-text.png",
-    prices: {
-      saas: { Standard: 150000, Professional: 350000, Premium: 650000 },
-      onpremise: { Standard: 5000000, Professional: 15000000, Premium: 35000000 },
-    },
-    features: {
-      Standard: [
-        "pricing.bundle.prochain.std.f1",
-        "pricing.bundle.prochain.std.f2",
-        "pricing.bundle.prochain.std.f3",
-        "pricing.bundle.prochain.std.f4",
-      ],
-      Professional: [
-        "pricing.bundle.prochain.pro.f1",
-        "pricing.bundle.prochain.pro.f2",
-        "pricing.bundle.prochain.pro.f3",
-        "pricing.bundle.prochain.pro.f4",
-      ],
-      Premium: [
-        "pricing.bundle.prochain.pre.f1",
-        "pricing.bundle.prochain.pre.f2",
-        "pricing.bundle.prochain.pre.f3",
-        "pricing.bundle.prochain.pre.f4",
-      ],
-    },
-  },
-  {
-    id: "hanoman",
-    nameKey: "pricing.products.hanoman",
-    descriptionKey: "pricing.bundle.hanoman.desc",
-    icon: "/img/products/hanoman-logo-no-text.png",
-    prices: {
-      saas: { Standard: 175000, Professional: 400000, Premium: 750000 },
-      onpremise: { Standard: 7500000, Professional: 20000000, Premium: 45000000 },
-    },
-    features: {
-      Standard: [
-        "pricing.bundle.hanoman.std.f1",
-        "pricing.bundle.hanoman.std.f2",
-        "pricing.bundle.hanoman.std.f3",
-        "pricing.bundle.hanoman.std.f4",
-      ],
-      Professional: [
-        "pricing.bundle.hanoman.pro.f1",
-        "pricing.bundle.hanoman.pro.f2",
-        "pricing.bundle.hanoman.pro.f3",
-        "pricing.bundle.hanoman.pro.f4",
-      ],
-      Premium: [
-        "pricing.bundle.hanoman.pre.f1",
-        "pricing.bundle.hanoman.pre.f2",
-        "pricing.bundle.hanoman.pre.f3",
-        "pricing.bundle.hanoman.pre.f4",
-      ],
-    },
-  },
-  {
-    id: "hairisma",
-    nameKey: "pricing.products.hairisma",
-    descriptionKey: "pricing.bundle.hairisma.desc",
-    icon: "/img/products/hairisma-logo-no-text.png",
-    iconDark: "/img/products/hairisma-logo-no-text-darkmode.png",
-    prices: {
-      saas: { Standard: 125000, Professional: 275000, Premium: 500000 },
-      onpremise: { Standard: 4000000, Professional: 12000000, Premium: 25000000 },
-    },
-    features: {
-      Standard: [
-        "pricing.bundle.hairisma.std.f1",
-        "pricing.bundle.hairisma.std.f2",
-        "pricing.bundle.hairisma.std.f3",
-        "pricing.bundle.hairisma.std.f4",
-      ],
-      Professional: [
-        "pricing.bundle.hairisma.pro.f1",
-        "pricing.bundle.hairisma.pro.f2",
-        "pricing.bundle.hairisma.pro.f3",
-        "pricing.bundle.hairisma.pro.f4",
-      ],
-      Premium: [
-        "pricing.bundle.hairisma.pre.f1",
-        "pricing.bundle.hairisma.pre.f2",
-        "pricing.bundle.hairisma.pre.f3",
-        "pricing.bundle.hairisma.pre.f4",
-      ],
-    },
-  },
-  {
-    id: "aiso",
-    nameKey: "pricing.products.aiso",
-    descriptionKey: "pricing.bundle.aiso.desc",
-    icon: "/img/products/aiso-logo-no-text.png",
-    prices: {
-      saas: { Standard: 150000, Professional: 350000, Premium: 650000 },
-      onpremise: { Standard: 5000000, Professional: 18000000, Premium: 35000000 },
-    },
-    features: {
-      Standard: [
-        "pricing.bundle.aiso.std.f1",
-        "pricing.bundle.aiso.std.f2",
-        "pricing.bundle.aiso.std.f3",
-        "pricing.bundle.aiso.std.f4",
-      ],
-      Professional: [
-        "pricing.bundle.aiso.pro.f1",
-        "pricing.bundle.aiso.pro.f2",
-        "pricing.bundle.aiso.pro.f3",
-        "pricing.bundle.aiso.pro.f4",
-      ],
-      Premium: [
-        "pricing.bundle.aiso.pre.f1",
-        "pricing.bundle.aiso.pre.f2",
-        "pricing.bundle.aiso.pre.f3",
-        "pricing.bundle.aiso.pre.f4",
-      ],
-    },
-  },
-];
-
-function getBundleDiscount(count: number): number {
-  if (count >= 4) return 0.15;
-  if (count >= 3) return 0.10;
-  if (count >= 2) return 0.05;
-  return 0;
-}
-
 function formatCurrency(value: number): string {
   return `Rp ${value.toLocaleString("id-ID")}`;
 }
-
-const DISCOUNT_LABELS: Record<number, string> = {
-  2: "pricing.bundle.discount.2",
-  3: "pricing.bundle.discount.3",
-  4: "pricing.bundle.discount.4",
-};
 
 // ─── Framer Motion variants ────────────────────────────────────
 
@@ -651,14 +84,59 @@ const scaleIn = {
 // ─── Component ─────────────────────────────────────────────────
 
 export default function PricingPage() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [deployment, setDeployment] = useState<Deployment>("saas");
   const [selectedProduct, setSelectedProduct] = useState<ProductKey>("prochain");
   const [selectedApps, setSelectedApps] = useState<ProductKey[]>([]);
   const [bundleTier, setBundleTier] = useState<BundleTier>("Professional");
   const [expandedApps, setExpandedApps] = useState<Set<ProductKey>>(new Set());
 
-  const currentPricing = PRICING_DATA[deployment][selectedProduct];
+  const [apiData, setApiData] = useState<Record<string, unknown> | null>(null);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  useEffect(() => {
+    setDataLoading(true);
+    fetch(`/api/pricing?lang=${locale}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setApiData(data);
+        setDataLoading(false);
+      })
+      .catch(() => setDataLoading(false));
+  }, [locale]);
+
+  // ── Derived data from API ──────────────────────────────────
+
+  const pricing = (apiData?.pricing as Record<Deployment, Record<ProductKey, ProductPricing>> | undefined);
+  const currentPricing = pricing?.[deployment]?.[selectedProduct];
+
+  const apiBundleApps = (apiData?.bundleApps as Array<{
+    key: string;
+    description: string;
+    prices: Record<Deployment, Record<BundleTier, number>>;
+    features: Record<BundleTier, string[]>;
+  }>) ?? [];
+
+  const bundleAppsMapped = apiBundleApps.map((apiApp) => {
+    const product = PRODUCTS.find((p) => p.id === apiApp.key);
+    return {
+      id: apiApp.key as ProductKey,
+      nameKey: product?.nameKey ?? `pricing.products.${apiApp.key}`,
+      description: apiApp.description,
+      icon: product?.icon ?? "",
+      iconDark: product?.iconDark,
+      prices: apiApp.prices,
+      features: apiApp.features,
+    };
+  });
+
+  const apiDiscounts = (apiData?.discounts as Array<{ minApps: number; discountPercent: number }>) ?? [];
+  const sortedDiscounts = [...apiDiscounts].sort((a, b) => b.minApps - a.minApps);
+
+  const comparisonFeatures = (apiData?.comparison as Array<{
+    label: string;
+    tiers: ("standard" | "professional" | "premium")[];
+  }>) ?? [];
 
   useEffect(() => {
     setExpandedApps(new Set());
@@ -684,14 +162,37 @@ export default function PricingPage() {
     });
   };
 
-  const getAppPrice = (app: BundleApp) => app.prices[deployment][bundleTier];
+  const getAppPrice = (app: (typeof bundleAppsMapped)[number]) =>
+    app.prices[deployment]?.[bundleTier] ?? 0;
 
   const bundleOriginalTotal = selectedApps.reduce(
-    (sum, appId) => sum + getAppPrice(BUNDLE_APPS.find((a) => a.id === appId)!),
+    (sum, appId) => {
+      const app = bundleAppsMapped.find((a) => a.id === appId);
+      return sum + (app ? getAppPrice(app) : 0);
+    },
     0
   );
+
+  const getBundleDiscount = (count: number): number => {
+    const tier = sortedDiscounts.find((d) => count >= d.minApps);
+    return tier ? tier.discountPercent / 100 : 0;
+  };
+
   const bundleDiscount = getBundleDiscount(selectedApps.length);
   const bundleDiscountedTotal = Math.round(bundleOriginalTotal * (1 - bundleDiscount));
+
+  const discountLabels: Record<number, string> = {};
+  sortedDiscounts.forEach((d) => {
+    discountLabels[d.minApps] = `${d.discountPercent}%`;
+  });
+
+  if (dataLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -806,76 +307,78 @@ export default function PricingPage() {
           </div>
 
           {/* Pricing cards */}
-          <motion.div
-            key={`${deployment}-${selectedProduct}`}
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto"
-          >
-            {currentPricing.tiers.map((tier, i) => (
-              <motion.div key={tier.name} variants={scaleIn}>
-                <Card
-                  className={`relative flex flex-col h-full p-6 lg:p-8 rounded-2xl border transition-all duration-200 ${
-                    tier.highlighted
-                      ? "border-primary shadow-lg shadow-primary/10 scale-[1.02]"
-                      : "border-border hover:border-primary/30 hover:shadow-md"
-                  }`}
-                >
-                  {tier.badge && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
-                      {tier.badge}
-                    </span>
-                  )}
+          {currentPricing && (
+            <motion.div
+              key={`${deployment}-${selectedProduct}`}
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto"
+            >
+              {currentPricing.tiers.map((tier, i) => (
+                <motion.div key={tier.name} variants={scaleIn}>
+                  <Card
+                    className={`relative flex flex-col h-full p-6 lg:p-8 rounded-2xl border transition-all duration-200 ${
+                      tier.highlighted
+                        ? "border-primary shadow-lg shadow-primary/10 scale-[1.02]"
+                        : "border-border hover:border-primary/30 hover:shadow-md"
+                    }`}
+                  >
+                    {tier.badge && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                        {tier.badge}
+                      </span>
+                    )}
 
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">{tier.name}</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl lg:text-4xl font-bold">
-                        {tier.price}
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold mb-2">{tier.name}</h3>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl lg:text-4xl font-bold">
+                          {tier.price}
+                        </span>
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {tier.period}
                       </span>
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {tier.period}
-                    </span>
-                  </div>
 
-                  <ul className="flex-1 space-y-3 mb-8">
-                    {tier.features.map((feature) => (
-                      <li
-                        key={feature.label}
-                        className="flex items-start gap-3 text-sm"
-                      >
-                        {feature.included ? (
-                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-green-500" />
-                        ) : (
-                          <X className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground/40" />
-                        )}
-                        <span
-                          className={
-                            feature.included
-                              ? "text-foreground"
-                              : "text-muted-foreground/50"
-                          }
+                    <ul className="flex-1 space-y-3 mb-8">
+                      {tier.features.map((feature, fIdx) => (
+                        <li
+                          key={fIdx}
+                          className="flex items-start gap-3 text-sm"
                         >
-                          {feature.label}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                          {feature.included ? (
+                            <Check className="w-4 h-4 mt-0.5 shrink-0 text-green-500" />
+                          ) : (
+                            <X className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground/40" />
+                          )}
+                          <span
+                            className={
+                              feature.included
+                                ? "text-foreground"
+                                : "text-muted-foreground/50"
+                            }
+                          >
+                            {feature.label}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
 
-                  <Link href="/contact" className="w-full">
-                    <Button
-                      variant={tier.highlighted ? "primary" : "outline"}
-                      className="w-full"
-                    >
-                      {t("pricing.cta.choosePlan")} <ArrowRight className="w-4 h-4 inline-block ml-1" />
-                    </Button>
-                  </Link>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
+                    <Link href="/contact" className="w-full">
+                      <Button
+                        variant={tier.highlighted ? "primary" : "outline"}
+                        className="w-full"
+                      >
+                        {t("pricing.cta.choosePlan")} <ArrowRight className="w-4 h-4 inline-block ml-1" />
+                      </Button>
+                    </Link>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
 
           <p className="text-center text-sm text-muted-foreground mt-8">
             {t("pricing.hero.note")}
@@ -938,10 +441,10 @@ export default function PricingPage() {
                   {t("pricing.bundle.selectApps")}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {BUNDLE_APPS.map((app) => {
+                  {bundleAppsMapped.map((app) => {
                     const isSelected = selectedApps.includes(app.id);
                     const isExpanded = expandedApps.has(app.id);
-                    const tierFeatures = app.features[bundleTier];
+                    const tierFeatures = app.features[bundleTier] ?? [];
                     const VISIBLE_COUNT = 3;
                     const hiddenCount = tierFeatures.length - VISIBLE_COUNT;
                     const visibleFeatures = isExpanded ? tierFeatures : tierFeatures.slice(0, VISIBLE_COUNT);
@@ -997,7 +500,7 @@ export default function PricingPage() {
                           </div>
                         </div>
                         <p className="text-sm text-muted-foreground mb-3">
-                          {t(app.descriptionKey)}
+                          {app.description}
                         </p>
                         <div className="flex items-baseline gap-1">
                           <span className="text-xl font-bold">
@@ -1008,10 +511,10 @@ export default function PricingPage() {
                           </span>
                         </div>
                         <ul className="mt-3 space-y-1">
-                          {visibleFeatures.map((fKey) => (
-                            <li key={fKey} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          {visibleFeatures.map((fKey, fIdx) => (
+                            <li key={fIdx} className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Check className="w-3 h-3 text-green-500 shrink-0" />
-                              {t(fKey)}
+                              {fKey}
                             </li>
                           ))}
                         </ul>
@@ -1062,7 +565,7 @@ export default function PricingPage() {
                       {/* Selected apps list */}
                       <div className="space-y-3 mb-6">
                         {selectedApps.map((appId) => {
-                          const app = BUNDLE_APPS.find((a) => a.id === appId)!;
+                          const app = bundleAppsMapped.find((a) => a.id === appId)!;
                           return (
                             <div
                               key={appId}
@@ -1092,7 +595,7 @@ export default function PricingPage() {
                         {bundleDiscount > 0 && (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-green-600 dark:text-green-400 font-medium">
-                              {DISCOUNT_LABELS[selectedApps.length] ? t(DISCOUNT_LABELS[selectedApps.length]) : ""}
+                              Hemat {discountLabels[selectedApps.length] ?? ""}
                             </span>
                             <span className="text-green-600 dark:text-green-400 font-medium">
                               -{formatCurrency(bundleOriginalTotal - bundleDiscountedTotal)}
@@ -1114,7 +617,7 @@ export default function PricingPage() {
 
                       {selectedApps.length >= 2 && (
                         <div className="mt-4 p-3 rounded-lg bg-green-500/10 text-green-700 dark:text-green-400 text-sm text-center font-medium">
-                          {DISCOUNT_LABELS[selectedApps.length] ? t(DISCOUNT_LABELS[selectedApps.length]) : ""} — {t("pricing.bundle.priceLabel")}
+                          Hemat {discountLabels[selectedApps.length] ?? ""} — {t("pricing.bundle.priceLabel")}
                         </div>
                       )}
 
@@ -1185,15 +688,15 @@ export default function PricingPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {COMPARISON_FEATURES.map((feature, idx) => (
+                  {comparisonFeatures.map((feature, idx) => (
                     <tr
-                      key={feature.labelKey}
+                      key={idx}
                       className={`border-b border-border last:border-0 ${
                         idx % 2 === 0 ? "bg-muted/20" : ""
                       }`}
                     >
                       <td className="p-4 lg:p-5 text-sm">
-                        {t(feature.labelKey)}
+                        {feature.label}
                       </td>
                       {(["standard", "professional", "premium"] as const).map(
                         (tier) => (

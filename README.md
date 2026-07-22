@@ -40,6 +40,9 @@ npx prisma migrate dev
 # Seed admin user
 npx prisma db seed
 
+# Seed pricing data (jalankan sekali di awal saja, jangan berulang)
+npx tsx prisma/seed-pricing.ts
+
 # Start development server
 npm run dev
 ```
@@ -71,6 +74,9 @@ npx prisma migrate dev
 
 # Seed admin user (reads CMS_ADMIN_EMAIL & CMS_ADMIN_PASSWORD from .env)
 npx prisma db seed
+
+# Seed pricing data (products, tiers, features, discounts) — jalankan sekali di awal saja
+npx tsx prisma/seed-pricing.ts
 
 # Open Prisma Studio (visual DB browser)
 npx prisma studio
@@ -112,6 +118,7 @@ dimata-company-profile-2026/
 ├── prisma/
 │   ├── schema.prisma          # Database schema
 │   ├── seed.ts                # Seed admin user
+│   ├── seed-pricing.ts        # Seed pricing data (sekali di awal)
 │   └── migrations/            # Migration files
 ├── public/
 │   └── uploads/gallery/       # Uploaded gallery images
@@ -192,6 +199,11 @@ Covers:
 - PM2 process management
 - Nginx reverse proxy configuration
 - Backup and troubleshooting
+
+## Development Notes
+
+> **Wajib dibaca sebelum mengutak-atik fitur pricing atau struktur seed.**
+> File [NOTES.md](NOTES.md) berisi known limitations, workaround, dan roadmap perubahan yang akan datang. Terus diupdate seiring development.
 
 ## License
 

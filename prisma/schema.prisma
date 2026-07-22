@@ -43,3 +43,101 @@ model Event {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
+// ─── Pricing CMS ──────────────────────────────────────────────
+
+model PricingProduct {
+  id            Int      @id @default(autoincrement())
+  key           String   @unique
+  icon          String
+  iconDark      String?
+  descriptionId String   @db.VarChar(500)
+  descriptionEn String   @db.VarChar(500)
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tiers          PricingTier[]
+  bundleFeatures PricingBundleFeature[]
+
+  @@map("pricing_products")
+}
+
+model PricingTier {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  deployment  String   @db.VarChar(20)
+  name        String   @db.VarChar(50)
+  price       Int
+  period      String   @db.VarChar(100)
+  highlighted Boolean  @default(false)
+  badge       String?  @db.VarChar(50)
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product  PricingProduct    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  features PricingFeature[]
+
+  @@unique([productId, deployment, name])
+  @@map("pricing_tiers")
+}
+
+model PricingFeature {
+  id        Int      @id @default(autoincrement())
+  tierId    Int
+  labelId   String   @db.VarChar(200)
+  labelEn   String   @db.VarChar(200)
+  included  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tier PricingTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
+
+  @@map("pricing_features")
+}
+
+model PricingBundleFeature {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  deployment String   @db.VarChar(20)
+  tierName   String   @db.VarChar(50)
+  labelId    String   @db.VarChar(200)
+  labelEn    String   @db.VarChar(200)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  product PricingProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("pricing_bundle_features")
+}
+
+model PricingDiscount {
+  id              Int      @id @default(autoincrement())
+  minApps         Int
+  discountPercent Int
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([minApps])
+  @@map("pricing_discounts")
+}
+
+model PricingComparison {
+  id              Int      @id @default(autoincrement())
+  labelId         String   @db.VarChar(200)
+  labelEn         String   @db.VarChar(200)
+  showStandard    Boolean  @default(true)
+  showProfessional Boolean @default(false)
+  showPremium     Boolean  @default(false)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("pricing_comparison")
+}

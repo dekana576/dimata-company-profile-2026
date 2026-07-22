@@ -123,10 +123,13 @@ npm install
 npx prisma generate
 npx prisma migrate deploy
 npx prisma db seed
+npx tsx prisma/seed-pricing.ts
 npm run build
 ```
 
 > **Penting:** `npx prisma generate` wajib dijalankan sebelum `migrate deploy`. Prisma 7 memerlukan generated client sebelum bisa connect ke database.
+
+> **Note:** `npx tsx prisma/seed-pricing.ts` hanya dijalankan **sekali di awal** saat pertama kali deploy. Jangan jalankan berulang karena data pricing sudah bisa dikelola dari CMS (`/cms/pricing`). Jika sudah pernah dijalankan, lewati langkah ini.
 
 ### Create Upload Directory
 

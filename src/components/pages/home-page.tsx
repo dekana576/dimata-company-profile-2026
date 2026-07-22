@@ -206,17 +206,28 @@ const INDUSTRIES = [
 interface Client {
   name: string;
   logo: string;
+  isTall: boolean;
 }
 
 const CLIENTS: Client[] = [
-  { name: "Client One", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Two", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Three", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Four", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Five", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Six", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Seven", logo: "/img/client/logo-bpd-w-text.png" },
-  { name: "Client Eight", logo: "/img/client/logo-bpd-w-text.png" },
+  { name: "BPD Bali", logo: "/img/client/logo-bpd-w-text.png", isTall: false },
+  { name: "RAG", logo: "/img/client/logo-rag.png", isTall: false },
+  { name: "Raditya", logo: "/img/client/logo-raditya.png", isTall: false },
+  { name: "Tegal Sari", logo: "/img/client/logo-tegal-sari.png", isTall: true },
+  { name: "Meguna", logo: "/img/client/logo-meguna.png", isTall: true },
+  {
+    name: "Warung semesta",
+    logo: "/img/client/logo-warungsemesta.webp",
+    isTall: false,
+  },
+  { name: "BDW", logo: "/img/client/logo-bdw.png", isTall: true },
+  {
+    name: "Novoturismo",
+    logo: "/img/client/logo-novoturismo.png",
+    isTall: false,
+  },
+  { name: "OTW-TL", logo: "/img/client/logo-otwtl1.png", isTall: true },
+  { name: "BPBD", logo: "/img/client/logo-bpbd-denpasar.png", isTall: true },
 ];
 
 function StatusChip({ className = "" }: { className?: string }) {
@@ -275,7 +286,6 @@ export default function HomePage() {
           {/* Left — copy */}
 
           <div className="flex flex-col items-start text-left">
-
             <h1 className="font-display text-[42px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[58px] lg:text-[68px]">
               {t("home.hero.titleLine1")}
               <br />
@@ -487,20 +497,27 @@ export default function HomePage() {
             {t("home.trustedBy")}
           </span>
         </div>
-        {/* Wrapper utama: Responsive kolom di HP (teks di atas), sebaris di Desktop (teks di kiri) */}
+
+        {/* Wrapper utama */}
         <div className="flex flex-col items-center gap-4 whitespace-nowrap md:flex-row md:gap-6">
           {/* Wrapper Marquee dengan Fade Mask & Group Hover */}
           <div className="group relative flex w-full overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            {/* Track 1: Duplikasi array [...CLIENTS, ...CLIENTS] agar track panjang & anti-glitch */}
-            <div className="flex shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-12 pr-12 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-16 md:pr-16">
+            {/* Track 1: Duplikasi array [...CLIENTS, ...CLIENTS] */}
+            <div className="flex shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24">
               {[...CLIENTS, ...CLIENTS].map((client, i) => (
                 <Image
                   key={`track1-${client.name}-${i}`}
                   src={client.logo}
                   alt={client.name}
-                  width={180}
-                  height={60}
-                  className="h-10 w-auto shrink-0 object-contain grayscale opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 sm:h-12 lg:h-14"
+                  /* Sesuaikan prop width/height agar resolusi aman untuk logo yang diperbesar */
+                  width={client.isTall ? 160 : 260}
+                  height={client.isTall ? 160 : 90}
+                  /* KONDISI UKURAN: Jika isTall true -> tinggi lebih besar (sampai h-24/28), jika false -> ukuran normal */
+                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+                    client.isTall
+                      ? "h-16 sm:h-20 lg:h-24" // Ukuran khusus untuk logo 1:1 atau vertikal
+                      : "h-12 sm:h-14 lg:h-16" // Ukuran standar untuk logo landscape
+                  }`}
                 />
               ))}
             </div>
@@ -508,16 +525,20 @@ export default function HomePage() {
             {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
             <div
               aria-hidden="true"
-              className="flex shrink-0 animate-[marquee_28s_linear_infinite] items-center gap-12 pr-12 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-16 md:pr-16"
+              className="flex shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24"
             >
               {[...CLIENTS, ...CLIENTS].map((client, i) => (
                 <Image
                   key={`track2-${client.name}-${i}`}
                   src={client.logo}
                   alt=""
-                  width={180}
-                  height={60}
-                  className="h-10 w-auto shrink-0 object-contain grayscale opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 sm:h-12 lg:h-14"
+                  width={client.isTall ? 160 : 260}
+                  height={client.isTall ? 160 : 90}
+                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+                    client.isTall
+                      ? "h-16 sm:h-20 lg:h-24"
+                      : "h-12 sm:h-14 lg:h-16"
+                  }`}
                 />
               ))}
             </div>
@@ -526,14 +547,13 @@ export default function HomePage() {
       </section>
       {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
-      <div className="w-full text-center pb-5">
+        <div className="w-full text-center pb-5">
           {/* Label */}
           <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
             {t("home.builtFor")}
           </span>
         </div>
         <div className="flex items-center gap-3 whitespace-nowrap">
-
           {/* Wrapper utama untuk menampung 2 track agar sejajar */}
           <div className="flex overflow-hidden">
             {/* Track 1: Ditambahkan _reverse & duplikasi array agar aman di layar lebar */}

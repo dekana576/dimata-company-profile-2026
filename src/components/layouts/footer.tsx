@@ -69,9 +69,9 @@ const DEFAULT_QUICK_LINKS: FooterLink[] = [
 ];
 
 const DEFAULT_SOCIALS: SocialLink[] = [
-  { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
-  { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
+  { label: "Facebook", href: "https://www.facebook.com/DimataITSolution/", icon: "facebook" },
+  { label: "Instagram", href: "https://instagram.com/dimata_it/", icon: "instagram" },
+  { label: "LinkedIn", href: "https://id.linkedin.com/company/pt-dimata-sora-jayate", icon: "linkedin" },
 ];
 
 const SOCIAL_ICON_MAP = {
@@ -88,7 +88,7 @@ export function Footer({
   phone = "+62 81125031177",
   address = "Jl. Danau Tempe 21A, Sidakarya, Denpasar, Bali 80224",
   socialLinks = DEFAULT_SOCIALS,
-  companyName = "DIMATA IT Solutions",
+  companyName = "PT Dimata Sora Jayate",
 }: FooterProps) {
   const { t } = useLanguage();
   const year = new Date().getFullYear();

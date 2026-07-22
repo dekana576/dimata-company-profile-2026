@@ -106,7 +106,7 @@ export default function HairismaPage() {
               <Reveal delay={100}>
                 <h1 className="mt-6 font-display font-extrabold text-[42px] leading-[1.08] tracking-tight text-foreground sm:text-[56px] lg:text-[62px]">
                   {t("products.hairisma.hero.title.0")} <br className="hidden sm:block" />
-                  <span className="bg-linear-to-r from-primary via-blue-500 to-red-500 bg-clip-text text-transparent">
+                  <span className="bg-linear-to-r from-red-500 via-blue-500 to-blue-300 bg-clip-text text-transparent">
                     {t("products.hairisma.hero.title.1")}
                   </span>
                 </h1>

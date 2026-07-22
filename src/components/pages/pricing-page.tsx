@@ -114,7 +114,7 @@ export default function PricingPage() {
     key: string;
     description: string;
     prices: Record<Deployment, Record<BundleTier, number>>;
-    features: Record<BundleTier, string[]>;
+    features: Record<Deployment, Record<BundleTier, string[]>>;
   }>) ?? [];
 
   const bundleAppsMapped = apiBundleApps.map((apiApp) => {
@@ -444,7 +444,7 @@ export default function PricingPage() {
                   {bundleAppsMapped.map((app) => {
                     const isSelected = selectedApps.includes(app.id);
                     const isExpanded = expandedApps.has(app.id);
-                    const tierFeatures = app.features[bundleTier] ?? [];
+                    const tierFeatures = app.features[deployment]?.[bundleTier] ?? [];
                     const VISIBLE_COUNT = 3;
                     const hiddenCount = tierFeatures.length - VISIBLE_COUNT;
                     const visibleFeatures = isExpanded ? tierFeatures : tierFeatures.slice(0, VISIBLE_COUNT);

@@ -60,9 +60,10 @@ export async function GET(request: Request) {
     // Assemble bundle data
     const bundleApps = products.map((p) => {
       const prices: Record<string, Record<string, number>> = {};
-      const features: Record<string, string[]> = {};
+      const features: Record<string, Record<string, string[]>> = {};
       for (const dep of deployments) {
         prices[dep] = {};
+        features[dep] = {};
         for (const tierName of ["Standard", "Professional", "Premium"]) {
           const tier = tiers.find(
             (t) =>
@@ -71,16 +72,16 @@ export async function GET(request: Request) {
               t.name === tierName
           );
           prices[dep][tierName] = tier?.price ?? 0;
+          features[dep][tierName] = bundleFeatures
+            .filter(
+              (bf) =>
+                bf.productId === p.id &&
+                bf.deployment === dep &&
+                bf.tierName === tierName
+            )
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .map((bf) => (lang === "en" ? bf.labelEn : bf.labelId));
         }
-      }
-      for (const tierName of ["Standard", "Professional", "Premium"]) {
-        features[tierName] = bundleFeatures
-          .filter(
-            (bf) =>
-              bf.productId === p.id && bf.tierName === tierName
-          )
-          .sort((a, b) => a.sortOrder - b.sortOrder)
-          .map((bf) => (lang === "en" ? bf.labelEn : bf.labelId));
       }
       return {
         key: p.key,

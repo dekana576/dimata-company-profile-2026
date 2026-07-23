@@ -368,7 +368,7 @@ function SolutionSection({
                   {...staggerItem}
                   className="flex flex-col rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
-                  <div className="mb-5 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="mb-5 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
                   {/* Title ditampilkan asli tanpa fungsi t() */}
@@ -397,7 +397,7 @@ export default function ProductsPage() {
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5">
+      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-linear-to-br from-background via-background to-primary/5">
         <div className="relative z-10 max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

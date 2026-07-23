@@ -87,7 +87,7 @@ export default function SolutionsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 py-20 md:py-28"
+        className="relative overflow-hidden bg-linear-to-br from-background via-background to-primary/5 py-20 md:py-28"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -146,7 +146,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-b from-background to-primary/5 py-20 md:py-24">
+      <section className="bg-linear-to-b from-background to-primary/5 py-20 md:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">

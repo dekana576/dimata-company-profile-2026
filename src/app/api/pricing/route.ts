@@ -1,6 +1,31 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * @swagger
+ * /api/pricing:
+ *   get:
+ *     tags: [Pricing]
+ *     summary: Get full pricing data (public)
+ *     description: Returns assembled pricing with products, tiers, bundle apps, discounts, and comparison. Supports bilingual (id/en).
+ *     parameters:
+ *       - in: query
+ *         name: lang
+ *         schema:
+ *           type: string
+ *           enum: [id, en]
+ *           default: id
+ *         description: Language for localized fields
+ *     responses:
+ *       200:
+ *         description: Full pricing structure
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

@@ -2,9 +2,50 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 
+/**
+ * @swagger
+ * /api/pricing/product:
+ *   post:
+ *     tags: [Pricing]
+ *     summary: Create a new pricing product
+ *     description: Creates a product with 6 default tiers (Standard/Professional/Premium x SaaS/OnPremise).
+ *     security:
+ *       - cookieAuth: []
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [key, icon, descriptionId, descriptionEn]
+ *             properties:
+ *               key:
+ *                 type: string
+ *                 description: Unique product key (e.g. "prochain", "hanoman")
+ *               icon:
+ *                 type: string
+ *               iconDark:
+ *                 type: string
+ *               descriptionId:
+ *                 type: string
+ *               descriptionEn:
+ *                 type: string
+ *               sortOrder:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Product created with default tiers
+ *       400:
+ *         description: Validation error or duplicate key
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 export async function POST(request: Request) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser(request);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

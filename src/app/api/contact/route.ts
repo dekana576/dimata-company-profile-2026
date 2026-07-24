@@ -1,6 +1,62 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/mail";
 
+/**
+ * @swagger
+ * /api/contact:
+ *   post:
+ *     tags: [Contact]
+ *     summary: Send a contact form message
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, message]
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Sender name
+ *               email:
+ *                 type: string
+ *                 description: Sender email address
+ *               subject:
+ *                 type: string
+ *                 description: Message subject (optional)
+ *               message:
+ *                 type: string
+ *                 description: Message content
+ *     responses:
+ *       200:
+ *         description: Email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Failed to send email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 export async function POST(request: Request) {
   try {
     const body = await request.json();

@@ -26,11 +26,22 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
   }
 }
 
-export async function getCurrentUser(): Promise<JWTPayload | null> {
+export async function getCurrentUser(request?: Request): Promise<JWTPayload | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("cms-token")?.value;
-  if (!token) return null;
-  return verifyToken(token);
+  const cookieToken = cookieStore.get("cms-token")?.value;
+  if (cookieToken) {
+    const user = await verifyToken(cookieToken);
+    if (user) return user;
+  }
+
+  if (request) {
+    const headerToken = getTokenFromRequest(request);
+    if (headerToken) {
+      return verifyToken(headerToken);
+    }
+  }
+
+  return null;
 }
 
 export function getTokenFromRequest(request: Request): string | null {

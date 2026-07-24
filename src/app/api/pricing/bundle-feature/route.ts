@@ -2,9 +2,51 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 
+/**
+ * @swagger
+ * /api/pricing/bundle-feature:
+ *   post:
+ *     tags: [Pricing]
+ *     summary: Create a bundle feature for a product
+ *     security:
+ *       - cookieAuth: []
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [productId, deployment, tierName, labelId, labelEn]
+ *             properties:
+ *               productId:
+ *                 type: integer
+ *               deployment:
+ *                 type: string
+ *                 enum: [saas, onpremise]
+ *               tierName:
+ *                 type: string
+ *                 enum: [Standard, Professional, Premium]
+ *               labelId:
+ *                 type: string
+ *               labelEn:
+ *                 type: string
+ *               sortOrder:
+ *                 type: integer
+ *                 default: 0
+ *     responses:
+ *       201:
+ *         description: Bundle feature created
+ *       400:
+ *         description: Missing required fields
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 export async function POST(request: Request) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser(request);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

@@ -391,6 +391,7 @@ export default function CareersPage() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       {/* ================= HERO SECTION (FULL IMAGE RIGHT W/ GRADIENTS) ================= */}
       <section className="relative isolate min-h-[95vh] flex items-center bg-background overflow-hidden">
+        <AnimatedBackground />
         {/* Latar Belakang Gambar Penuh di Kanan */}
         <div className="absolute inset-0 lg:left-[35%] z-0">
           <Image
@@ -455,7 +456,7 @@ export default function CareersPage() {
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {VALUE_PROPS.map(({ icon: Icon, title, description }, i) => (
               <Reveal key={title} delay={i * 100} className="relative group">
-                <div className="absolute inset-0 bg-background rounded-3xl shadow-sm transition-transform duration-300 group-hover:-translate-y-2" />
+                <div className="absolute inset-0 bg-background rounded-3xl shadow-sm transition-transform duration-300" />
                 <div className="relative p-8 flex flex-col h-full border border-foreground/10 rounded-3xl">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground mb-6 shadow-md">
                     <Icon className="h-6 w-6" strokeWidth={2} />
@@ -469,53 +470,7 @@ export default function CareersPage() {
         </div>
       </section>
 
-      {/* ================= SLIDER GALLERY ================= */}
-      <section className="py-24 sm:py-32 bg-background overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6">
-          <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
-            <div className="max-w-2xl">
-              <h2 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
-                Intip Markas Kami
-              </h2>
-              <p className="mt-4 text-[16px] text-foreground/60">
-                Tempat yang dirancang untuk fokus kolaborasi, namun tetap memberikan ruang nyaman untuk berkreasi secara individu.
-              </p>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 text-foreground/50 text-[14px] font-medium">
-              <span>Geser untuk melihat</span>
-              <ArrowRight className="h-4 w-4" />
-            </div>
-          </Reveal>
-        </div>
-
-        {/* Scrollable Container Container */}
-        <Reveal delay={100} className="w-full relative">
-          <div 
-            ref={sliderRef}
-            // Efek memudar di kanan dan kiri menggunakan CSS mask-image
-            style={{ 
-              WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
-              maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
-            }}
-            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-[20vw] sm:px-[30vw] md:px-[35vw]"
-          >
-            {OFFICE_PHOTOS.map((photo) => (
-              <div
-                key={photo.src}
-                className="relative aspect-[4/3] w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[36rem] shrink-0 snap-center overflow-hidden rounded-none border border-foreground/10 group"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
+      
       {/* ================= HIRING PROCESS ================= */}
       <section className="bg-foreground/5 py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6">
@@ -773,16 +728,16 @@ export default function CareersPage() {
       </section>
 
       {/* ================= CLOSING CTA ================= */}
-      <section className="relative isolate py-24 sm:py-32 bg-foreground text-background overflow-hidden">
+      <section className="relative isolate py-24 sm:py-32 bg-gray-950 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
         <Reveal className="relative mx-auto max-w-3xl px-6 text-center">
-          <span className="inline-flex items-center justify-center rounded-full bg-background/10 p-4 mb-6">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/10 p-4 mb-6">
             <Mail className="h-8 w-8 text-primary" strokeWidth={1.5} />
           </span>
           <h2 className="font-display text-[36px] font-bold tracking-tight sm:text-[48px]">
             Belum menemukan posisi yang pas?
           </h2>
-          <p className="mt-6 text-[18px] leading-relaxed text-background/70">
+          <p className="mt-6 text-[18px] leading-relaxed text-white/70">
             Jangan biarkan itu menghalangimu. Kami selalu terbuka untuk talenta hebat. Kirimkan CV dan portofolio kamu, dan kami akan menghubungimu saat ada posisi yang tepat.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -795,7 +750,7 @@ export default function CareersPage() {
             </a>
             <Link
               href="/contact"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-background/10 px-8 py-4 text-[15px] font-bold text-background border border-background/20 transition-colors hover:bg-background/20"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-8 py-4 text-[15px] font-bold text-white border border-white/20 transition-colors hover:bg-background/20"
             >
               Hubungi Tim HR
             </Link>

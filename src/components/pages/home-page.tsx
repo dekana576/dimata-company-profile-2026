@@ -488,63 +488,67 @@ export default function HomePage() {
       </section>
 
       <section
-        aria-label="Trusted by our clients"
-        className="overflow-hidden border-y border-teal/40 bg-background py-8 lg:py-10"
+  aria-label="Trusted by our clients"
+  className="overflow-hidden border-y border-teal/40 bg-background py-8 lg:py-10"
+>
+  <div className="w-full text-center pb-5">
+    {/* Label */}
+    <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
+      {t("home.trustedBy")}
+    </span>
+  </div>
+
+  {/* Wrapper utama */}
+  <div className="flex flex-col items-center gap-4 whitespace-nowrap md:flex-row md:gap-6">
+    {/* Wrapper Marquee dengan Fade Mask & Group Hover */}
+    <div className="group relative flex w-full overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      
+      {/* Track 1 */}
+      {/* Ditambahkan w-max dan will-change-transform untuk GPU acceleration */}
+      <div className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24">
+        {[...CLIENTS, ...CLIENTS].map((client, i) => (
+          <Image
+            key={`track1-${client.name}-${i}`}
+            src={client.logo}
+            alt={client.name}
+            width={client.isTall ? 160 : 260}
+            height={client.isTall ? 160 : 90}
+            // Tambahkan draggable={false} agar gambar tidak terseret secara tidak sengaja
+            draggable={false}
+            className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+              client.isTall
+                ? "h-16 sm:h-20 lg:h-24"
+                : "h-12 sm:h-14 lg:h-16"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
+      <div
+        aria-hidden="true"
+        className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24"
       >
-        <div className="w-full text-center pb-5">
-          {/* Label */}
-          <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
-            {t("home.trustedBy")}
-          </span>
-        </div>
-
-        {/* Wrapper utama */}
-        <div className="flex flex-col items-center gap-4 whitespace-nowrap md:flex-row md:gap-6">
-          {/* Wrapper Marquee dengan Fade Mask & Group Hover */}
-          <div className="group relative flex w-full overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            {/* Track 1: Duplikasi array [...CLIENTS, ...CLIENTS] */}
-            <div className="flex shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24">
-              {[...CLIENTS, ...CLIENTS].map((client, i) => (
-                <Image
-                  key={`track1-${client.name}-${i}`}
-                  src={client.logo}
-                  alt={client.name}
-                  /* Sesuaikan prop width/height agar resolusi aman untuk logo yang diperbesar */
-                  width={client.isTall ? 160 : 260}
-                  height={client.isTall ? 160 : 90}
-                  /* KONDISI UKURAN: Jika isTall true -> tinggi lebih besar (sampai h-24/28), jika false -> ukuran normal */
-                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
-                    client.isTall
-                      ? "h-16 sm:h-20 lg:h-24" // Ukuran khusus untuk logo 1:1 atau vertikal
-                      : "h-12 sm:h-14 lg:h-16" // Ukuran standar untuk logo landscape
-                  }`}
-                />
-              ))}
-            </div>
-
-            {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
-            <div
-              aria-hidden="true"
-              className="flex shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24"
-            >
-              {[...CLIENTS, ...CLIENTS].map((client, i) => (
-                <Image
-                  key={`track2-${client.name}-${i}`}
-                  src={client.logo}
-                  alt=""
-                  width={client.isTall ? 160 : 260}
-                  height={client.isTall ? 160 : 90}
-                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
-                    client.isTall
-                      ? "h-16 sm:h-20 lg:h-24"
-                      : "h-12 sm:h-14 lg:h-16"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+        {[...CLIENTS, ...CLIENTS].map((client, i) => (
+          <Image
+            key={`track2-${client.name}-${i}`}
+            src={client.logo}
+            alt=""
+            width={client.isTall ? 160 : 260}
+            height={client.isTall ? 160 : 90}
+            draggable={false}
+            className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+              client.isTall
+                ? "h-16 sm:h-20 lg:h-24"
+                : "h-12 sm:h-14 lg:h-16"
+            }`}
+          />
+        ))}
+      </div>
+      
+    </div>
+  </div>
+</section>
       {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
         <div className="w-full text-center pb-5">

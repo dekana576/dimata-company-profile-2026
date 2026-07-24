@@ -63,6 +63,7 @@ import {
   Target,
   Layers3,
   type LucideIcon,
+  Briefcase,
 } from "lucide-react";
 import { ThemeLogo } from "@/components/ui/theme-logo";
 import { useLanguage } from "@/contexts/language-context";
@@ -124,6 +125,13 @@ const DEFAULT_ITEMS: NavItem[] = [
         description: "nav.visionMission.desc",
         icon: Target,
         iconClassName: "bg-red-500/10 text-red-500",
+      },
+      {
+        label: "nav.career",
+        href: "/career",
+        description: "nav.career.desc",
+        icon: Briefcase,
+        iconClassName: "bg-green-500/10 text-green-500",
       },
     ],
   },

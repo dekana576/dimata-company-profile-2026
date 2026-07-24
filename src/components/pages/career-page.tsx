@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -320,15 +320,14 @@ const FAQS: FaqItem[] = [
 interface OfficePhoto {
   src: string;
   alt: string;
-  caption: string;
 }
 
 const OFFICE_PHOTOS: OfficePhoto[] = [
-  { src: "/img/career/office-workspace.png", alt: "Ruang kerja utama", caption: "Ruang Kerja Utama" },
-  { src: "/img/career/meeting-room.png", alt: "Ruang meeting", caption: "Ruang Meeting" },
-  { src: "/img/career/lounge-and-pantry.png", alt: "Lounge & Pantry", caption: "Lounge & Pantry" },
-  { src: "/img/karir/office-discussion.jpg", alt: "Area diskusi", caption: "Area Diskusi" },
-  { src: "/img/karir/office-outdoor.jpg", alt: "Balkon & Area Outdoor", caption: "Balkon & Area Outdoor" },
+  { src: "/img/career/office-workspace.png", alt: "Ruang kerja utama" },
+  { src: "/img/career/meeting-room.png", alt: "Ruang meeting" },
+  { src: "/img/career/lounge-and-pantry.png", alt: "Lounge & Pantry" },
+  { src: "/img/career/office-discussion.png", alt: "Area diskusi" },
+  { src: "/img/career/office-outdoor.png", alt: "Balkon & Area Outdoor" },
 ];
 
 function DepartmentBadge({ department }: { department: string }) {
@@ -343,6 +342,8 @@ function DepartmentBadge({ department }: { department: string }) {
 export default function CareersPage() {
   const [activeDept, setActiveDept] = useState("Semua");
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const filteredJobs = useMemo(
     () => (activeDept === "Semua" ? JOBS : JOBS.filter((j) => j.department === activeDept)),
@@ -371,12 +372,20 @@ export default function CareersPage() {
     } else {
       document.body.style.overflow = "unset";
     }
-
-    // Cleanup saat komponen unmount
     return () => {
       document.body.style.overflow = "unset";
     };
   }, [selectedJobId]);
+
+  // Scroll otomatis ke tengah slider saat halaman dimuat
+  useEffect(() => {
+    if (sliderRef.current) {
+      const container = sliderRef.current;
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      container.scrollLeft = (scrollWidth - clientWidth) / 2;
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
@@ -460,42 +469,51 @@ export default function CareersPage() {
         </div>
       </section>
 
-      {/* ================= BENTO GALLERY ================= */}
-      <section className="py-24 sm:py-32 bg-background">
+      {/* ================= SLIDER GALLERY ================= */}
+      <section className="py-24 sm:py-32 bg-background overflow-hidden">
         <div className="mx-auto max-w-7xl px-6">
-          <Reveal className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
-              Intip Markas Kami
-            </h2>
-            <p className="mt-4 text-[16px] text-foreground/60">
-              Tempat yang dirancang untuk fokus kolaborasi, namun tetap memberikan ruang nyaman untuk berkreasi secara individu.
-            </p>
+          <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+            <div className="max-w-2xl">
+              <h2 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[40px]">
+                Intip Markas Kami
+              </h2>
+              <p className="mt-4 text-[16px] text-foreground/60">
+                Tempat yang dirancang untuk fokus kolaborasi, namun tetap memberikan ruang nyaman untuk berkreasi secara individu.
+              </p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-foreground/50 text-[14px] font-medium">
+              <span>Geser untuk melihat</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
           </Reveal>
+        </div>
 
-          {/* Masonry/Bento Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4 h-auto md:h-[600px]">
-            {OFFICE_PHOTOS.slice(0, 5).map((photo, i) => (
-              <Reveal 
-                key={photo.src} 
-                delay={i * 50} 
-                className={`relative overflow-hidden rounded-3xl border border-foreground/10 group ${
-                  i === 0 ? "md:col-span-2 md:row-span-2" : ""
-                } ${i === 1 || i === 2 ? "md:col-span-1 md:row-span-1" : ""}`}
+        {/* Scrollable Container Container */}
+        <Reveal delay={100} className="w-full relative">
+          <div 
+            ref={sliderRef}
+            // Efek memudar di kanan dan kiri menggunakan CSS mask-image
+            style={{ 
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+              maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+            }}
+            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-[20vw] sm:px-[30vw] md:px-[35vw]"
+          >
+            {OFFICE_PHOTOS.map((photo) => (
+              <div
+                key={photo.src}
+                className="relative aspect-[4/3] w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[36rem] shrink-0 snap-center overflow-hidden rounded-none border border-foreground/10 group"
               >
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
-                <span className="absolute bottom-6 left-6 text-[15px] font-semibold text-white">
-                  {photo.caption}
-                </span>
-              </Reveal>
+              </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ================= HIRING PROCESS ================= */}

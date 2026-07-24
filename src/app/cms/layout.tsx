@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Image, LogOut, Home, Menu, X, Calendar, DollarSign } from "lucide-react";
+import { Image, LogOut, Home, Menu, X, Calendar, DollarSign, FolderGit2 } from "lucide-react";
 
 interface User {
   id: number;
@@ -75,6 +75,7 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
     { href: "/cms", label: "Dashboard", icon: Home },
     { href: "/cms/gallery", label: "Gallery", icon: Image },
     { href: "/cms/events", label: "Events", icon: Calendar },
+    { href: "/cms/project", label: "Projects", icon: FolderGit2 },
     { href: "/cms/pricing", label: "Pricing", icon: DollarSign },
   ];
 

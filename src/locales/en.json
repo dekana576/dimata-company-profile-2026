@@ -1203,5 +1203,25 @@
   "pricing.cta.title": "Need a Personalized Solution?",
   "pricing.cta.subtitle": "Contact us to discuss your specific business needs. Our team will help you find the right plan.",
   "pricing.cta.contact": "Contact Us",
-  "pricing.cta.seeProducts": "View Products"
+  "pricing.cta.seeProducts": "View Products",
+
+  "project.hero.title": "Our Project Portfolio",
+  "project.hero.description": "We have partnered with various companies to deliver innovative and reliable custom IT solutions. Here are some featured projects we have worked on.",
+  "project.filter.all": "All",
+  "project.filter.webApp": "Web Application",
+  "project.filter.mobileApp": "Mobile App",
+  "project.filter.erp": "ERP System",
+  "project.filter.custom": "Custom Software",
+  "project.card.client": "Client",
+  "project.card.technologies": "Technologies",
+  "project.card.viewProject": "View Project",
+  "project.card.period": "Period",
+  "project.card.ongoing": "Ongoing",
+  "project.card.completed": "Completed",
+  "project.card.upcoming": "Upcoming",
+  "project.empty.title": "No Projects Yet",
+  "project.empty.description": "Our projects will be displayed here soon. Please check back later.",
+  "project.cta.title": "Have Your Own Project?",
+  "project.cta.description": "We are ready to help bring your custom IT solution to life. Consult your project with us.",
+  "project.cta.button": "Discuss Your Project"
 }

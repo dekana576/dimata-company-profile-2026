@@ -1206,5 +1206,25 @@
   "pricing.cta.title": "Butuh Solusi yang Dipersonalisasi?",
   "pricing.cta.subtitle": "Hubungi kami untuk mendiskusikan kebutuhan spesifik bisnis Anda. Tim kami akan membantu menemukan paket yang tepat.",
   "pricing.cta.contact": "Hubungi Kami",
-  "pricing.cta.seeProducts": "Lihat Produk"
+  "pricing.cta.seeProducts": "Lihat Produk",
+
+  "project.hero.title": "Portofolio Proyek Kami",
+  "project.hero.description": "Kami telah berpartner dengan berbagai perusahaan untuk menghadirkan solusi IT custom yang inovatif dan terpercaya. Berikut beberapa proyek pilihan yang pernah kami kerjakan.",
+  "project.filter.all": "Semua",
+  "project.filter.webApp": "Aplikasi Web",
+  "project.filter.mobileApp": "Aplikasi Mobile",
+  "project.filter.erp": "Sistem ERP",
+  "project.filter.custom": "Software Kustom",
+  "project.card.client": "Client",
+  "project.card.technologies": "Teknologi",
+  "project.card.viewProject": "Lihat Proyek",
+  "project.card.period": "Periode",
+  "project.card.ongoing": "Sedang Berjalan",
+  "project.card.completed": "Selesai",
+  "project.card.upcoming": "Akan Datang",
+  "project.empty.title": "Belum Ada Proyek",
+  "project.empty.description": "Proyek kami akan segera ditampilkan di sini. Silakan kunjungi kembali nanti.",
+  "project.cta.title": "Ingin Membuat Proyek Sendiri?",
+  "project.cta.description": "Kami siap membantu mewujudkan solusi IT custom yang sesuai dengan kebutuhan bisnis Anda. Konsultasikan proyek Anda kepada kami.",
+  "project.cta.button": "Diskusikan Proyek Anda"
 }

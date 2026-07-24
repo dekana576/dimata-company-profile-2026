@@ -1,32 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image, Activity, Calendar, CheckCircle } from "lucide-react";
+import { Image, Activity, Calendar, CheckCircle, FolderGit2 } from "lucide-react";
 
 interface Stats {
   totalImages: number;
   activeImages: number;
   totalEvents: number;
   activeEvents: number;
+  totalProjects: number;
+  activeProjects: number;
 }
 
 export default function CmsDashboard() {
-  const [stats, setStats] = useState<Stats>({ totalImages: 0, activeImages: 0, totalEvents: 0, activeEvents: 0 });
+  const [stats, setStats] = useState<Stats>({ totalImages: 0, activeImages: 0, totalEvents: 0, activeEvents: 0, totalProjects: 0, activeProjects: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       fetch("/api/gallery").then((res) => res.json()),
       fetch("/api/events").then((res) => res.json()),
+      fetch("/api/project").then((res) => res.json()),
     ])
-      .then(([galleryData, eventsData]) => {
+      .then(([galleryData, eventsData, projectData]) => {
         const images = galleryData.images || [];
         const events = eventsData.events || [];
+        const projects = projectData.projects || [];
         setStats({
           totalImages: images.length,
           activeImages: images.filter((img: { isActive: boolean }) => img.isActive).length,
           totalEvents: events.length,
           activeEvents: events.filter((evt: { isActive: boolean }) => evt.isActive).length,
+          totalProjects: projects.length,
+          activeProjects: projects.filter((p: { isActive: boolean }) => p.isActive).length,
         });
       })
       .catch(console.error)
@@ -46,7 +52,7 @@ export default function CmsDashboard() {
       <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
       <p className="mt-2 text-gray-600">Welcome to Dimata CMS</p>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <div className="rounded-lg bg-white p-6 shadow">
           <div className="flex items-center gap-4">
             <div className="rounded-lg bg-blue-100 p-3">
@@ -91,6 +97,30 @@ export default function CmsDashboard() {
             <div>
               <p className="text-sm text-gray-500">Active Events</p>
               <p className="text-2xl font-bold text-gray-900">{stats.activeEvents}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-white p-6 shadow">
+          <div className="flex items-center gap-4">
+            <div className="rounded-lg bg-indigo-100 p-3">
+              <FolderGit2 className="h-6 w-6 text-indigo-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Projects</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalProjects}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-white p-6 shadow">
+          <div className="flex items-center gap-4">
+            <div className="rounded-lg bg-teal-100 p-3">
+              <FolderGit2 className="h-6 w-6 text-teal-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Active Projects</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.activeProjects}</p>
             </div>
           </div>
         </div>

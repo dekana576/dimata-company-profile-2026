@@ -141,3 +141,28 @@ model PricingComparison {
 
   @@map("pricing_comparison")
 }
+
+// ─── Projects CMS ─────────────────────────────────────────────
+
+model Project {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  titleId       String   @db.VarChar(200)
+  titleEn       String   @db.VarChar(200)
+  descriptionId String   @db.VarChar(500)
+  descriptionEn String   @db.VarChar(500)
+  client        String?  @db.VarChar(200)
+  category      String   @db.VarChar(100)
+  technologies  String   @db.VarChar(500)
+  image         String?
+  status        String   @default("completed")
+  startDate     DateTime?
+  endDate       DateTime?
+  externalUrl   String?
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("projects")
+}

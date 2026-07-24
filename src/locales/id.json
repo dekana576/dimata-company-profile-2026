@@ -5,6 +5,8 @@
   "nav.about.companyProfile.desc": "Profil dan sejarah perusahaan kami",
   "nav.visionMission": "Visi & Misi",
   "nav.visionMission.desc": "Visi dan misi kami ke depan",
+  "nav.career": "Karir",
+  "nav.career.desc": "Karir di Dimata",
   "nav.about.footerNote": "Kenali lebih dekat perusahaan kami",
   "nav.about.footerCta": "Lihat semua",
 
@@ -58,11 +60,10 @@
   "home.stats.yearsRunning.caption": "Beroperasi sejak 2002 — bukan rebranding.",
   "home.stats.businessesOnboard.label": "Bisnis bergabung",
   "home.stats.businessesOnboard.caption": "Dari outlet tunggal hingga operasi multi-cabang.",
-  "home.stats.supportDesk.label": "Meja dukungan",
+  "home.stats.supportDesk.label": "Dukungan Penuh",
   "home.stats.supportDesk.caption": "Selalu sedia, setiap jam bisnis Anda beroperasi.",
 
   "home.howItWorks.rollout": "Peluncuran",
-  "home.howItWorks.title": "Dari kickoff hingga dashboard live",
   "home.howItWorks.subtitle": "Tiga langkah yang kami jalankan dengan setiap klien — urutan yang sama, apakah Anda onboarding satu outlet atau lima puluh.",
   "home.howItWorks.step0.title": "Hubungkan",
   "home.howItWorks.step0.description": "Kami memetakan cabang, peran, dan alat yang ada, lalu menghubungkan modul DIMATA yang relevan ke operasional harian Anda.",
@@ -913,10 +914,7 @@
   "home.howItWorks.description": "Jalur tiga langkah yang kami jalankan dengan setiap klien — urutan yang sama, apakah Anda onboarding satu outlet atau lima puluh.",
 
   "home.products.label": "Suite Kami",
-  "home.products.title": "Empat modul. Satu sumber data terintegrasi.",
   "home.products.description": "Setiap modul berdiri sendiri, tetapi nilai nyata muncul saat modul-modul ini berkomunikasi satu sama lain — data dimasukkan sekali, terpantul di mana-mana.",
-  "home.products.connectsTo": "Terhubung ke",
-  "home.products.readMore": "Baca Selengkapnya",
 
   "home.cta.title": "Siap menjalankan setiap cabang dari satu layar?",
   "home.cta.description": "Bicara dengan tim kami tentang modul mana yang paling cocok untuk operasi Anda — sebagian besar klien sudah live dalam hitungan minggu, bukan kuartal.",

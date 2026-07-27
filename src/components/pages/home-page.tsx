@@ -806,7 +806,7 @@ export default function HomePage() {
                           className="inline-flex items-center gap-2 text-[14px] font-semibold text-foreground"
                         >
                           {t("home.products.readMore")}
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-foreground/30 group-hover:text-white">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-primary group-hover:text-white">
                             <ArrowRight className="h-3.5 w-3.5" />
                           </span>
                         </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Calendar, MapPin, ArrowLeft } from "lucide-react";
+import { Calendar, MapPin, ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
 interface Event {

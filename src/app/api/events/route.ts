@@ -139,7 +139,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, slug, description, content, image, location, startDate, endDate, category, status, isActive } = body;
+    const { title, slug, description, content, image, location, registrationUrl, startDate, endDate, category, status, isActive } = body;
 
     if (!title || !slug || !description || !startDate || !endDate) {
       return NextResponse.json(
@@ -164,6 +164,7 @@ export async function POST(request: Request) {
         content: content || null,
         image: image || null,
         location: location || null,
+        registrationUrl: registrationUrl || null,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         category: category || null,

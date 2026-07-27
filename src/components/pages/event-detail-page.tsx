@@ -12,6 +12,7 @@ interface Event {
   content: string | null;
   image: string | null;
   location: string | null;
+  registrationUrl: string | null;
   startDate: Date;
   endDate: Date;
   category: string | null;
@@ -125,6 +126,21 @@ export function EventDetailPage({ event }: { event: Event }) {
             </div>
           )}
         </div>
+
+        {/* Register Button */}
+        {event.registrationUrl && (
+          <div className="mt-8">
+            <a
+              href={event.registrationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl"
+            >
+              Register Now
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        )}
 
         {/* Description */}
         <div className="mt-8">

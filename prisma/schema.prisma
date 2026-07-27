@@ -28,20 +28,21 @@ model GalleryImage {
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
-  slug        String    @unique
-  title       String
-  description String
-  content     String?   @db.LongText
-  image       String?
-  location    String?
-  startDate   DateTime
-  endDate     DateTime
-  category    String?
-  status      String    @default("upcoming")
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  slug            String    @unique
+  title           String
+  description     String
+  content         String?   @db.LongText
+  image           String?
+  location        String?
+  registrationUrl String?
+  startDate       DateTime
+  endDate         DateTime
+  category        String?
+  status          String    @default("upcoming")
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 // ─── Pricing CMS ──────────────────────────────────────────────

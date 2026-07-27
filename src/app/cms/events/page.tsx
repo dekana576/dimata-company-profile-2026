@@ -15,6 +15,7 @@ interface Event {
   content: string | null;
   image: string | null;
   location: string | null;
+  registrationUrl: string | null;
   startDate: string;
   endDate: string;
   category: string | null;
@@ -30,6 +31,7 @@ interface EventFormData {
   content: string;
   image: string;
   location: string;
+  registrationUrl: string;
   startDate: string;
   endDate: string;
   category: string;
@@ -159,7 +161,7 @@ export default function CmsEventsPage() {
     setEditingEvent(null);
     setFormData({
       title: "", slug: "", description: "", content: "", image: "",
-      location: "", startDate: "", endDate: "", category: "", status: "upcoming", isActive: true,
+      location: "", registrationUrl: "", startDate: "", endDate: "", category: "", status: "upcoming", isActive: true,
     });
     setImagePreview("");
     setError("");
@@ -175,6 +177,7 @@ export default function CmsEventsPage() {
       content: event.content || "",
       image: event.image || "",
       location: event.location || "",
+      registrationUrl: event.registrationUrl || "",
       startDate: event.startDate.split("T")[0],
       endDate: event.endDate.split("T")[0],
       category: event.category || "",
@@ -706,6 +709,18 @@ export default function CmsEventsPage() {
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     placeholder="e.g. Grand City Mall, Surabaya"
                   />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Registration URL (optional)</label>
+                  <input
+                    type="url"
+                    value={formData.registrationUrl}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, registrationUrl: e.target.value }))}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                    placeholder="https://forms.google.com/..."
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Leave empty to hide the Register button. Paste a Google Form or other registration link.</p>
                 </div>
 
                 <div>

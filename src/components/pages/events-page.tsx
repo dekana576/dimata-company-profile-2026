@@ -12,6 +12,7 @@ interface Event {
   description: string;
   image: string | null;
   location: string | null;
+  registrationUrl: string | null;
   startDate: string;
   endDate: string;
   category: string | null;
@@ -183,9 +184,16 @@ export function EventsPage() {
                         )}
                       </div>
 
-                      <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>More information</span>
-                        <ArrowRight className="h-4 w-4" />
+                      <div className="mt-4 flex items-center gap-2">
+                        {event.registrationUrl && (
+                          <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                            Open for Registration
+                          </span>
+                        )}
+                        <div className="flex items-center gap-1 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span>More information</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </div>
                       </div>
                     </div>
                   </Link>

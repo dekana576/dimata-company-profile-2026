@@ -144,7 +144,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, slug, description, content, image, location, startDate, endDate, category, status, isActive } = body;
+    const { title, slug, description, content, image, location, registrationUrl, startDate, endDate, category, status, isActive } = body;
 
     const existingEvent = await prisma.event.findUnique({
       where: { id: eventId },
@@ -176,6 +176,7 @@ export async function PUT(
         ...(content !== undefined && { content: content || null }),
         ...(image !== undefined && { image: image || null }),
         ...(location !== undefined && { location: location || null }),
+        ...(registrationUrl !== undefined && { registrationUrl: registrationUrl || null }),
         ...(startDate && { startDate: new Date(startDate) }),
         ...(endDate && { endDate: new Date(endDate) }),
         ...(category !== undefined && { category: category || null }),

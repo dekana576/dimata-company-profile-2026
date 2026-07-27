@@ -50,7 +50,7 @@ export default function CmsEventsPage() {
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [formData, setFormData] = useState<EventFormData>({
     title: "", slug: "", description: "", content: "", image: "",
-    location: "", startDate: "", endDate: "", category: "", status: "upcoming", isActive: true,
+    location: "", registrationUrl: "", startDate: "", endDate: "", category: "", status: "upcoming", isActive: true,
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");

@@ -142,6 +142,47 @@ model PricingComparison {
   @@map("pricing_comparison")
 }
 
+// ─── Career CMS ───────────────────────────────────────────────
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  nameId    String   @unique
+  nameEn    String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobs Job[]
+
+  @@map("departments")
+}
+
+model Job {
+  id                Int      @id @default(autoincrement())
+  slug              String   @unique
+  titleId           String
+  titleEn           String
+  departmentId      Int
+  location          String
+  type              String   @default("Full-time")
+  summaryId         String   @db.VarChar(500)
+  summaryEn         String   @db.VarChar(500)
+  responsibilitiesId String  @db.LongText
+  responsibilitiesEn String  @db.LongText
+  requirementsId    String   @db.LongText
+  requirementsEn    String   @db.LongText
+  applyUrl          String?  @db.VarChar(500)
+  sortOrder         Int      @default(0)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@map("jobs")
+}
+
 // ─── Projects CMS ─────────────────────────────────────────────
 
 model Project {

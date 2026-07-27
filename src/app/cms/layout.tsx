@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Image, LogOut, Home, Menu, X, Calendar, DollarSign, FolderGit2 } from "lucide-react";
+import { Image, LogOut, Home, Menu, X, Calendar, DollarSign, FolderGit2, Briefcase, ChevronDown } from "lucide-react";
 
 interface User {
   id: number;
@@ -17,6 +17,7 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [careerOpen, setCareerOpen] = useState(false);
 
   // Force light theme for CMS
   useEffect(() => {
@@ -79,6 +80,13 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
     { href: "/cms/pricing", label: "Pricing", icon: DollarSign },
   ];
 
+  const careerSubItems = [
+    { href: "/cms/career/departments", label: "Departments" },
+    { href: "/cms/career/jobs", label: "Jobs" },
+  ];
+
+  const isCareerActive = pathname.startsWith("/cms/career");
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Mobile menu button */}
@@ -123,6 +131,47 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+
+            {/* Career Menu */}
+            <div>
+              <button
+                onClick={() => setCareerOpen(!careerOpen)}
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  isCareerActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`}
+              >
+                <Briefcase className="h-5 w-5" />
+                Career
+                <ChevronDown
+                  className={`ml-auto h-4 w-4 transition-transform ${
+                    careerOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {careerOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {careerSubItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-blue-600 text-white"
+                            : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* User section */}

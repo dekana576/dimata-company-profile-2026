@@ -28,27 +28,33 @@ import { Reveal } from "@/components/fragments/scroll-motion";
 import { AnimatedBackground } from "@/components/fragments/animated-background";
 import { useTranslation } from "@/hooks/use-translation";
 
-// Menggunakan ID department untuk filter
-const DEPARTMENTS = ["all", "Engineering", "Product & Design", "Sales & Marketing", "Operations"];
-
-interface JobMeta {
-  id: string;
-  department: string;
-  respCount: number;
-  reqCount: number;
+interface Department {
+  id: number;
+  nameId: string;
+  nameEn: string;
+  sortOrder: number;
+  isActive: boolean;
 }
 
-// Meta object diletakkan di luar render loop agar memori lebih optimal
-const JOBS_META: JobMeta[] = [
-  { id: "backend-engineer", department: "Engineering", respCount: 3, reqCount: 3 },
-  { id: "frontend-engineer", department: "Engineering", respCount: 3, reqCount: 3 },
-  { id: "qa-engineer", department: "Engineering", respCount: 3, reqCount: 3 },
-  { id: "product-designer", department: "Product & Design", respCount: 3, reqCount: 3 },
-  { id: "sales-executive", department: "Sales & Marketing", respCount: 3, reqCount: 3 },
-  { id: "customer-success", department: "Operations", respCount: 3, reqCount: 3 },
-  { id: "implementation-specialist", department: "Operations", respCount: 3, reqCount: 3 },
-  { id: "intern-web-developer", department: "Engineering", respCount: 3, reqCount: 3 },
-];
+interface Job {
+  id: number;
+  slug: string;
+  titleId: string;
+  titleEn: string;
+  departmentId: number;
+  department: Department;
+  location: string;
+  type: string;
+  summaryId: string;
+  summaryEn: string;
+  responsibilitiesId: string;
+  responsibilitiesEn: string;
+  requirementsId: string;
+  requirementsEn: string;
+  applyUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
 
 const VALUE_PROPS_META: { icon: LucideIcon; keyIndex: number }[] = [
   { icon: Rocket, keyIndex: 0 },
@@ -84,34 +90,75 @@ function DepartmentBadge({ department }: { department: string }) {
 }
 
 export default function CareersPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeDept, setActiveDept] = useState("all");
-  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-  
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const filteredJobs = useMemo(
-    () => (activeDept === "all" ? JOBS_META : JOBS_META.filter((j) => j.department === activeDept)),
-    [activeDept],
+  const getDeptName = (dept: Department) => locale === "en" ? dept.nameEn : dept.nameId;
+  const getJobTitle = (job: Job) => locale === "en" ? job.titleEn : job.titleId;
+  const getJobSummary = (job: Job) => locale === "en" ? job.summaryEn : job.summaryId;
+  const getJobResponsibilities = (job: Job) => locale === "en" ? job.responsibilitiesEn : job.responsibilitiesId;
+  const getJobRequirements = (job: Job) => locale === "en" ? job.requirementsEn : job.requirementsId;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [deptRes, jobRes] = await Promise.all([
+          fetch("/api/departments"),
+          fetch("/api/jobs?active=true"),
+        ]);
+        const deptData = await deptRes.json();
+        const jobData = await jobRes.json();
+        setDepartments((deptData.departments || []).filter((d: Department) => d.isActive));
+        setJobs(jobData.jobs || []);
+      } catch (err) {
+        console.error("Error fetching career data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const activeDepartments = useMemo(
+    () => departments.filter((d) => d.isActive).sort((a, b) => a.sortOrder - b.sortOrder),
+    [departments],
   );
 
-  const selectedJob = JOBS_META.find((j) => j.id === selectedJobId) ?? null;
+  const filteredJobs = useMemo(
+    () => (activeDept === "all" ? jobs : jobs.filter((j) => getDeptName(j.department) === activeDept)),
+    [activeDept, jobs, locale],
+  );
 
   const handleSelectDept = (dept: string) => {
     setActiveDept(dept);
-    setSelectedJobId(null);
+    setSelectedJob(null);
   };
 
-  const handleSelectJob = (id: string) => {
-    setSelectedJobId(id);
+  const handleSelectJob = (job: Job) => {
+    setSelectedJob(job);
+  };
+
+  const handleApply = (job: Job) => {
+    if (job.applyUrl) {
+      window.open(job.applyUrl, "_blank", "noopener,noreferrer");
+    } else {
+      const subject = locale === "en" ? `Application — ${getJobTitle(job)}` : `Lamaran — ${getJobTitle(job)}`;
+      window.location.href = `mailto:karir@dimata.id?subject=${encodeURIComponent(subject)}`;
+    }
   };
 
   const closeModal = () => {
-    setSelectedJobId(null);
+    setSelectedJob(null);
   };
 
   useEffect(() => {
-    if (selectedJobId) {
+    if (selectedJob) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -119,7 +166,7 @@ export default function CareersPage() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [selectedJobId]);
+  }, [selectedJob]);
 
   useEffect(() => {
     if (sliderRef.current) {
@@ -129,6 +176,15 @@ export default function CareersPage() {
       container.scrollLeft = (scrollWidth - clientWidth) / 2;
     }
   }, []);
+
+  const parseJsonArray = (json: string): string[] => {
+    try {
+      const parsed = JSON.parse(json);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
@@ -286,33 +342,49 @@ export default function CareersPage() {
           </Reveal>
 
           {/* Filters */}
-          <Reveal delay={100} className="flex flex-wrap justify-center gap-2 mb-12">
-            {DEPARTMENTS.map((dept) => (
+          {!loading && (
+            <Reveal delay={100} className="flex flex-wrap justify-center gap-2 mb-12">
               <button
-                key={dept}
-                onClick={() => handleSelectDept(dept)}
+                onClick={() => handleSelectDept("all")}
                 className={`rounded-full px-5 py-2.5 text-[14px] font-semibold transition-all duration-200 ${
-                  activeDept === dept
+                  activeDept === "all"
                     ? "bg-foreground text-background shadow-md scale-105"
                     : "bg-foreground/5 text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
                 }`}
               >
-                {dept === "all" ? t("career.openings.departments.all") : dept}
+                {t("career.openings.departments.all")}
               </button>
-            ))}
-          </Reveal>
+              {activeDepartments.map((dept) => (
+                <button
+                  key={dept.id}
+                  onClick={() => handleSelectDept(getDeptName(dept))}
+                  className={`rounded-full px-5 py-2.5 text-[14px] font-semibold transition-all duration-200 ${
+                    activeDept === getDeptName(dept)
+                      ? "bg-foreground text-background shadow-md scale-105"
+                      : "bg-foreground/5 text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
+                  }`}
+                >
+                  {getDeptName(dept)}
+                </button>
+              ))}
+            </Reveal>
+          )}
 
           {/* Job Cards Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredJobs.length === 0 ? (
+            {loading ? (
               <p className="col-span-full py-12 text-center text-foreground/50">
-                {t("career.openings.emptyState")}
+                Loading...
+              </p>
+            ) : filteredJobs.length === 0 ? (
+              <p className="col-span-full py-12 text-center text-foreground/50">
+                {locale === "en" ? "No positions available for this department" : "Belum ada job untuk posisi ini"}
               </p>
             ) : (
               filteredJobs.map((job, i) => (
                 <Reveal key={job.id} delay={(i % 6) * 50}>
                   <button
-                    onClick={() => handleSelectJob(job.id)}
+                    onClick={() => handleSelectJob(job)}
                     className="group flex h-full w-full flex-col gap-4 rounded-3xl border border-foreground/10 bg-background p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -320,24 +392,24 @@ export default function CareersPage() {
                         <Briefcase className="h-5 w-5" strokeWidth={2} />
                       </span>
                       <span className="rounded-md bg-foreground/5 px-2.5 py-1 text-[11px] font-bold text-foreground/60 uppercase tracking-wider">
-                        {t(`career.jobs.${job.id}.type`)}
+                        {job.type}
                       </span>
                     </div>
 
                     <div className="mt-2">
                       <h3 className="font-display text-[18px] font-semibold text-foreground leading-tight group-hover:text-primary transition-colors">
-                        {t(`career.jobs.${job.id}.title`)}
+                        {getJobTitle(job)}
                       </h3>
                       <p className="mt-3 text-[14px] leading-relaxed text-foreground/60 line-clamp-2">
-                        {t(`career.jobs.${job.id}.summary`)}
+                        {getJobSummary(job)}
                       </p>
                     </div>
 
                     <div className="mt-auto flex flex-col gap-3 pt-5 border-t border-foreground/5">
-                      <DepartmentBadge department={job.department} />
+                      <DepartmentBadge department={getDeptName(job.department)} />
                       <span className="inline-flex items-center gap-1.5 text-[13px] text-foreground/50">
                         <MapPin className="h-3.5 w-3.5" />
-                        {t(`career.jobs.${job.id}.location`)}
+                        {job.location}
                       </span>
                     </div>
 
@@ -367,7 +439,7 @@ export default function CareersPage() {
           <div className="relative z-10 w-full max-w-3xl max-h-full overflow-y-auto rounded-[2rem] border border-foreground/10 bg-background shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="sticky top-0 z-20 flex items-center justify-between border-b border-foreground/10 bg-background/95 px-6 py-5 backdrop-blur-md sm:px-10">
               <h3 className="font-display text-[20px] sm:text-[24px] font-bold text-foreground truncate pr-4">
-                {t(`career.jobs.${selectedJob.id}.title`)}
+                {getJobTitle(selectedJob)}
               </h3>
               <button
                 onClick={closeModal}
@@ -381,17 +453,17 @@ export default function CareersPage() {
             <div className="p-6 sm:p-10">
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <span className="rounded-md bg-primary/10 px-3 py-1.5 text-[12px] font-bold text-primary uppercase tracking-wider">
-                  {t(`career.jobs.${selectedJob.id}.type`)}
+                  {selectedJob.type}
                 </span>
-                <DepartmentBadge department={selectedJob.department} />
+                <DepartmentBadge department={getDeptName(selectedJob.department)} />
                 <span className="flex items-center gap-1.5 text-[14px] text-foreground/60">
                   <MapPin className="h-4 w-4" />
-                  {t(`career.jobs.${selectedJob.id}.location`)}
+                  {selectedJob.location}
                 </span>
               </div>
 
               <p className="text-[16px] leading-relaxed text-foreground/80 font-medium">
-                {t(`career.jobs.${selectedJob.id}.summary`)}
+                {getJobSummary(selectedJob)}
               </p>
 
               <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -400,10 +472,10 @@ export default function CareersPage() {
                     <span className="h-px w-6 bg-foreground/20" /> {t("career.modal.responsibilities")}
                   </h4>
                   <ul className="flex flex-col gap-3">
-                    {Array.from({ length: selectedJob.respCount }).map((_, idx) => (
+                    {parseJsonArray(getJobResponsibilities(selectedJob)).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-[14px] leading-relaxed text-foreground/70">
                         <ChevronRight className="h-5 w-5 shrink-0 text-primary mt-0.5" />
-                        <span>{t(`career.jobs.${selectedJob.id}.resp.${idx}`)}</span>
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -413,10 +485,10 @@ export default function CareersPage() {
                     <span className="h-px w-6 bg-foreground/20" /> {t("career.modal.requirements")}
                   </h4>
                   <ul className="flex flex-col gap-3">
-                    {Array.from({ length: selectedJob.reqCount }).map((_, idx) => (
+                    {parseJsonArray(getJobRequirements(selectedJob)).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-[14px] leading-relaxed text-foreground/70">
                         <ChevronRight className="h-5 w-5 shrink-0 text-primary mt-0.5" />
-                        <span>{t(`career.jobs.${selectedJob.id}.req.${idx}`)}</span>
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -430,13 +502,13 @@ export default function CareersPage() {
                 >
                   {t("career.modal.cancel")}
                 </button>
-                <a
-                  href={`mailto:karir@dimata.id?subject=${encodeURIComponent(`${t("career.modal.subjectPrefix")} ${t(`career.jobs.${selectedJob.id}.title`)}`)}`}
+                <button
+                  onClick={() => handleApply(selectedJob)}
                   className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-[15px] font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-1"
                 >
                   {t("career.modal.apply")}
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -491,20 +563,14 @@ export default function CareersPage() {
           <p className="mt-6 text-[18px] leading-relaxed text-white/70">
             {t("career.cta.desc")}
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-10 flex items-center justify-center gap-4">
             <a
               href={`mailto:karir@dimata.id?subject=${encodeURIComponent(t("career.cta.btnGeneralSubject"))}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-[15px] font-bold text-primary-foreground shadow-lg transition-transform hover:-translate-y-1"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-[15px] font-bold text-primary-foreground shadow-lg transition-transform hover:-translate-y-1"
             >
               {t("career.cta.btnGeneral")}
               <ArrowRight className="h-4 w-4" />
             </a>
-            <Link
-              href="/contact"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-8 py-4 text-[15px] font-bold text-white border border-white/20 transition-colors hover:bg-background/20"
-            >
-              {t("career.cta.btnContact")}
-            </Link>
           </div>
         </Reveal>
       </section>

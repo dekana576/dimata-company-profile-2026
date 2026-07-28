@@ -24,16 +24,16 @@ import { useLanguage } from "@/contexts/language-context";
  * ------------------------------------------------------------------
  * v2 redesign notes
  *
- * Direction: DIMATA sells a *connected suite*, not four separate apps
- * (ProChain / Hanoman / Hairisma / AISO). Every new element on this
+ * Direction: DIMATA sells a *connected suite*, not separate apps
+ * (ProChain / Hanoman / Hairisma / AISO / PMO). Every new element on this
  * page leans on that one idea — a live "system" that businesses plug
  * into — instead of generic SaaS-marketing furniture:
  * - Hero: an animated node diagram (see components/system-diagram.tsx)
- * showing the four modules feeding one core, plus a mono "readout"
+ * showing the modules feeding one core, plus a mono "readout"
  * status strip (uptime / latency / businesses live) instead of a
  * plain stat row.
  * - Products: each card now states which other modules it exchanges
- * data with ("Connects to ..."), so the numbering (01–04) encodes
+ * data with ("Connects to ..."), so the numbering (01–05) encodes
  * real suite architecture rather than decorative sequencing.
  * - How it works: a genuine 3-step rollout sequence, connected by a
  * single vertical/horizontal line that draws itself in on scroll.
@@ -153,7 +153,7 @@ const PRODUCTS: Product[] = [
     icon: "/img/products/hairisma-logo-no-text.png",
     iconDark: "/img/products/hairisma-logo-no-text-darkmode.png", // Properti iconDark khusus Hairisma
     showcase: "/img/showcase/hairisma.png",
-    connectsTo: ["ProChain", "AISO"],
+    connectsTo: ["ProChain", "AISO", "PMO"],
   },
   {
     number: "04",
@@ -164,6 +164,16 @@ const PRODUCTS: Product[] = [
     icon: "/img/products/hanoman-logo-no-text.png",
     showcase: "/img/showcase/hanoman1.png",
     connectsTo: ["AISO", "ProChain"],
+  },
+  {
+    number: "05",
+    name: "Dimata PMO",
+    name2: "PMO",
+    link: "/products/pmo",
+    description: "home.products.05.description",
+    icon: "/img/products/pmo-logo.png",
+    showcase: "/img/showcase/dimata-pmo.png", // Pastikan aset pmo1.png tersedia
+    connectsTo: ["Hairisma", "AISO"],
   },
 ];
 
@@ -256,6 +266,7 @@ const HERO_TAGS: HeroTag[] = [
   { label: "Hanoman", className: "bg-teal-500 text-white" },
   { label: "Hairisma", className: "bg-pink-500 text-white" },
   { label: "AISO", className: "bg-violet-500 text-white" },
+  { label: "PMO", className: "bg-indigo-500 text-white" },
   { label: "Multi-cabang", className: "bg-orange-500 text-white" },
   { label: "Analitik Real-time", className: "bg-emerald-500 text-white" },
 ];
@@ -328,29 +339,8 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* <a
-              href="#why-us"
-              className="group mt-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-2.5 text-[13.5px] font-medium text-foreground/70 transition-colors hover:bg-foreground/5 hover:text-foreground"
-            >
-              {t("home.hero.whyUs")}
-              <ArrowDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
-            </a> */}
-
             {/* Mono readout strip — signature motif reused in later sections */}
             <div className="mt-14 flex w-full max-w-md flex-wrap gap-x-10 gap-y-5 border-t border-foreground/10 pt-7">
-              {/* {HERO_METRICS.map((m) => (
-                <div key={m.label} className="flex flex-col gap-1">
-                  <Counter
-                    value={m.value}
-                    suffix={m.suffix}
-                    decimals={m.decimals ?? 0}
-                    className="font-mono text-[22px] font-semibold text-foreground"
-                  />
-                  <span className="text-[11px] uppercase tracking-[0.1em] text-foreground/45">
-                    {m.label}
-                  </span>
-                </div>
-              ))} */}
               <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8 w-full justify-center sm:justify-start">
                 <div className="relative isolate flex items-center justify-center">
                   <div
@@ -410,9 +400,9 @@ export default function HomePage() {
             <div className="absolute inset-x-4 -bottom-2 rounded-[24px] border border-separator bg-background/95 p-5 shadow-xl backdrop-blur-lg sm:inset-x-6">
               {/* Tabs produk — grid mengisi penuh lebar kartu, tidak lagi nge-pack ke kiri */}
               <div
-                className="grid gap-1 rounded-full bg-foreground/5 p-1"
+                className="grid gap-1 rounded-full bg-foreground/5 p-1 overflow-x-auto scrollbar-hide"
                 style={{
-                  gridTemplateColumns: `repeat(${PRODUCTS.length}, minmax(0, 1fr))`,
+                  gridTemplateColumns: `repeat(${PRODUCTS.length}, minmax(80px, 1fr))`,
                 }}
               >
                 {PRODUCTS.map((product, i) => (
@@ -421,9 +411,9 @@ export default function HomePage() {
                     type="button"
                     onClick={() => setActiveProduct(i)}
                     aria-pressed={activeProduct === i}
-                    className={`rounded-full px-2 py-2 text-center text-[13px] font-medium transition-colors ${
+                    className={`rounded-full px-2 py-2 text-center text-[12px] sm:text-[13px] font-medium transition-colors ${
                       activeProduct === i
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-foreground/55 hover:text-foreground"
                     }`}
                   >
@@ -474,81 +464,69 @@ export default function HomePage() {
             </div>
           </Reveal>
         </div>
-
-        {/* Scroll cue */}
-        {/* <a
-          href="#why-us"
-          className="group absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[13px] font-medium text-foreground/50 transition-colors hover:text-foreground/80"
-        >
-          {t("home.scrollCue")}
-          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 transition-transform group-hover:translate-y-1">
-            <ArrowDown className="h-4 w-4" />
-          </span>
-        </a> */}
       </section>
 
       <section
-  aria-label="Trusted by our clients"
-  className="overflow-hidden border-y border-teal/40 bg-background py-8 lg:py-10"
->
-  <div className="w-full text-center pb-5">
-    {/* Label */}
-    <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
-      {t("home.trustedBy")}
-    </span>
-  </div>
-
-  {/* Wrapper utama */}
-  <div className="flex flex-col items-center gap-4 whitespace-nowrap md:flex-row md:gap-6">
-    {/* Wrapper Marquee dengan Fade Mask & Group Hover */}
-    <div className="group relative flex w-full overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-      
-      {/* Track 1 */}
-      {/* Ditambahkan w-max dan will-change-transform untuk GPU acceleration */}
-      <div className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24">
-        {[...CLIENTS, ...CLIENTS].map((client, i) => (
-          <Image
-            key={`track1-${client.name}-${i}`}
-            src={client.logo}
-            alt={client.name}
-            width={client.isTall ? 160 : 260}
-            height={client.isTall ? 160 : 90}
-            // Tambahkan draggable={false} agar gambar tidak terseret secara tidak sengaja
-            draggable={false}
-            className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
-              client.isTall
-                ? "h-16 sm:h-20 lg:h-24"
-                : "h-12 sm:h-14 lg:h-16"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
-      <div
-        aria-hidden="true"
-        className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24"
+        aria-label="Trusted by our clients"
+        className="overflow-hidden border-y border-teal/40 bg-background py-8 lg:py-10"
       >
-        {[...CLIENTS, ...CLIENTS].map((client, i) => (
-          <Image
-            key={`track2-${client.name}-${i}`}
-            src={client.logo}
-            alt=""
-            width={client.isTall ? 160 : 260}
-            height={client.isTall ? 160 : 90}
-            draggable={false}
-            className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
-              client.isTall
-                ? "h-16 sm:h-20 lg:h-24"
-                : "h-12 sm:h-14 lg:h-16"
-            }`}
-          />
-        ))}
-      </div>
-      
-    </div>
-  </div>
-</section>
+        <div className="w-full text-center pb-5">
+          {/* Label */}
+          <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
+            {t("home.trustedBy")}
+          </span>
+        </div>
+
+        {/* Wrapper utama */}
+        <div className="flex flex-col items-center gap-4 whitespace-nowrap md:flex-row md:gap-6">
+          {/* Wrapper Marquee dengan Fade Mask & Group Hover */}
+          <div className="group relative flex w-full overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            
+            {/* Track 1 */}
+            <div className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24">
+              {[...CLIENTS, ...CLIENTS].map((client, i) => (
+                <Image
+                  key={`track1-${client.name}-${i}`}
+                  src={client.logo}
+                  alt={client.name}
+                  width={client.isTall ? 160 : 260}
+                  height={client.isTall ? 160 : 90}
+                  draggable={false}
+                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+                    client.isTall
+                      ? "h-16 sm:h-20 lg:h-24"
+                      : "h-12 sm:h-14 lg:h-16"
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Track 2: Duplikat persis Track 1 sebagai penyambung seamless looping */}
+            <div
+              aria-hidden="true"
+              className="flex w-max shrink-0 animate-[marquee_32s_linear_infinite] items-center gap-16 pr-16 will-change-transform motion-reduce:animate-none group-hover:[animation-play-state:paused] md:gap-24 md:pr-24"
+            >
+              {[...CLIENTS, ...CLIENTS].map((client, i) => (
+                <Image
+                  key={`track2-${client.name}-${i}`}
+                  src={client.logo}
+                  alt=""
+                  width={client.isTall ? 160 : 260}
+                  height={client.isTall ? 160 : 90}
+                  draggable={false}
+                  className={`w-auto shrink-0 object-contain opacity-60 transition-all duration-300 hover:scale-110 hover:grayscale-0 hover:opacity-100 ${
+                    client.isTall
+                      ? "h-16 sm:h-20 lg:h-24"
+                      : "h-12 sm:h-14 lg:h-16"
+                  }`}
+                />
+              ))}
+            </div>
+            
+          </div>
+        </div>
+      </section>
+
       {/* ================= TRUST STRIP — industries served, ikut tema ================= */}
       <section className="overflow-hidden border-y border-teal/40 bg-background py-6">
         <div className="w-full text-center pb-5">
@@ -706,9 +684,8 @@ export default function HomePage() {
             </p>
           </Reveal>
 
-          {/* Bento grid: kartu 1 & 4 lebar (8 kolom), kartu 2 & 3 sempit (4 kolom) — checkerboard, bukan sekadar grid rata */}
+          {/* Bento grid: kartu 1 & 4 lebar (8 kolom), kartu 2 & 3 sempit (4 kolom) — checkerboard. Kartu 5 full (12 kolom). */}
           <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12">
-            {/* 3. Parameter icon diubah menjadi iconPath agar jelas bahwa tipe datanya adalah string url */}
             {PRODUCTS.map(
               (
                 {
@@ -725,7 +702,13 @@ export default function HomePage() {
                 <Reveal
                   key={name}
                   delay={(i % 2) * 120}
-                  className={i % 3 === 0 ? "lg:col-span-8" : "lg:col-span-4"}
+                  className={
+                    i === 4
+                      ? "lg:col-span-12"
+                      : i % 3 === 0
+                      ? "lg:col-span-8"
+                      : "lg:col-span-4"
+                  }
                 >
                   <Card
                     variant="transparent"
@@ -742,7 +725,6 @@ export default function HomePage() {
                         className="pointer-events-none absolute inset-0 bg-linear-to-t from-hero via-transparent to-transparent opacity-60"
                       />
 
-                      {/* 4. Diganti dari <Icon /> menjadi komponen <Image /> dari Next.js */}
                       <span className="relative flex h-full w-full items-center justify-center rounded-2xl bg-accent/20 p-1.5 text-hero-foreground backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/15 group-hover:text-primary">
                         <Image
                           src={iconPath}

@@ -170,6 +170,12 @@ const DEFAULT_ITEMS: NavItem[] = [
         iconSrc: "/img/products/aiso-logo-no-text.png",
       },
       {
+        label: "nav.products.pmo",
+        href: "/products/pmo",
+        description: "nav.products.pmo.desc",
+        iconSrc: "/img/products/pmo-logo.png",
+      },
+      {
         label: "nav.solutions",
         href: "/solutions",
         description: "nav.solutions.desc",

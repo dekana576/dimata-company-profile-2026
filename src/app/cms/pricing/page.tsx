@@ -37,6 +37,7 @@ interface PricingTier {
   period: string;
   highlighted: boolean;
   badge: string | null;
+  hidePrice: boolean; // <--- Field baru
   sortOrder: number;
   isActive: boolean;
   features: PricingFeature[];
@@ -95,6 +96,17 @@ export default function CmsPricingPage() {
   } | null>(null);
 
   // Modal states
+  const [showTierModal, setShowTierModal] = useState(false);
+  const [tierForm, setTierForm] = useState({
+    productId: 0,
+    name: "",
+    price: 0,
+    period: "/bulan",
+    highlighted: false,
+    badge: "",
+    hidePrice: false, // <--- Tambahkan initial state
+  });
+
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [editingFeature, setEditingFeature] = useState<PricingFeature | null>(null);
   const [featureForm, setFeatureForm] = useState({ labelId: "", labelEn: "", included: true });
@@ -203,7 +215,48 @@ export default function CmsPricingPage() {
     }
   };
 
-  // ─── Tier Updates ───────────────────────────────────────
+  // ─── Tier CRUD ──────────────────────────────────────────
+
+  const openCreateTier = (productId: number) => {
+    setTierForm({
+      productId,
+      name: "",
+      price: 0,
+      period: deployment === "saas" ? "/bulan" : "/lisensi",
+      highlighted: false,
+      badge: "",
+      hidePrice: false, // Reset hidePrice
+    });
+    setShowTierModal(true);
+  };
+
+  const saveTier = async () => {
+    if (!tierForm.name) {
+      showNotification("error", "Nama tier wajib diisi");
+      return;
+    }
+    try {
+      const res = await fetch("/api/pricing/tier", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...tierForm,
+          deployment,
+          sortOrder: tiers.filter(
+            (t) => t.productId === tierForm.productId && t.deployment === deployment
+          ).length,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      const { tier } = await res.json();
+      const newTier = { ...tier, features: tier.features || [] };
+      setTiers((prev) => [...prev, newTier]);
+      setShowTierModal(false);
+      showNotification("success", "Tier ditambahkan");
+    } catch {
+      showNotification("error", "Gagal menambahkan tier");
+    }
+  };
 
   const updateTier = async (tierId: number, data: Partial<PricingTier>) => {
     try {
@@ -219,6 +272,20 @@ export default function CmsPricingPage() {
       showNotification("success", "Tier diperbarui");
     } catch {
       showNotification("error", "Gagal memperbarui tier");
+    }
+  };
+
+  const deleteTier = async (tierId: number) => {
+    if (!window.confirm("Hapus tier ini beserta seluruh fiturnya?")) return;
+    try {
+      const res = await fetch(`/api/pricing/tier/${tierId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed");
+      setTiers((prev) => prev.filter((t) => t.id !== tierId));
+      showNotification("success", "Tier dihapus");
+    } catch {
+      showNotification("error", "Gagal menghapus tier");
     }
   };
 
@@ -646,7 +713,7 @@ export default function CmsPricingPage() {
                         {product.key}
                       </span>
                       <span className="ml-2 text-sm text-gray-500">
-                        {productTiers.length} tier
+                        {productTiers.length} tier ({deployment})
                       </span>
                     </div>
                     {!product.isActive && (
@@ -675,191 +742,232 @@ export default function CmsPricingPage() {
                 </div>
 
                 {isExpanded && (
-                  <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {productTiers.map((tier) => {
-                      const isTierExpanded = expandedTier === tier.id;
-                      return (
-                        <div
-                          key={tier.id}
-                          className={`border rounded-lg overflow-hidden ${
-                            tier.highlighted
-                              ? "border-blue-300 bg-blue-50/30"
-                              : "border-gray-200"
-                          }`}
-                        >
-                          <div className="px-3 py-2 bg-gray-50 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">
-                                {tier.name}
-                              </span>
-                              {tier.badge && (
-                                <span className="px-1.5 py-0.5 text-[10px] bg-blue-100 text-blue-700 rounded">
-                                  {tier.badge}
+                  <div className="p-4 border-t border-gray-100 bg-white">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-sm font-semibold text-gray-700">Tingkat Harga (Tier)</h4>
+                      <button
+                        onClick={() => openCreateTier(product.id)}
+                        className="text-xs flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-1.5 rounded hover:bg-blue-100 font-medium"
+                      >
+                        <Plus className="h-3 w-3" /> Tambah Tier
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {productTiers.map((tier) => {
+                        const isTierExpanded = expandedTier === tier.id;
+                        return (
+                          <div
+                            key={tier.id}
+                            className={`border rounded-lg overflow-hidden ${
+                              tier.highlighted
+                                ? "border-blue-300 bg-blue-50/30"
+                                : "border-gray-200"
+                            }`}
+                          >
+                            <div className="px-3 py-2 bg-gray-50 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm">
+                                  {tier.name}
                                 </span>
-                              )}
-                            </div>
-                            <button
-                              onClick={() =>
-                                setExpandedTier(
-                                  isTierExpanded ? null : tier.id
-                                )
-                              }
-                              className="text-gray-400 hover:text-gray-600"
-                            >
-                              {isTierExpanded ? (
-                                <ChevronUp className="h-4 w-4" />
-                              ) : (
-                                <ChevronDown className="h-4 w-4" />
-                              )}
-                            </button>
-                          </div>
-
-                          {/* Price display / edit inline */}
-                          <div className="px-3 py-2 space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-bold">
-                                {formatPrice(tier.price)}
-                              </span>
-                              <button
-                                onClick={() =>
-                                  updateTier(tier.id, {
-                                    isActive: !tier.isActive,
-                                  })
-                                }
-                                className="text-gray-400 hover:text-gray-600"
-                                title={
-                                  tier.isActive
-                                    ? "Nonaktifkan"
-                                    : "Aktifkan"
-                                }
-                              >
-                                {tier.isActive ? (
-                                  <ToggleRight className="h-5 w-5 text-green-500" />
-                                ) : (
-                                  <ToggleLeft className="h-5 w-5 text-gray-300" />
+                                {tier.badge && (
+                                  <span className="px-1.5 py-0.5 text-[10px] bg-blue-100 text-blue-700 rounded">
+                                    {tier.badge}
+                                  </span>
                                 )}
-                              </button>
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {tier.period}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => deleteTier(tier.id)}
+                                  className="text-gray-400 hover:text-red-600"
+                                  title="Hapus Tier"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    setExpandedTier(
+                                      isTierExpanded ? null : tier.id
+                                    )
+                                  }
+                                  className="text-gray-400 hover:text-gray-600"
+                                >
+                                  {isTierExpanded ? (
+                                    <ChevronUp className="h-4 w-4" />
+                                  ) : (
+                                    <ChevronDown className="h-4 w-4" />
+                                  )}
+                                </button>
+                              </div>
                             </div>
 
-                            {/* Quick price edit */}
-                            <div className="flex gap-1">
-                              <input
-                                type="number"
-                                defaultValue={tier.price}
-                                className="flex-1 px-2 py-1 text-xs border rounded"
-                                onBlur={(e) => {
-                                  const val = Number(e.target.value);
-                                  if (val !== tier.price) {
-                                    updateTier(tier.id, { price: val });
-                                  }
-                                }}
-                              />
-                              <input
-                                type="text"
-                                defaultValue={tier.period}
-                                className="flex-1 px-2 py-1 text-xs border rounded"
-                                onBlur={(e) => {
-                                  if (e.target.value !== tier.period) {
-                                    updateTier(tier.id, {
-                                      period: e.target.value,
-                                    });
-                                  }
-                                }}
-                              />
-                            </div>
-
-                            <div className="flex gap-2">
-                              <label className="flex items-center gap-1 text-xs">
-                                <input
-                                  type="checkbox"
-                                  checked={tier.highlighted}
-                                  onChange={(e) =>
-                                    updateTier(tier.id, {
-                                      highlighted: e.target.checked,
-                                    })
-                                  }
-                                  className="rounded"
-                                />
-                                Highlight
-                              </label>
-                              <input
-                                type="text"
-                                defaultValue={tier.badge ?? ""}
-                                placeholder="Badge"
-                                className="flex-1 px-2 py-1 text-xs border rounded"
-                                onBlur={(e) =>
-                                  updateTier(tier.id, {
-                                    badge: e.target.value || null,
-                                  })
-                                }
-                              />
-                            </div>
-                          </div>
-
-                          {/* Features */}
-                          {isTierExpanded && (
-                            <div className="px-3 py-2 border-t border-gray-100">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-medium text-gray-500 uppercase">
-                                  Fitur ({tier.features.length})
+                            {/* Price display / edit inline */}
+                            <div className="px-3 py-2 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-bold">
+                                  {formatPrice(tier.price)}
                                 </span>
                                 <button
                                   onClick={() =>
-                                    openCreateFeature(tier.id)
+                                    updateTier(tier.id, {
+                                      isActive: !tier.isActive,
+                                    })
                                   }
-                                  className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                  className="text-gray-400 hover:text-gray-600"
+                                  title={
+                                    tier.isActive
+                                      ? "Nonaktifkan"
+                                      : "Aktifkan"
+                                  }
                                 >
-                                  <Plus className="h-3 w-3" />
-                                  Tambah
+                                  {tier.isActive ? (
+                                    <ToggleRight className="h-5 w-5 text-green-500" />
+                                  ) : (
+                                    <ToggleLeft className="h-5 w-5 text-gray-300" />
+                                  )}
                                 </button>
                               </div>
-                              <div className="space-y-1">
-                                {tier.features.map((f) => (
-                                  <div
-                                    key={f.id}
-                                    className="flex items-center justify-between text-xs py-1 px-2 bg-white rounded border border-gray-100"
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <span
-                                        className={
-                                          f.included
-                                            ? "text-green-600"
-                                            : "text-gray-400"
-                                        }
-                                      >
-                                        {f.included ? "✓" : "✗"}
-                                      </span>
-                                      <span className="truncate max-w-[120px]">
-                                        {f.labelId}
-                                      </span>
-                                    </div>
-                                    <div className="flex gap-1">
-                                      <button
-                                        onClick={() => openEditFeature(f)}
-                                        className="text-gray-400 hover:text-blue-600"
-                                      >
-                                        <Pencil className="h-3 w-3" />
-                                      </button>
-                                      <button
-                                        onClick={() =>
-                                          deleteFeature(f.id, tier.id)
-                                        }
-                                        className="text-gray-400 hover:text-red-600"
-                                      >
-                                        <Trash2 className="h-3 w-3" />
-                                      </button>
-                                    </div>
-                                  </div>
-                                ))}
+                              <div className="text-xs text-gray-500">
+                                {tier.period}
+                              </div>
+
+                              {/* Quick price edit */}
+                              <div className="flex gap-1">
+                                <input
+                                  type="number"
+                                  defaultValue={tier.price}
+                                  className="flex-1 px-2 py-1 text-xs border rounded"
+                                  onBlur={(e) => {
+                                    const val = Number(e.target.value);
+                                    if (val !== tier.price) {
+                                      updateTier(tier.id, { price: val });
+                                    }
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  defaultValue={tier.period}
+                                  className="flex-1 px-2 py-1 text-xs border rounded"
+                                  onBlur={(e) => {
+                                    if (e.target.value !== tier.period) {
+                                      updateTier(tier.id, {
+                                        period: e.target.value,
+                                      });
+                                    }
+                                  }}
+                                />
+                              </div>
+
+                              <div className="flex gap-2 flex-wrap items-center mt-2">
+                                <label className="flex items-center gap-1 text-xs">
+                                  <input
+                                    type="checkbox"
+                                    checked={tier.highlighted}
+                                    onChange={(e) =>
+                                      updateTier(tier.id, {
+                                        highlighted: e.target.checked,
+                                      })
+                                    }
+                                    className="rounded"
+                                  />
+                                  Highlight
+                                </label>
+                                <label className="flex items-center gap-1 text-xs">
+                                  <input
+                                    type="checkbox"
+                                    checked={tier.hidePrice}
+                                    onChange={(e) =>
+                                      updateTier(tier.id, {
+                                        hidePrice: e.target.checked,
+                                      })
+                                    }
+                                    className="rounded text-blue-600"
+                                  />
+                                  Sembunyikan Harga
+                                </label>
+                                <input
+                                  type="text"
+                                  defaultValue={tier.badge ?? ""}
+                                  placeholder="Badge"
+                                  className="flex-1 px-2 py-1 text-xs border rounded mt-1"
+                                  onBlur={(e) =>
+                                    updateTier(tier.id, {
+                                      badge: e.target.value || null,
+                                    })
+                                  }
+                                />
                               </div>
                             </div>
-                          )}
+
+                            {/* Features */}
+                            {isTierExpanded && (
+                              <div className="px-3 py-2 border-t border-gray-100">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-gray-500 uppercase">
+                                    Fitur ({tier.features.length})
+                                  </span>
+                                  <button
+                                    onClick={() =>
+                                      openCreateFeature(tier.id)
+                                    }
+                                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                  >
+                                    <Plus className="h-3 w-3" />
+                                    Tambah
+                                  </button>
+                                </div>
+                                <div className="space-y-1">
+                                  {tier.features.map((f) => (
+                                    <div
+                                      key={f.id}
+                                      className="flex items-center justify-between text-xs py-1 px-2 bg-white rounded border border-gray-100"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <span
+                                          className={
+                                            f.included
+                                              ? "text-green-600"
+                                              : "text-gray-400"
+                                          }
+                                        >
+                                          {f.included ? "✓" : "✗"}
+                                        </span>
+                                        <span className="truncate max-w-[120px]">
+                                          {f.labelId}
+                                        </span>
+                                      </div>
+                                      <div className="flex gap-1">
+                                        <button
+                                          onClick={() => openEditFeature(f)}
+                                          className="text-gray-400 hover:text-blue-600"
+                                        >
+                                          <Pencil className="h-3 w-3" />
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            deleteFeature(f.id, tier.id)
+                                          }
+                                          className="text-gray-400 hover:text-red-600"
+                                        >
+                                          <Trash2 className="h-3 w-3" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                  {tier.features.length === 0 && (
+                                    <p className="text-xs text-gray-400 text-center py-2">Belum ada fitur</p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                      {productTiers.length === 0 && (
+                        <div className="col-span-full py-6 text-center text-sm text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                          Belum ada tier. Klik "Tambah Tier" untuk memulai.
                         </div>
-                      );
-                    })}
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1109,6 +1217,106 @@ export default function CmsPricingPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* ── Tier Modal ── */}
+      {showTierModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Tambah Tier Harga</h3>
+              <button
+                onClick={() => setShowTierModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nama Tier (misal: Standard, Premium)
+                </label>
+                <input
+                  type="text"
+                  value={tierForm.name}
+                  onChange={(e) => setTierForm((p) => ({ ...p, name: e.target.value }))}
+                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Harga (Rp)
+                  </label>
+                  <input
+                    type="number"
+                    value={tierForm.price}
+                    onChange={(e) => setTierForm((p) => ({ ...p, price: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Periode (misal: /bulan)
+                  </label>
+                  <input
+                    type="text"
+                    value={tierForm.period}
+                    onChange={(e) => setTierForm((p) => ({ ...p, period: e.target.value }))}
+                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 mt-4 border border-gray-200 p-3 rounded-lg">
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 text-sm flex-1">
+                    <input
+                      type="checkbox"
+                      checked={tierForm.highlighted}
+                      onChange={(e) => setTierForm((p) => ({ ...p, highlighted: e.target.checked }))}
+                      className="rounded"
+                    />
+                    Highlight Kartu
+                  </label>
+                  <label className="flex items-center gap-2 text-sm flex-1 text-blue-700 font-medium">
+                    <input
+                      type="checkbox"
+                      checked={tierForm.hidePrice}
+                      onChange={(e) => setTierForm((p) => ({ ...p, hidePrice: e.target.checked }))}
+                      className="rounded border-blue-400"
+                    />
+                    Sembunyikan Harga
+                  </label>
+                </div>
+                <div className="w-full">
+                  <input
+                    type="text"
+                    placeholder="Badge (opsional)"
+                    value={tierForm.badge}
+                    onChange={(e) => setTierForm((p) => ({ ...p, badge: e.target.value }))}
+                    className="w-full px-3 py-1.5 border rounded text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => setShowTierModal(false)}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Batal
+              </button>
+              <button
+                onClick={saveTier}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+              >
+                <Save className="h-4 w-4" />
+                Simpan
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -1387,7 +1595,7 @@ export default function CmsPricingPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="contoh: prochain"
+                  placeholder="contoh: prochain, pmo"
                   value={productForm.key}
                   onChange={(e) =>
                     setProductForm((p) => ({ ...p, key: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }))
@@ -1471,5 +1679,3 @@ export default function CmsPricingPage() {
     </div>
   );
 }
-
-

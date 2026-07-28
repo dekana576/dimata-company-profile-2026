@@ -1,31 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * @swagger
- * /api/pricing:
- *   get:
- *     tags: [Pricing]
- *     summary: Get full pricing data (public)
- *     description: Returns assembled pricing with products, tiers, bundle apps, discounts, and comparison. Supports bilingual (id/en).
- *     parameters:
- *       - in: query
- *         name: lang
- *         schema:
- *           type: string
- *           enum: [id, en]
- *           default: id
- *         description: Language for localized fields
- *     responses:
- *       200:
- *         description: Full pricing structure
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -49,21 +24,17 @@ export async function GET(request: Request) {
       orderBy: { sortOrder: "asc" },
     });
 
-    const productMap = new Map(products.map((p) => [p.key, p]));
-
-    // Assemble pricing data per deployment
     const deployments = ["saas", "onpremise"] as const;
-    const productKeys = ["prochain", "hanoman", "hairisma", "aiso"] as const;
-
     const pricing: Record<string, Record<string, { id: string; tiers: unknown[] }>> = {};
+    
     for (const dep of deployments) {
       pricing[dep] = {};
-      for (const pk of productKeys) {
-        const product = productMap.get(pk);
-        if (!product) continue;
+      for (const product of products) {
+        const pk = product.key;
         const productTiers = tiers.filter(
           (t) => t.productId === product.id && t.deployment === dep
         );
+        
         pricing[dep][pk] = {
           id: pk,
           tiers: productTiers.map((t) => ({
@@ -73,6 +44,7 @@ export async function GET(request: Request) {
             period: t.period,
             highlighted: t.highlighted,
             badge: t.badge,
+            hidePrice: t.hidePrice,
             features: t.features.map((f) => ({
               label: lang === "en" ? f.labelEn : f.labelId,
               included: f.included,
@@ -85,10 +57,14 @@ export async function GET(request: Request) {
     // Assemble bundle data
     const bundleApps = products.map((p) => {
       const prices: Record<string, Record<string, number>> = {};
+      const hidePrices: Record<string, Record<string, boolean>> = {}; // <-- TAMBAHKAN INI
       const features: Record<string, Record<string, string[]>> = {};
+      
       for (const dep of deployments) {
         prices[dep] = {};
+        hidePrices[dep] = {}; // <-- TAMBAHKAN INI
         features[dep] = {};
+        
         for (const tierName of ["Standard", "Professional", "Premium"]) {
           const tier = tiers.find(
             (t) =>
@@ -97,6 +73,7 @@ export async function GET(request: Request) {
               t.name === tierName
           );
           prices[dep][tierName] = tier?.price ?? 0;
+          hidePrices[dep][tierName] = tier?.hidePrice ?? false; // <-- TAMBAHKAN INI
           features[dep][tierName] = bundleFeatures
             .filter(
               (bf) =>
@@ -112,11 +89,11 @@ export async function GET(request: Request) {
         key: p.key,
         description: lang === "en" ? p.descriptionEn : p.descriptionId,
         prices,
+        hidePrices, // <-- TAMBAHKAN INI KE RESPONS API
         features,
       };
     });
 
-    // Assemble comparison
     const comparisonData = comparison.map((c) => ({
       label: lang === "en" ? c.labelEn : c.labelId,
       tiers: [

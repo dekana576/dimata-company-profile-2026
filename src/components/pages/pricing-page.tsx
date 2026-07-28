@@ -11,7 +11,7 @@ import { useLanguage } from "@/contexts/language-context";
 // ─── Types ─────────────────────────────────────────────────────
 
 type Deployment = "saas" | "onpremise";
-type ProductKey = "prochain" | "hanoman" | "hairisma" | "aiso";
+type ProductKey = "prochain" | "hanoman" | "hairisma" | "aiso" | "pmo";
 
 interface PricingTier {
   name: string;
@@ -19,6 +19,7 @@ interface PricingTier {
   period: string;
   highlighted?: boolean;
   badge?: string;
+  hidePrice?: boolean;
   features: { label: string; included: boolean }[];
 }
 
@@ -36,6 +37,7 @@ const PRODUCTS: { id: ProductKey; nameKey: string; icon: string; iconDark?: stri
   { id: "hanoman", nameKey: "pricing.products.hanoman", icon: "/img/products/hanoman-logo-no-text.png" },
   { id: "hairisma", nameKey: "pricing.products.hairisma", icon: "/img/products/hairisma-logo-no-text.png", iconDark: "/img/products/hairisma-logo-no-text-darkmode.png" },
   { id: "aiso", nameKey: "pricing.products.aiso", icon: "/img/products/aiso-logo-no-text.png" },
+  { id: "pmo", nameKey: "pricing.products.pmo", icon: "/img/products/pmo-logo.png" },
 ];
 
 const DEPLOYMENTS: { id: Deployment; nameKey: string; icon: typeof Cloud }[] = [
@@ -96,7 +98,9 @@ export default function PricingPage() {
 
   useEffect(() => {
     setDataLoading(true);
-    fetch(`/api/pricing?lang=${locale}`)
+    fetch(`/api/pricing?lang=${locale}&t=${new Date().getTime()}`, {
+      cache: "no-store",
+    })
       .then((res) => res.json())
       .then((data) => {
         setApiData(data);
@@ -110,10 +114,12 @@ export default function PricingPage() {
   const pricing = (apiData?.pricing as Record<Deployment, Record<ProductKey, ProductPricing>> | undefined);
   const currentPricing = pricing?.[deployment]?.[selectedProduct];
 
+  // Interface baru yang mendukung hidePrices
   const apiBundleApps = (apiData?.bundleApps as Array<{
     key: string;
     description: string;
     prices: Record<Deployment, Record<BundleTier, number>>;
+    hidePrices: Record<Deployment, Record<BundleTier, boolean>>;
     features: Record<Deployment, Record<BundleTier, string[]>>;
   }>) ?? [];
 
@@ -126,6 +132,7 @@ export default function PricingPage() {
       icon: product?.icon ?? "",
       iconDark: product?.iconDark,
       prices: apiApp.prices,
+      hidePrices: apiApp.hidePrices, // Tangkap data hidePrices
       features: apiApp.features,
     };
   });
@@ -165,6 +172,10 @@ export default function PricingPage() {
   const getAppPrice = (app: (typeof bundleAppsMapped)[number]) =>
     app.prices[deployment]?.[bundleTier] ?? 0;
 
+  // Cek apakah aplikasi yang sedang dirender harganya disembunyikan
+  const getAppHidePrice = (app: (typeof bundleAppsMapped)[number]) =>
+    app.hidePrices?.[deployment]?.[bundleTier] ?? false;
+
   const bundleOriginalTotal = selectedApps.reduce(
     (sum, appId) => {
       const app = bundleAppsMapped.find((a) => a.id === appId);
@@ -184,6 +195,12 @@ export default function PricingPage() {
   const discountLabels: Record<number, string> = {};
   sortedDiscounts.forEach((d) => {
     discountLabels[d.minApps] = `${d.discountPercent}%`;
+  });
+
+  // Cek apakah ada di antara aplikasi terpilih yang disembunyikan harganya
+  const hasHiddenPriceInSelection = selectedApps.some((appId) => {
+    const app = bundleAppsMapped.find((a) => a.id === appId);
+    return app ? getAppHidePrice(app) : false;
   });
 
   if (dataLoading) {
@@ -232,7 +249,6 @@ export default function PricingPage() {
               {t("pricing.hero.subtitle")}
             </motion.p>
 
-            {/* Deployment toggle */}
             <motion.div
               variants={fadeUp}
               custom={3}
@@ -268,7 +284,6 @@ export default function PricingPage() {
       {/* ── Product Tabs + Pricing Cards ── */}
       <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Product tabs */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {PRODUCTS.map((product) => {
               const isActive = selectedProduct === product.id;
@@ -306,7 +321,6 @@ export default function PricingPage() {
             })}
           </div>
 
-          {/* Pricing cards */}
           {currentPricing && (
             <motion.div
               key={`${deployment}-${selectedProduct}`}
@@ -333,13 +347,21 @@ export default function PricingPage() {
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold mb-2">{tier.name}</h3>
                       <div className="flex items-baseline gap-1">
-                        <span className="text-3xl lg:text-4xl font-bold">
-                          {tier.price}
-                        </span>
+                        {tier.hidePrice ? (
+                          <span className="text-2xl lg:text-3xl font-bold tracking-tight text-primary">
+                            {locale === "en" ? "Discuss with us" : "Diskusi dengan kami"}
+                          </span>
+                        ) : (
+                          <span className="text-3xl lg:text-4xl font-bold">
+                            {tier.price}
+                          </span>
+                        )}
                       </div>
-                      <span className="text-sm text-muted-foreground">
-                        {tier.period}
-                      </span>
+                      {!tier.hidePrice && (
+                        <span className="text-sm text-muted-foreground">
+                          {tier.period}
+                        </span>
+                      )}
                     </div>
 
                     <ul className="flex-1 space-y-3 mb-8">
@@ -407,7 +429,6 @@ export default function PricingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
               {/* App selector grid */}
               <motion.div variants={fadeUp} custom={1} className="lg:col-span-3">
-                {/* Tier selector */}
                 <div className="mb-6">
                   <p className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
                     {t("pricing.bundle.selectTier")}
@@ -445,6 +466,8 @@ export default function PricingPage() {
                     const isSelected = selectedApps.includes(app.id);
                     const isExpanded = expandedApps.has(app.id);
                     const tierFeatures = app.features[deployment]?.[bundleTier] ?? [];
+                    const isHiddenPrice = getAppHidePrice(app); // Cek status disembunyikan
+                    
                     const VISIBLE_COUNT = 3;
                     const hiddenCount = tierFeatures.length - VISIBLE_COUNT;
                     const visibleFeatures = isExpanded ? tierFeatures : tierFeatures.slice(0, VISIBLE_COUNT);
@@ -503,12 +526,21 @@ export default function PricingPage() {
                           {app.description}
                         </p>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-xl font-bold">
-                            {formatCurrency(getAppPrice(app))}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {deployment === "saas" ? t("pricing.bundle.perMonth") : ""}
-                          </span>
+                          {/* Logika Harga Dinamis pada Kartu Aplikasi di Bundle */}
+                          {isHiddenPrice ? (
+                            <span className="text-lg font-bold tracking-tight text-primary">
+                              {locale === "en" ? "Discuss with us" : "Diskusi dengan kami"}
+                            </span>
+                          ) : (
+                            <>
+                              <span className="text-xl font-bold">
+                                {formatCurrency(getAppPrice(app))}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {deployment === "saas" ? t("pricing.bundle.perMonth") : ""}
+                              </span>
+                            </>
+                          )}
                         </div>
                         <ul className="mt-3 space-y-1">
                           {visibleFeatures.map((fKey, fIdx) => (
@@ -566,6 +598,7 @@ export default function PricingPage() {
                       <div className="space-y-3 mb-6">
                         {selectedApps.map((appId) => {
                           const app = bundleAppsMapped.find((a) => a.id === appId)!;
+                          const isAppHidden = getAppHidePrice(app);
                           return (
                             <div
                               key={appId}
@@ -573,49 +606,70 @@ export default function PricingPage() {
                             >
                               <span className="font-medium">{t(app.nameKey)}</span>
                               <span className="text-muted-foreground">
-                                {formatCurrency(getAppPrice(app))}
+                                {/* Tampilkan Kustom jika disembunyikan */}
+                                {isAppHidden 
+                                  ? (locale === "en" ? "Custom" : "Kustom") 
+                                  : formatCurrency(getAppPrice(app))}
                               </span>
                             </div>
                           );
                         })}
                       </div>
 
-                      <div className="border-t border-border pt-4 space-y-2">
-                        {/* Original total */}
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            {t("pricing.bundle.originalPrice")}
-                          </span>
-                          <span className="text-muted-foreground line-through">
-                            {formatCurrency(bundleOriginalTotal)}
-                          </span>
-                        </div>
-
-                        {/* Discount badge */}
-                        {bundleDiscount > 0 && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-green-600 dark:text-green-400 font-medium">
-                              Hemat {discountLabels[selectedApps.length] ?? ""}
-                            </span>
-                            <span className="text-green-600 dark:text-green-400 font-medium">
-                              -{formatCurrency(bundleOriginalTotal - bundleDiscountedTotal)}
+                      {hasHiddenPriceInSelection ? (
+                        /* Tampilan Jika Ada Harga Yang Disembunyikan (Custom Pricing) */
+                        <div className="border-t border-border pt-4">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold">{t("pricing.bundle.bundlePrice")}</span>
+                            <span className="text-xl font-bold tracking-tight text-primary">
+                              {locale === "en" ? "Discuss with us" : "Diskusi dengan kami"}
                             </span>
                           </div>
-                        )}
-
-                        {/* Final price */}
-                        <div className="flex items-center justify-between pt-2 border-t border-border">
-                          <span className="font-semibold">{t("pricing.bundle.bundlePrice")}</span>
-                          <span className="text-2xl font-bold text-primary">
-                            {formatCurrency(bundleDiscountedTotal)}
-                            <span className="text-sm font-normal text-muted-foreground">
-                              {deployment === "saas" ? t("pricing.bundle.perMonth") : ""}
-                            </span>
-                          </span>
+                          <p className="text-xs text-muted-foreground mt-2 text-right">
+                            {locale === "en" 
+                              ? "Includes custom pricing components." 
+                              : "Mencakup komponen harga kustom."}
+                          </p>
                         </div>
-                      </div>
+                      ) : (
+                        /* Tampilan Normal (Semua harga angka) */
+                        <div className="border-t border-border pt-4 space-y-2">
+                          {/* Original total */}
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">
+                              {t("pricing.bundle.originalPrice")}
+                            </span>
+                            <span className="text-muted-foreground line-through">
+                              {formatCurrency(bundleOriginalTotal)}
+                            </span>
+                          </div>
 
-                      {selectedApps.length >= 2 && (
+                          {/* Discount badge */}
+                          {bundleDiscount > 0 && (
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-green-600 dark:text-green-400 font-medium">
+                                Hemat {discountLabels[selectedApps.length] ?? ""}
+                              </span>
+                              <span className="text-green-600 dark:text-green-400 font-medium">
+                                -{formatCurrency(bundleOriginalTotal - bundleDiscountedTotal)}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Final price */}
+                          <div className="flex items-center justify-between pt-2 border-t border-border">
+                            <span className="font-semibold">{t("pricing.bundle.bundlePrice")}</span>
+                            <span className="text-2xl font-bold text-primary">
+                              {formatCurrency(bundleDiscountedTotal)}
+                              <span className="text-sm font-normal text-muted-foreground">
+                                {deployment === "saas" ? t("pricing.bundle.perMonth") : ""}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {!hasHiddenPriceInSelection && selectedApps.length >= 2 && (
                         <div className="mt-4 p-3 rounded-lg bg-green-500/10 text-green-700 dark:text-green-400 text-sm text-center font-medium">
                           Hemat {discountLabels[selectedApps.length] ?? ""} — {t("pricing.bundle.priceLabel")}
                         </div>

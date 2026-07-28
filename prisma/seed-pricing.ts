@@ -47,6 +47,14 @@ async function main() {
       descriptionEn: "Real-time financial reporting — revenue, payroll, and costs.",
       sortOrder: 3,
     },
+    {
+      key: "pmo",
+      icon: "/img/products/pmo-logo.png", // Menggunakan nama icon yang benar
+      iconDark: null as string | null,
+      descriptionId: "Manajemen proyek dan tugas terpadu — pantau timeline dan produktivitas tim.",
+      descriptionEn: "Unified project and task management — track timelines and team productivity.",
+      sortOrder: 4,
+    },
   ];
 
   const productRecords: Record<string, number> = {};
@@ -74,6 +82,7 @@ async function main() {
     period: string;
     highlighted?: boolean;
     badge?: string;
+    hidePrice?: boolean; // Dukungan untuk fitur Enterprise/Custom
     features: { labelId: string; labelEn: string; included: boolean }[];
   }
 
@@ -114,7 +123,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 650000, period: "/bulan/outlet",
+          name: "Premium", price: 650000, period: "/bulan/outlet", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Multi-cabang tanpa batas", labelEn: "Unlimited branches", included: true },
@@ -157,7 +166,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 750000, period: "/bulan/outlet",
+          name: "Premium", price: 750000, period: "/bulan/outlet", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Multi outlet tanpa batas", labelEn: "Unlimited outlets", included: true },
@@ -200,7 +209,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 500000, period: "/bulan/user",
+          name: "Premium", price: 500000, period: "/bulan/user", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Karyawan tanpa batas", labelEn: "Unlimited employees", included: true },
@@ -243,7 +252,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 650000, period: "/bulan",
+          name: "Premium", price: 650000, period: "/bulan", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Pajak otomatis", labelEn: "Automated tax", included: true },
@@ -252,6 +261,49 @@ async function main() {
             { labelId: "On-site training", labelEn: "On-site training", included: true },
             { labelId: "Priority support 24 bulan", labelEn: "24-month priority support", included: true },
             { labelId: "Sumber kode tersedia", labelEn: "Source code available", included: true },
+          ],
+        },
+      ],
+    },
+    // ── SaaS: PMO ──
+    {
+      productKey: "pmo",
+      deployment: "saas",
+      tiers: [
+        {
+          name: "Standard", price: 150000, period: "/bulan/user",
+          features: [
+            { labelId: "Manajemen Tugas & Proyek", labelEn: "Task & Project Management", included: true },
+            { labelId: "Papan Kanban Interaktif", labelEn: "Interactive Kanban Boards", included: true },
+            { labelId: "Pelacakan Milestone", labelEn: "Milestone Tracking", included: true },
+            { labelId: "Hingga 50 Pengguna", labelEn: "Up to 50 Users", included: true },
+            { labelId: "Gantt Chart & Timeline", labelEn: "Gantt Chart & Timeline", included: false },
+            { labelId: "Integrasi HR & Keuangan", labelEn: "HR & Finance Integration", included: false },
+            { labelId: "Pelaporan Performa Tim", labelEn: "Team Performance Reports", included: false },
+          ],
+        },
+        {
+          name: "Professional", price: 300000, period: "/bulan/user", highlighted: true, badge: "Populer",
+          features: [
+            { labelId: "Semua fitur Standard", labelEn: "All Standard features", included: true },
+            { labelId: "Gantt Chart & Timeline", labelEn: "Gantt Chart & Timeline", included: true },
+            { labelId: "Manajemen Beban Kerja", labelEn: "Workload Management", included: true },
+            { labelId: "Integrasi HR & Keuangan", labelEn: "HR & Finance Integration", included: true },
+            { labelId: "Pelaporan Performa Tim", labelEn: "Team Performance Reports", included: true },
+            { labelId: "Hingga 200 Pengguna", labelEn: "Up to 200 Users", included: true },
+            { labelId: "Custom Workflow", labelEn: "Custom Workflow", included: false },
+          ],
+        },
+        {
+          name: "Premium", price: 600000, period: "/bulan/user", hidePrice: true,
+          features: [
+            { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
+            { labelId: "Pengguna Tanpa Batas", labelEn: "Unlimited Users", included: true },
+            { labelId: "Kustomisasi Workflow Penuh", labelEn: "Full Custom Workflows", included: true },
+            { labelId: "Analitik Tingkat Lanjut", labelEn: "Advanced Analytics", included: true },
+            { labelId: "API & Webhook Custom", labelEn: "Custom API & Webhooks", included: true },
+            { labelId: "Dedicated Account Manager", labelEn: "Dedicated Account Manager", included: true },
+            { labelId: "Pelatihan On-site", labelEn: "On-site Training", included: true },
           ],
         },
       ],
@@ -286,7 +338,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 35000000, period: "lisensi lokal",
+          name: "Premium", price: 35000000, period: "lisensi lokal", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Multi-cabang tanpa batas", labelEn: "Unlimited branches", included: true },
@@ -329,7 +381,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 45000000, period: "lisensi lokal",
+          name: "Premium", price: 45000000, period: "lisensi lokal", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Multi-cabang tanpa batas", labelEn: "Unlimited branches", included: true },
@@ -372,7 +424,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 25000000, period: "lisensi lokal",
+          name: "Premium", price: 25000000, period: "lisensi lokal", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Karyawan tanpa batas", labelEn: "Unlimited employees", included: true },
@@ -415,7 +467,7 @@ async function main() {
           ],
         },
         {
-          name: "Premium", price: 35000000, period: "lisensi lokal",
+          name: "Premium", price: 35000000, period: "lisensi lokal", hidePrice: true,
           features: [
             { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
             { labelId: "Pajak otomatis", labelEn: "Automated tax", included: true },
@@ -424,6 +476,49 @@ async function main() {
             { labelId: "On-site training", labelEn: "On-site training", included: true },
             { labelId: "Priority support 24 bulan", labelEn: "24-month priority support", included: true },
             { labelId: "Sumber kode tersedia", labelEn: "Source code available", included: true },
+          ],
+        },
+      ],
+    },
+    // ── On-Premise: PMO ──
+    {
+      productKey: "pmo",
+      deployment: "onpremise",
+      tiers: [
+        {
+          name: "Standard", price: 15000000, period: "lisensi lokal",
+          features: [
+            { labelId: "Instalasi Server Lokal", labelEn: "Local Server Installation", included: true },
+            { labelId: "Manajemen Tugas Inti", labelEn: "Core Task Management", included: true },
+            { labelId: "Sistem Papan Kanban", labelEn: "Kanban Board System", included: true },
+            { labelId: "1 server + Hingga 50 Pengguna", labelEn: "1 server + Up to 50 Users", included: true },
+            { labelId: "Gantt Chart & Resource Mgmt", labelEn: "Gantt Chart & Resource Mgmt", included: false },
+            { labelId: "Integrasi HR & Keuangan", labelEn: "HR & Finance Integration", included: false },
+            { labelId: "Remote Support 12 bulan", labelEn: "12-month remote support", included: false },
+          ],
+        },
+        {
+          name: "Professional", price: 35000000, period: "lisensi lokal", highlighted: true, badge: "Populer",
+          features: [
+            { labelId: "Semua fitur Standard", labelEn: "All Standard features", included: true },
+            { labelId: "Gantt Chart & Resource Allocation", labelEn: "Gantt Chart & Resource Allocation", included: true },
+            { labelId: "Laporan Performa Multi-Departemen", labelEn: "Multi-Department Performance Reports", included: true },
+            { labelId: "Integrasi Ekosistem Dimata", labelEn: "Dimata Ecosystem Integration", included: true },
+            { labelId: "Pengguna Tanpa Batas", labelEn: "Unlimited Users", included: true },
+            { labelId: "Remote Support 12 bulan", labelEn: "12-month remote support", included: true },
+            { labelId: "Kustomisasi Workflow", labelEn: "Workflow Customization", included: false },
+          ],
+        },
+        {
+          name: "Premium", price: 65000000, period: "lisensi lokal", hidePrice: true,
+          features: [
+            { labelId: "Semua fitur Professional", labelEn: "All Professional features", included: true },
+            { labelId: "Kustomisasi Modul & Workflow", labelEn: "Custom Module & Workflow", included: true },
+            { labelId: "Sistem Keamanan Enterprise", labelEn: "Enterprise Security Systems", included: true },
+            { labelId: "Pembaruan Seumur Hidup", labelEn: "Lifetime Updates", included: true },
+            { labelId: "Pelatihan On-site & Pendampingan", labelEn: "On-site Training & Assistance", included: true },
+            { labelId: "Priority Support 24 bulan", labelEn: "24-month Priority Support", included: true },
+            { labelId: "Sumber Kode Tersedia", labelEn: "Source code available", included: true },
           ],
         },
       ],
@@ -443,6 +538,7 @@ async function main() {
           period: t.period,
           highlighted: t.highlighted ?? false,
           badge: t.badge ?? null,
+          hidePrice: t.hidePrice ?? false, // Update dengan data hidePrice baru
           sortOrder: ti,
         },
         create: {
@@ -453,6 +549,7 @@ async function main() {
           period: t.period,
           highlighted: t.highlighted ?? false,
           badge: t.badge ?? null,
+          hidePrice: t.hidePrice ?? false,
           sortOrder: ti,
         },
       });
@@ -558,6 +655,26 @@ async function main() {
       { labelId: "Budgeting & forecasting", labelEn: "Budgeting & forecasting" },
       { labelId: "Dedicated accountant support", labelEn: "Dedicated accountant support" },
     ]},
+    // Bundle Feature PMO (SaaS)
+    { productKey: "pmo", deployment: "saas", tierName: "Standard", features: [
+      { labelId: "Manajemen Tugas", labelEn: "Task Management" },
+      { labelId: "Papan Kanban Interaktif", labelEn: "Interactive Kanban Boards" },
+      { labelId: "Hingga 10 Proyek", labelEn: "Up to 10 Projects" },
+      { labelId: "Pelaporan Dasar", labelEn: "Basic Reporting" },
+    ]},
+    { productKey: "pmo", deployment: "saas", tierName: "Professional", features: [
+      { labelId: "Timeline Gantt", labelEn: "Gantt Timeline" },
+      { labelId: "Pelacakan Jam Kerja", labelEn: "Time Tracking" },
+      { labelId: "Alokasi Sumber Daya", labelEn: "Resource Allocation" },
+      { labelId: "Integrasi Akuntansi", labelEn: "Accounting Integration" },
+    ]},
+    { productKey: "pmo", deployment: "saas", tierName: "Premium", features: [
+      { labelId: "Proyek Tanpa Batas", labelEn: "Unlimited Projects" },
+      { labelId: "Kustomisasi Workflow", labelEn: "Workflow Customization" },
+      { labelId: "Analitik Mendalam", labelEn: "In-depth Analytics" },
+      { labelId: "Dedicated Manager", labelEn: "Dedicated Manager" },
+    ]},
+
     // On-Premise bundle features
     { productKey: "prochain", deployment: "onpremise", tierName: "Standard", features: [
       { labelId: "Instalasi server lokal", labelEn: "Local server installation" },
@@ -631,6 +748,25 @@ async function main() {
       { labelId: "Budgeting & forecasting", labelEn: "Budgeting & forecasting" },
       { labelId: "Sumber kode tersedia", labelEn: "Source code available" },
     ]},
+    // Bundle Feature PMO (On-Premise)
+    { productKey: "pmo", deployment: "onpremise", tierName: "Standard", features: [
+      { labelId: "Instalasi Server Lokal", labelEn: "Local Server Installation" },
+      { labelId: "Manajemen Proyek", labelEn: "Project Management" },
+      { labelId: "Kolaborasi Tim Dasar", labelEn: "Basic Team Collaboration" },
+      { labelId: "1 Server + 10 Pengguna", labelEn: "1 Server + 10 Users" },
+    ]},
+    { productKey: "pmo", deployment: "onpremise", tierName: "Professional", features: [
+      { labelId: "Integrasi Sistem HR", labelEn: "HR System Integration" },
+      { labelId: "Alokasi Resource Mendalam", labelEn: "Advanced Resource Allocation" },
+      { labelId: "Pelaporan Performa Tim", labelEn: "Team Performance Reports" },
+      { labelId: "Remote Support 12 Bulan", labelEn: "12-month Remote Support" },
+    ]},
+    { productKey: "pmo", deployment: "onpremise", tierName: "Premium", features: [
+      { labelId: "Kustomisasi Modul PMO", labelEn: "Custom PMO Modules" },
+      { labelId: "Hak Akses Tanpa Batas", labelEn: "Unlimited Access Rights" },
+      { labelId: "Pembaruan Seumur Hidup", labelEn: "Lifetime Updates" },
+      { labelId: "Sumber Kode Tersedia", labelEn: "Source Code Available" },
+    ]},
   ];
 
   for (const bf of allBundleFeatures) {
@@ -660,6 +796,7 @@ async function main() {
     { minApps: 2, discountPercent: 5 },
     { minApps: 3, discountPercent: 10 },
     { minApps: 4, discountPercent: 15 },
+    { minApps: 5, discountPercent: 20 }, // Ditambahkan untuk 5 produk
   ];
 
   for (let i = 0; i < discounts.length; i++) {

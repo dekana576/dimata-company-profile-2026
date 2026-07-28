@@ -74,6 +74,7 @@ model PricingTier {
   period      String   @db.VarChar(100)
   highlighted Boolean  @default(false)
   badge       String?  @db.VarChar(50)
+  hidePrice   Boolean  @default(false) // <--- Field baru ditambahkan di sini
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())

@@ -36,6 +36,8 @@ import { getCurrentUser } from "@/lib/auth";
  *                 type: integer
  *               isActive:
  *                 type: boolean
+ *               hidePrice:
+ *                 type: boolean
  *     responses:
  *       200:
  *         description: Tier updated
@@ -56,7 +58,9 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { price, period, highlighted, badge, sortOrder, isActive } = body;
+    
+    // Tambahkan hidePrice pada ekstraksi body
+    const { price, period, highlighted, badge, sortOrder, isActive, hidePrice } = body;
 
     const tier = await prisma.pricingTier.update({
       where: { id: Number(id) },
@@ -67,6 +71,7 @@ export async function PUT(
         ...(badge !== undefined && { badge: badge || null }),
         ...(sortOrder !== undefined && { sortOrder }),
         ...(isActive !== undefined && { isActive }),
+        ...(hidePrice !== undefined && { hidePrice }), // Masukkan ke database
       },
     });
 

@@ -3,7 +3,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Image, LogOut, Home, Menu, X, Calendar, DollarSign, FolderGit2, Briefcase, ChevronDown } from "lucide-react";
+import { 
+  Image, 
+  LogOut, 
+  Home, 
+  Menu, 
+  X, 
+  Calendar, 
+  DollarSign, 
+  FolderGit2, 
+  Briefcase, 
+  ChevronDown,
+  User // <-- TAMBAHAN: Import icon User untuk menu About
+} from "lucide-react";
 
 interface User {
   id: number;
@@ -72,8 +84,10 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
+  // --- TAMBAHAN: Menu About dimasukkan ke dalam navItems ---
   const navItems = [
     { href: "/cms", label: "Dashboard", icon: Home },
+    { href: "/cms/about", label: "About", icon: User }, // <-- Menu baru untuk mengelola foto founder
     { href: "/cms/gallery", label: "Gallery", icon: Image },
     { href: "/cms/events", label: "Events", icon: Calendar },
     { href: "/cms/project", label: "Projects", icon: FolderGit2 },

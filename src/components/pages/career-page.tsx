@@ -144,6 +144,9 @@ export default function CareersPage() {
     setSelectedJob(job);
   };
 
+
+  // ===========================================Config Mailto===================================================
+
   const handleApply = (job: Job) => {
     if (job.applyUrl) {
       window.open(job.applyUrl, "_blank", "noopener,noreferrer");

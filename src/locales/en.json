@@ -32,6 +32,7 @@
   "nav.project": "Project",
   "nav.pricing": "Pricing",
   "nav.events": "Events",
+  "nav.blog": "Blog",
   "nav.contact": "Contact",
   "nav.lightMode": "Light Mode",
   "nav.darkMode": "Dark Mode",
@@ -1190,6 +1191,14 @@
 
   "events.hero.title": "Events",
   "events.hero.description": "Discover the latest events and activities from DIMATA IT Solutions. Join our seminars, workshops, and networking events.",
+
+  "blog.hero.title": "Blog",
+  "blog.hero.description": "Articles, news, and insights on digital transformation, IT solutions, and technology.",
+  "blog.all": "All",
+  "blog.searchPlaceholder": "Search articles...",
+  "blog.noPosts": "No articles yet.",
+  "blog.prev": "Previous",
+  "blog.next": "Next",
   "events.detail.back": "Back to Events",
 
   "home.hero.titleLine1": "Complete ",

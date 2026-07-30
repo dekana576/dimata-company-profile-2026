@@ -30,6 +30,8 @@ src/
 │   │   ├── about/page.tsx        # About + Gallery (fetches from DB)
 │   │   ├── events/page.tsx       # Events listing
 │   │   ├── events/[slug]/page.tsx # Event detail (ISR, revalidate=60)
+│   │   ├── blog/page.tsx          # Blog listing
+│   │   ├── blog/[slug]/page.tsx   # Blog detail (ISR, revalidate=60)
 │   │   ├── project/page.tsx      # Projects listing
 │   │   ├── pricing/page.tsx      # Pricing
 │   │   ├── products/             # Product pages (aiso, hanoman, hairisma, prochain)
@@ -46,6 +48,10 @@ src/
 │   │   ├── events/page.tsx       # Events CRUD
 │   │   ├── project/page.tsx      # Projects CRUD
 │   │   ├── pricing/page.tsx      # Pricing management
+│   │   ├── blog/                 # Blog management (separate pages)
+│   │   │   ├── page.tsx              # Blog posts list
+│   │   │   ├── create/page.tsx       # Create post
+│   │   │   └── [id]/edit/page.tsx    # Edit post
 │   │   └── career/
 │   │       ├── departments/page.tsx
 │   │       └── jobs/page.tsx
@@ -57,7 +63,8 @@ src/
 │   │   ├── pricing/              # CRUD pricing (products, tiers, features, etc)
 │   │   ├── jobs/                 # CRUD jobs
 │   │   ├── departments/          # CRUD departments
-│   │   ├── upload/               # File upload (gallery, events, projects)
+│   │   ├── blog/                 # Blog API (categories, posts, upload)
+│   │   ├── upload/               # File upload (gallery, events, projects, blog)
 │   │   ├── contact/              # Contact form submission
 │   │   └── docs/                 # Swagger UI
 │   ├── layout.tsx          # Root layout (ThemeProvider, LanguageProvider)
@@ -69,6 +76,8 @@ src/
 │   │   ├── about-page.tsx
 │   │   ├── events-page.tsx
 │   │   ├── event-detail-page.tsx
+│   │   ├── blog-page.tsx
+│   │   ├── blog-detail-page.tsx
 │   │   ├── project-page.tsx
 │   │   ├── pricing-page.tsx
 │   │   ├── career-page.tsx
@@ -116,7 +125,8 @@ public/
 └── uploads/                 # User-uploaded files (served by nginx directly)
     ├── gallery/
     ├── events/
-    └── projects/
+    ├── projects/
+    └── blog/
 ```
 
 ## 3. Database Schema (Prisma + MariaDB)
@@ -131,6 +141,16 @@ public/
 | `Project` | Portfolio projects | slug (unique), titleId/titleEn, descriptionId/descriptionEn, client, category, technologies, image, status, externalUrl, sortOrder, isActive |
 | `Department` | Job departments | nameId/nameEn, sortOrder, isActive |
 | `Job` | Job postings | slug (unique), titleId/titleEn, departmentId (FK), location, type, summaryId/En, responsibilitiesId/En (JSON string), requirementsId/En (JSON string), applyUrl, sortOrder, isActive |
+
+### Blog Models
+
+| Model | Purpose | Key Fields |
+|-------|---------|------------|
+| `BlogCategory` | Blog post categories | slug (unique), nameId/nameEn, sortOrder, isActive |
+| `BlogPost` | Blog articles/news | slug (unique), title, content (LongText HTML), excerpt, image, authorName, authorPhoto, status (draft/published), publishedAt, isFeatured, sortOrder, isActive |
+| `BlogPostCategory` | Many-to-many join | postId (FK), categoryId (FK), composite PK |
+
+**Relations:** `BlogPost N:N BlogCategory` via `BlogPostCategory`. Blog uses single-language fields (like `Event`).
 
 ### Pricing Models
 
@@ -182,10 +202,11 @@ Serving:
 - `src/app/api/upload/route.ts` - Gallery upload
 - `src/app/api/upload/events/route.ts` - Events upload
 - `src/app/api/upload/project/route.ts` - Projects upload
+- `src/app/api/blog/upload/route.ts` - Blog image upload
 
 **Allowed types:** image/jpeg, image/png, image/webp, image/gif
 **Max size:** 5MB
-**Upload directories:** public/uploads/{gallery,events,projects}/
+**Upload directories:** public/uploads/{gallery,events,projects,blog}/
 
 ## 6. API Routes Reference
 
@@ -214,14 +235,22 @@ Serving:
 | DELETE | `/api/events/[id]` | Yes | Delete event |
 | GET | `/api/events/slug/[slug]` | No | Get event by slug |
 
-### Projects
+### Blog
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/api/project` | No | List projects |
-| POST | `/api/project` | Yes | Create project |
-| GET | `/api/project/[id]` | No | Get project by ID |
-| PUT | `/api/project/[id]` | Yes | Update project |
-| DELETE | `/api/project/[id]` | Yes | Delete project |
+| GET | `/api/blog/posts` | No | List posts (paginated, filter: `?category=`, `?status=`, `?active=`, `?page=`, `?limit=`) |
+| POST | `/api/blog/posts` | Yes | Create post |
+| GET | `/api/blog/posts/[id]` | No | Get post by ID |
+| PUT | `/api/blog/posts/[id]` | Yes | Update post |
+| DELETE | `/api/blog/posts/[id]` | Yes | Delete post |
+| GET | `/api/blog/posts/slug/[slug]` | No | Get post by slug |
+| GET | `/api/blog/categories` | No | List categories |
+| POST | `/api/blog/categories` | Yes | Create category |
+| PUT | `/api/blog/categories/[id]` | Yes | Update category |
+| DELETE | `/api/blog/categories/[id]` | Yes | Delete category |
+| POST | `/api/blog/upload` | Yes | Upload blog image |
+
+### Projects
 
 ### Upload
 | Method | Path | Auth | Description |
@@ -337,6 +366,7 @@ nginx -t && systemctl reload nginx
 | Events detail page | Done | `src/app/(public)/events/[slug]/page.tsx` with ISR |
 | Gallery ISR | Done | About page uses `revalidate = 60` |
 | Registration URL for events | Done | `registrationUrl` field, conditional button |
+| Blog feature | Done | Blog posts, categories, pagination, author, draft/publish, featured posts |
 
 ## 10. Environment Variables
 
@@ -362,3 +392,7 @@ Run `npx tsx prisma/seed.ts` to seed:
 - Sample events (6 events with HTML content)
 - Departments (Engineering, Product & Design, Sales & Marketing, Operations)
 - Jobs (8 positions with bilingual content)
+
+Run `npx tsx prisma/seed-blog.ts` to seed:
+- 5 categories (Bisnis & Ekonomi, Digital & Informasi, Teknologi, Tutorial & Tips, Press Release)
+- 5 sample blog posts with HTML content and category assignments

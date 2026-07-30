@@ -14,7 +14,8 @@ import {
   FolderGit2, 
   Briefcase, 
   ChevronDown,
-  User // <-- TAMBAHAN: Import icon User untuk menu About
+  User, // <-- TAMBAHAN: Import icon User untuk menu About
+  FileText,
 } from "lucide-react";
 
 interface User {
@@ -30,6 +31,7 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checking, setChecking] = useState(true);
   const [careerOpen, setCareerOpen] = useState(false);
+  const [blogOpen, setBlogOpen] = useState(false);
 
   // Force light theme for CMS
   useEffect(() => {
@@ -99,7 +101,13 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
     { href: "/cms/career/jobs", label: "Jobs" },
   ];
 
+  const blogSubItems = [
+    { href: "/cms/blog", label: "All Posts" },
+    { href: "/cms/blog/categories", label: "Categories" },
+  ];
+
   const isCareerActive = pathname.startsWith("/cms/career");
+  const isBlogActive = pathname.startsWith("/cms/blog");
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -167,6 +175,47 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
               {careerOpen && (
                 <div className="ml-4 mt-1 space-y-1">
                   {careerSubItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-blue-600 text-white"
+                            : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Blog Menu */}
+            <div>
+              <button
+                onClick={() => setBlogOpen(!blogOpen)}
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  isBlogActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`}
+              >
+                <FileText className="h-5 w-5" />
+                Blog
+                <ChevronDown
+                  className={`ml-auto h-4 w-4 transition-transform ${
+                    blogOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {blogOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {blogSubItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                       <Link

@@ -187,6 +187,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   { label: "nav.project", href: "/project" },
   { label: "nav.pricing", href: "/pricing" },
   { label: "nav.events", href: "/events" },
+  { label: "nav.blog", href: "/blog" },
 ];
 
 const DEFAULT_CTA: NavItem = { label: "nav.contact", href: "/contact" };

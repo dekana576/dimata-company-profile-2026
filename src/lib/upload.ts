@@ -4,16 +4,18 @@ import { join } from "path";
 const GALLERY_UPLOAD_DIR = join(process.cwd(), "public", "uploads", "gallery");
 const EVENTS_UPLOAD_DIR = join(process.cwd(), "public", "uploads", "events");
 const PROJECTS_UPLOAD_DIR = join(process.cwd(), "public", "uploads", "projects");
+const BLOG_UPLOAD_DIR = join(process.cwd(), "public", "uploads", "blog");
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_WIDTH = 1920;
 
-type UploadType = "gallery" | "events" | "projects";
+type UploadType = "gallery" | "events" | "projects" | "blog";
 
 export async function ensureUploadDir(type: UploadType = "gallery"): Promise<void> {
   const dirs: Record<UploadType, string> = {
     gallery: GALLERY_UPLOAD_DIR,
     events: EVENTS_UPLOAD_DIR,
     projects: PROJECTS_UPLOAD_DIR,
+    blog: BLOG_UPLOAD_DIR,
   };
   await mkdir(dirs[type], { recursive: true });
 }
@@ -26,6 +28,7 @@ export function generateFilename(originalName: string, type: UploadType = "galle
     gallery: "gallery",
     events: "event",
     projects: "project",
+    blog: "blog",
   };
   return `${prefixes[type]}-${timestamp}-${random}.${ext}`;
 }
@@ -40,6 +43,7 @@ export async function saveFile(
     gallery: GALLERY_UPLOAD_DIR,
     events: EVENTS_UPLOAD_DIR,
     projects: PROJECTS_UPLOAD_DIR,
+    blog: BLOG_UPLOAD_DIR,
   };
   const filePath = join(dirs[type], filename);
   await writeFile(filePath, buffer);
@@ -52,4 +56,4 @@ export function isImageFile(mimetype: string): boolean {
   );
 }
 
-export { MAX_SIZE, MAX_WIDTH, GALLERY_UPLOAD_DIR as UPLOAD_DIR, EVENTS_UPLOAD_DIR, PROJECTS_UPLOAD_DIR };
+export { MAX_SIZE, MAX_WIDTH, GALLERY_UPLOAD_DIR as UPLOAD_DIR, EVENTS_UPLOAD_DIR, PROJECTS_UPLOAD_DIR, BLOG_UPLOAD_DIR };

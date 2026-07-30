@@ -30,6 +30,7 @@
   "nav.project": "Proyek",
   "nav.pricing": "Harga",
   "nav.events": "Acara",
+  "nav.blog": "Blog",
   "nav.contact": "Hubungi Kami",
   "nav.lightMode": "Mode Terang",
   "nav.darkMode": "Mode Gelap",
@@ -1188,6 +1189,14 @@
 
   "events.hero.title": "Acara",
   "events.hero.description": "Temukan acara dan kegiatan terbaru dari DIMATA IT Solutions. Ikuti seminar, workshop, dan networking event bersama kami.",
+
+  "blog.hero.title": "Blog",
+  "blog.hero.description": "Artikel, berita, dan wawasan terbaru seputar transformasi digital, teknologi informasi, dan solusi IT.",
+  "blog.all": "Semua",
+  "blog.searchPlaceholder": "Cari artikel...",
+  "blog.noPosts": "Belum ada artikel.",
+  "blog.prev": "Sebelumnya",
+  "blog.next": "Selanjutnya",
   "events.detail.back": "Kembali ke Acara",
 
   "home.hero.titleLine1": "Solusi Software",

@@ -45,6 +45,55 @@ model Event {
   updatedAt       DateTime  @updatedAt
 }
 
+// ─── Blog CMS ─────────────────────────────────────────────────
+
+model BlogCategory {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  nameId    String   @db.VarChar(100)
+  nameEn    String   @db.VarChar(100)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts BlogPostCategory[]
+
+  @@map("blog_categories")
+}
+
+model BlogPost {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  title       String    @db.VarChar(200)
+  content     String    @db.LongText
+  excerpt     String?   @db.VarChar(500)
+  image       String?
+  authorName  String    @default("DIMATA")
+  authorPhoto String?
+  status      String    @default("draft")
+  publishedAt DateTime?
+  isFeatured  Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  categories BlogPostCategory[]
+
+  @@map("blog_posts")
+}
+
+model BlogPostCategory {
+  postId     Int
+  categoryId Int
+  post       BlogPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([postId, categoryId])
+  @@map("blog_post_categories")
+}
+
 // ─── Pricing CMS ──────────────────────────────────────────────
 
 model PricingProduct {

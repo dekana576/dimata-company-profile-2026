@@ -4,8 +4,10 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { 
   Plus, Pencil, Trash2, Calendar, X, Upload, Bold, Italic, 
   Heading2, List, Link2, Search, Filter, ChevronUp, ChevronDown, 
-  ChevronLeft, ChevronRight 
+  ChevronLeft, ChevronRight, Loader2 
 } from "lucide-react";
+import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 interface Event {
   id: number;
@@ -56,6 +58,13 @@ export default function CmsEventsPage() {
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+
+  // Crop States
+  const [imgSrc, setImgSrc] = useState("");
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const aspect = 16 / 9; // Rekomendasi rasio poster event
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -86,22 +95,14 @@ export default function CmsEventsPage() {
     fetchEvents();
   }, []);
 
-  // --- DataTables Logic (Filter, Search, Sort) ---
+  // --- DataTables Logic ---
   const processedEvents = useMemo(() => {
     let result = [...events];
-
-    // 1. Filter by Status
-    if (filterStatus !== "all") {
-      result = result.filter((e) => e.status === filterStatus);
-    }
-
-    // 2. Filter by Active/Inactive
+    if (filterStatus !== "all") result = result.filter((e) => e.status === filterStatus);
     if (filterActive !== "all") {
       const isActive = filterActive === "true";
       result = result.filter((e) => e.isActive === isActive);
     }
-
-    // 3. Global Search
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
       result = result.filter(
@@ -111,28 +112,22 @@ export default function CmsEventsPage() {
           (e.category && e.category.toLowerCase().includes(lowerSearch))
       );
     }
-
-    // 4. Sort
     result.sort((a, b) => {
       const valA = a[sortConfig.key] || "";
       const valB = b[sortConfig.key] || "";
-      
       if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
       if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
-
     return result;
   }, [events, searchTerm, filterStatus, filterActive, sortConfig]);
 
-  // --- Pagination Logic ---
   const totalPages = Math.ceil(processedEvents.length / itemsPerPage);
   const paginatedEvents = processedEvents.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus, filterActive, itemsPerPage]);
@@ -157,6 +152,12 @@ export default function CmsEventsPage() {
     }));
   };
 
+  const resetCropState = () => {
+    setImgSrc("");
+    setCrop(undefined);
+    setCompletedCrop(undefined);
+  };
+
   const openCreateModal = () => {
     setEditingEvent(null);
     setFormData({
@@ -165,56 +166,83 @@ export default function CmsEventsPage() {
     });
     setImagePreview("");
     setError("");
+    resetCropState();
     setShowModal(true);
   };
 
   const openEditModal = (event: Event) => {
     setEditingEvent(event);
     setFormData({
-      title: event.title,
-      slug: event.slug,
-      description: event.description,
-      content: event.content || "",
-      image: event.image || "",
-      location: event.location || "",
-      registrationUrl: event.registrationUrl || "",
-      startDate: event.startDate.split("T")[0],
-      endDate: event.endDate.split("T")[0],
-      category: event.category || "",
-      status: event.status,
-      isActive: event.isActive,
+      title: event.title, slug: event.slug, description: event.description,
+      content: event.content || "", image: event.image || "",
+      location: event.location || "", registrationUrl: event.registrationUrl || "",
+      startDate: event.startDate.split("T")[0], endDate: event.endDate.split("T")[0],
+      category: event.category || "", status: event.status, isActive: event.isActive,
     });
     setImagePreview(event.image || "");
     setError("");
+    resetCropState();
     setShowModal(true);
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-      setError("Image size must be less than 2MB");
-      return;
+  // --- CROP & UPLOAD LOGIC ---
+  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setCrop(undefined);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => setImgSrc(reader.result?.toString() || ""));
+      reader.readAsDataURL(e.target.files[0]);
     }
+  };
 
-    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
-      setError("Only JPEG, PNG, WebP, and GIF files are allowed");
-      return;
-    }
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const initialCrop = centerCrop(
+      makeAspectCrop({ unit: "%", width: 90 }, aspect, width, height),
+      width,
+      height
+    );
+    setCrop(initialCrop);
+  };
+
+  const getCroppedImg = async (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
+    const canvas = document.createElement("canvas");
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("No 2d context");
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY,
+      0, 0, crop.width, crop.height
+    );
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) { reject(new Error("Canvas is empty")); return; }
+        resolve(blob);
+      }, "image/jpeg", 0.95);
+    });
+  };
+
+  const handleUploadCropped = async () => {
+    if (!completedCrop || !imgRef.current) return;
 
     setUploading(true);
     setError("");
 
     try {
+      const blob = await getCroppedImg(imgRef.current, completedCrop);
       const formDataUpload = new FormData();
-      formDataUpload.append("file", file);
+      formDataUpload.append("file", blob, `event-poster-${Date.now()}.jpg`); // Menggunakan nama "file" sesuai API Events
 
       const res = await fetch("/api/upload/events", {
         method: "POST",
         body: formDataUpload,
       });
-
       const data = await res.json();
 
       if (!res.ok) {
@@ -224,6 +252,7 @@ export default function CmsEventsPage() {
 
       setFormData((prev) => ({ ...prev, image: data.path }));
       setImagePreview(data.path);
+      resetCropState(); // Tutup tampilan crop
     } catch {
       setError("Failed to upload image");
     } finally {
@@ -237,14 +266,13 @@ export default function CmsEventsPage() {
     setImagePreview("");
   };
 
+  // --- Toolbar & Form Submission ---
   const insertToolbarTag = useCallback((tag: string, wrap = false) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = formData.content.substring(start, end);
-
     let newText = "";
     let newCursorPos = 0;
 
@@ -259,9 +287,7 @@ export default function CmsEventsPage() {
       newText = formData.content.substring(0, start) + tag + formData.content.substring(end);
       newCursorPos = start + tag.length;
     }
-
     setFormData((prev) => ({ ...prev, content: newText }));
-
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(newCursorPos, newCursorPos);
@@ -276,13 +302,11 @@ export default function CmsEventsPage() {
     try {
       const url = editingEvent ? `/api/events/${editingEvent.id}` : "/api/events";
       const method = editingEvent ? "PUT" : "POST";
-
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
@@ -301,7 +325,6 @@ export default function CmsEventsPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this event?")) return;
-
     try {
       const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
       if (res.ok) fetchEvents();
@@ -312,9 +335,7 @@ export default function CmsEventsPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-      day: "numeric", month: "short", year: "numeric",
-    });
+    return date.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
   };
 
   const getStatusBadge = (status: string) => {
@@ -374,7 +395,6 @@ export default function CmsEventsPage() {
               <option value="completed">Completed</option>
             </select>
           </div>
-
           <select
             value={filterActive}
             onChange={(e) => setFilterActive(e.target.value)}
@@ -392,50 +412,18 @@ export default function CmsEventsPage() {
         <table className="w-full whitespace-nowrap">
           <thead className="bg-gray-50">
             <tr>
-              <th 
-                className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100"
-                onClick={() => handleSort("title")}
-              >
-                <div className="flex items-center gap-1">
-                  Title
-                  {sortConfig.key === "title" && (
-                    sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
-                  )}
-                </div>
+              <th className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100" onClick={() => handleSort("title")}>
+                <div className="flex items-center gap-1">Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}</div>
               </th>
-              <th 
-                className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100"
-                onClick={() => handleSort("startDate")}
-              >
-                <div className="flex items-center gap-1">
-                  Date
-                  {sortConfig.key === "startDate" && (
-                    sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
-                  )}
-                </div>
+              <th className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100" onClick={() => handleSort("startDate")}>
+                <div className="flex items-center gap-1">Date {sortConfig.key === "startDate" && (sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}</div>
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Location</th>
-              <th 
-                className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100"
-                onClick={() => handleSort("status")}
-              >
-                <div className="flex items-center gap-1">
-                  Status
-                  {sortConfig.key === "status" && (
-                    sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
-                  )}
-                </div>
+              <th className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100" onClick={() => handleSort("status")}>
+                <div className="flex items-center gap-1">Status {sortConfig.key === "status" && (sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}</div>
               </th>
-              <th 
-                className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100"
-                onClick={() => handleSort("isActive")}
-              >
-                <div className="flex items-center gap-1">
-                  Active
-                  {sortConfig.key === "isActive" && (
-                    sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
-                  )}
-                </div>
+              <th className="cursor-pointer px-4 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100" onClick={() => handleSort("isActive")}>
+                <div className="flex items-center gap-1">Active {sortConfig.key === "isActive" && (sortConfig.direction === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}</div>
               </th>
               <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">Actions</th>
             </tr>
@@ -443,9 +431,7 @@ export default function CmsEventsPage() {
           <tbody className="divide-y divide-gray-200">
             {paginatedEvents.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                  No events found matching your criteria.
-                </td>
+                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">No events found matching your criteria.</td>
               </tr>
             ) : (
               paginatedEvents.map((event) => {
@@ -455,15 +441,9 @@ export default function CmsEventsPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {event.image ? (
-                          <img
-                            src={event.image}
-                            alt={event.title}
-                            className="h-10 w-10 rounded object-cover"
-                          />
+                          <img src={event.image} alt={event.title} className="h-10 w-10 rounded object-cover" />
                         ) : (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-gray-100">
-                            <Calendar className="h-5 w-5 text-gray-400" />
-                          </div>
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-gray-100"><Calendar className="h-5 w-5 text-gray-400" /></div>
                         )}
                         <div className="max-w-[200px] truncate md:max-w-[300px]">
                           <div className="truncate font-medium text-gray-900" title={event.title}>{event.title}</div>
@@ -476,14 +456,10 @@ export default function CmsEventsPage() {
                       {event.startDate !== event.endDate && <><br/><span className="text-xs text-gray-400">to {formatDate(event.endDate)}</span></>}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
-                      <span className="truncate block max-w-[150px]" title={event.location || ""}>
-                        {event.location || "-"}
-                      </span>
+                      <span className="truncate block max-w-[150px]" title={event.location || ""}>{event.location || "-"}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge.bg} ${statusBadge.text}`}>
-                        {event.status}
-                      </span>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge.bg} ${statusBadge.text}`}>{event.status}</span>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${event.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
@@ -492,20 +468,8 @@ export default function CmsEventsPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => openEditModal(event)}
-                          className="rounded p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                          title="Edit Event"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(event.id)}
-                          className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
-                          title="Delete Event"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <button onClick={() => openEditModal(event)} className="rounded p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Edit Event"><Pencil className="h-4 w-4" /></button>
+                        <button onClick={() => handleDelete(event.id)} className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Delete Event"><Trash2 className="h-4 w-4" /></button>
                       </div>
                     </td>
                   </tr>
@@ -520,123 +484,53 @@ export default function CmsEventsPage() {
       <div className="mt-4 flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <span>Show</span>
-          <select
-            value={itemsPerPage}
-            onChange={(e) => {
-              setItemsPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-            className="rounded border border-gray-300 bg-white px-2 py-1 focus:border-blue-500 focus:outline-none"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
+          <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }} className="rounded border border-gray-300 bg-white px-2 py-1 focus:border-blue-500 focus:outline-none">
+            <option value={5}>5</option><option value={10}>10</option><option value={20}>20</option><option value={50}>50</option>
           </select>
           <span>entries</span>
-          <span className="ml-4">
-            Showing {paginatedEvents.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-            {Math.min(currentPage * itemsPerPage, processedEvents.length)} of {processedEvents.length} entries
-          </span>
+          <span className="ml-4">Showing {paginatedEvents.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, processedEvents.length)} of {processedEvents.length} entries</span>
         </div>
-
         <div className="flex items-center gap-1">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="flex items-center justify-center rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
-            .map((page, i, arr) => (
-              <div key={page} className="flex items-center">
-                {i > 0 && arr[i - 1] !== page - 1 && <span className="px-2 text-gray-400">...</span>}
-                <button
-                  onClick={() => setCurrentPage(page)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                    currentPage === page
-                      ? "bg-blue-600 text-white"
-                      : "border border-gray-300 text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  {page}
-                </button>
-              </div>
-            ))}
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages || totalPages === 0}
-            className="flex items-center justify-center rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="flex items-center justify-center rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"><ChevronLeft className="h-4 w-4" /></button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1).map((page, i, arr) => (
+            <div key={page} className="flex items-center">
+              {i > 0 && arr[i - 1] !== page - 1 && <span className="px-2 text-gray-400">...</span>}
+              <button onClick={() => setCurrentPage(page)} className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium transition-colors ${currentPage === page ? "bg-blue-600 text-white" : "border border-gray-300 text-gray-600 hover:bg-gray-50"}`}>{page}</button>
+            </div>
+          ))}
+          <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0} className="flex items-center justify-center rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"><ChevronRight className="h-4 w-4" /></button>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal Form */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="mx-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between sticky top-0 bg-white pb-2 z-10 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">
-                {editingEvent ? "Edit Event" : "Add New Event"}
-              </h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <h2 className="text-lg font-bold text-gray-900">{editingEvent ? "Edit Event" : "Add New Event"}</h2>
+              <button onClick={() => setShowModal(false)} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 transition-colors"><X className="h-5 w-5" /></button>
             </div>
 
-            {error && (
-              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100">
-                {error}
-              </div>
-            )}
+            {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100">{error}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
+                
+                {/* Judul & Slug & Desc (Sama seperti sebelumnya) */}
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Event Title *</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => handleTitleChange(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    placeholder="e.g. Annual Tech Conference 2026"
-                    required
-                  />
+                  <input type="text" value={formData.title} onChange={(e) => handleTitleChange(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Annual Tech Conference 2026" required />
                 </div>
-
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">URL Slug *</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none bg-gray-50"
-                    required
-                  />
+                  <input type="text" value={formData.slug} onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none bg-gray-50" required />
                 </div>
-
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Short Description *</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                    rows={3}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    placeholder="Brief summary of the event..."
-                    required
-                  />
+                  <textarea value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} rows={3} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="Brief summary of the event..." required />
                 </div>
 
-                {/* Content with Toolbar */}
+                {/* Detailed Content */}
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Detailed Content</label>
                   <div className="rounded-lg border border-gray-300 overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
@@ -648,135 +542,114 @@ export default function CmsEventsPage() {
                       <button type="button" onClick={() => insertToolbarTag("<ul>\n  <li>{{}}</li>\n</ul>")} title="List" className="rounded p-1.5 text-gray-600 hover:bg-gray-200"><List className="h-4 w-4" /></button>
                       <button type="button" onClick={() => insertToolbarTag('<a href="{{}}">link text</a>')} title="Link" className="rounded p-1.5 text-gray-600 hover:bg-gray-200"><Link2 className="h-4 w-4" /></button>
                     </div>
-                    <textarea
-                      ref={textareaRef}
-                      value={formData.content}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
-                      rows={8}
-                      className="w-full px-3 py-3 text-sm text-gray-900 focus:outline-none resize-y"
-                      placeholder="Write your HTML event content here..."
-                    />
+                    <textarea ref={textareaRef} value={formData.content} onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))} rows={8} className="w-full px-3 py-3 text-sm text-gray-900 focus:outline-none resize-y" placeholder="Write your HTML event content here..." />
                   </div>
                 </div>
 
-                {/* Image Upload */}
+                {/* --- BAGIAN IMAGE & CROPPING --- */}
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Poster Image</label>
-                  <div className="flex flex-col sm:flex-row items-start gap-4">
-                    <div className="flex-1 w-full">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                        id="event-image-upload"
-                      />
-                      <label
-                        htmlFor="event-image-upload"
-                        className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600 transition-colors hover:border-blue-400 hover:bg-blue-50 ${uploading ? "pointer-events-none opacity-50" : ""}`}
-                      >
-                        <Upload className="h-6 w-6 text-gray-400" />
-                        <span className="font-medium text-gray-700">{uploading ? "Uploading..." : "Click to upload image"}</span>
-                        <span className="text-xs text-gray-500">JPEG, PNG, WebP up to 2MB (16:9 ratio recommended)</span>
-                      </label>
-                    </div>
-                    {imagePreview && (
-                      <div className="relative shrink-0">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="h-28 w-40 rounded-lg border border-gray-200 object-cover shadow-sm"
+                  
+                  {!imgSrc ? (
+                    // Default State: Tampilkan Upload File & Preview (Jika ada gambar tersimpan)
+                    <div className="flex flex-col sm:flex-row items-start gap-4">
+                      <div className="flex-1 w-full">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          onChange={onSelectFile} // Mengubah handler di sini
+                          className="hidden"
+                          id="event-image-upload"
                         />
-                        <button
-                          type="button"
-                          onClick={removeImage}
-                          className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors"
+                        <label
+                          htmlFor="event-image-upload"
+                          className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600 transition-colors hover:border-blue-400 hover:bg-blue-50"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <Upload className="h-6 w-6 text-gray-400" />
+                          <span className="font-medium text-gray-700">Click to upload image</span>
+                          <span className="text-xs text-gray-500">JPEG, PNG, WebP (16:9 ratio recommended)</span>
+                        </label>
+                      </div>
+                      {imagePreview && (
+                        <div className="relative shrink-0">
+                          <img src={imagePreview} alt="Preview" className="h-28 w-48 rounded-lg border border-gray-200 object-cover shadow-sm" />
+                          <button
+                            type="button"
+                            onClick={removeImage}
+                            className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    // Cropping State: Tampilkan UI Crop ketika file dipilih
+                    <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-800">Crop Image (16:9)</span>
+                        <button type="button" onClick={resetCropState} className="text-gray-400 hover:text-gray-700"><X className="h-5 w-5" /></button>
+                      </div>
+                      
+                      <div className="flex justify-center bg-black/5 rounded-lg overflow-hidden max-h-[35vh]">
+                        <ReactCrop
+                          crop={crop}
+                          onChange={(_, percentCrop) => setCrop(percentCrop)}
+                          onComplete={(c) => setCompletedCrop(c)}
+                          aspect={aspect}
+                          className="max-h-full"
+                        >
+                          <img ref={imgRef} src={imgSrc} alt="Crop Preview" onLoad={onImageLoad} className="max-h-[35vh] w-auto object-contain" />
+                        </ReactCrop>
+                      </div>
+
+                      <div className="flex gap-3 mt-2">
+                        <button type="button" onClick={resetCropState} disabled={uploading} className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                          Cancel
+                        </button>
+                        <button type="button" onClick={handleUploadCropped} disabled={uploading || !completedCrop} className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors">
+                          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                          {uploading ? "Uploading..." : "Crop & Upload"}
                         </button>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
 
+                {/* Location, URL, dll (Sama seperti sebelumnya) */}
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Location</label>
-                  <input
-                    type="text"
-                    value={formData.location}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    placeholder="e.g. Grand City Mall, Surabaya"
-                  />
+                  <input type="text" value={formData.location} onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Grand City Mall, Surabaya" />
                 </div>
-
                 <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Registration URL (optional)</label>
-                  <input
-                    type="url"
-                    value={formData.registrationUrl}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, registrationUrl: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    placeholder="https://forms.google.com/..."
-                  />
+                  <input type="url" value={formData.registrationUrl} onChange={(e) => setFormData((prev) => ({ ...prev, registrationUrl: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="https://forms.google.com/..." />
                   <p className="mt-1 text-xs text-gray-500">Leave empty to hide the Register button. Paste a Google Form or other registration link.</p>
                 </div>
-
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Start Date *</label>
-                  <input
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    required
-                  />
+                  <input type="date" value={formData.startDate} onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" required />
                 </div>
-
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">End Date *</label>
-                  <input
-                    type="date"
-                    value={formData.endDate}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    required
-                  />
+                  <input type="date" value={formData.endDate} onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" required />
                 </div>
-
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Category</label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                    placeholder="e.g. Webinar, Workshop"
-                  />
+                  <input type="text" value={formData.category} onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Webinar, Workshop" />
                 </div>
-
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                  >
+                  <select value={formData.status} onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
                     <option value="upcoming">Upcoming</option>
                     <option value="ongoing">Ongoing</option>
                     <option value="completed">Completed</option>
                   </select>
                 </div>
-
                 <div className="sm:col-span-2 mt-2">
                   <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 hover:bg-gray-100 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={formData.isActive}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
-                      className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
+                    <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                     <div>
                       <span className="block text-sm font-semibold text-gray-900">Publish Event</span>
                       <span className="block text-xs text-gray-500">Make this event visible to the public on the website.</span>
@@ -786,18 +659,8 @@ export default function CmsEventsPage() {
               </div>
 
               <div className="mt-6 flex items-center justify-end gap-3 border-t border-gray-100 pt-5">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-70 transition-colors"
-                >
+                <button type="button" onClick={() => setShowModal(false)} className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
+                <button type="button" disabled={submitting} onClick={handleSubmit} className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-70 transition-colors">
                   {submitting ? "Saving..." : editingEvent ? "Save Changes" : "Create Event"}
                 </button>
               </div>

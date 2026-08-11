@@ -94,6 +94,7 @@
   "home.products.04.name": "AISO",
   "home.products.04.description": "Real-time financial reporting — revenue, payroll, and costs reconciled automatically as data comes in.",
   "home.products.05.description": "Unified project management platform to track tasks, timelines, and team allocation. Seamlessly connected with HR and Accounting for precise operational and budget control.",
+  "home.products.06.description": "Leading enterprise-scale ERP system integration that connects seamlessly from end to end.",
 
   "home.cta.title": "Ready to run every branch from one screen?",
   "home.cta.subtitle": "Talk to our team about which modules fit your operation first — most clients are live within weeks, not quarters.",
@@ -1615,6 +1616,7 @@
   "pricing.products.hairisma": "Hairisma",
   "pricing.products.aiso": "AISO",
   "pricing.products.pmo": "Dimata PMO",
+  "pricing.products.odoo": "Odoo",
 
   "pricing.cta.choosePlan": "Choose Plan",
 

@@ -91,6 +91,7 @@
   "home.products.04.name": "AISO",
   "home.products.04.description": "Pelaporan keuangan real-time — pendapatan, penggajian, dan biaya direkonsiliasi secara otomatis saat data masuk.",
   "home.products.05.description": "Platform manajemen proyek terpadu untuk melacak tugas, timeline, dan alokasi tim. Terhubung langsung dengan HR dan Akuntansi untuk kendali operasional dan anggaran yang presisi.",
+  "home.products.06.description": "Integrasi sistem ERP skala enterprise terkemuka yang terhubung penuh dari hulu ke hilir.",
 
   "home.cta.title": "Siap menjalankan setiap cabang dari satu layar?",
   "home.cta.subtitle": "Bicaralah dengan tim kami tentang modul mana yang paling cocok untuk operasi Anda — sebagian besar klien sudah live dalam hitungan minggu, bukan kuartal.",
@@ -1614,6 +1615,7 @@
   "pricing.products.hairisma": "Hairisma",
   "pricing.products.aiso": "AISO",
   "pricing.products.pmo": "Dimata PMO",
+  "pricing.products.odoo": "Odoo",
 
   "pricing.cta.choosePlan": "Pilih Paket",
 

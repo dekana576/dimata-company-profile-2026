@@ -49,11 +49,19 @@ async function main() {
     },
     {
       key: "pmo",
-      icon: "/img/products/pmo-logo.png", // Menggunakan nama icon yang benar
+      icon: "/img/products/pmo-logo.png",
       iconDark: null as string | null,
       descriptionId: "Manajemen proyek dan tugas terpadu — pantau timeline dan produktivitas tim.",
       descriptionEn: "Unified project and task management — track timelines and team productivity.",
       sortOrder: 4,
+    },
+    {
+      key: "odoo",
+      icon: "/img/partners/odoo_logo.png",
+      iconDark: null as string | null,
+      descriptionId: "Sistem ERP komprehensif skala enterprise — integrasi sales, inventory, akuntansi, dan HR.",
+      descriptionEn: "Comprehensive enterprise ERP system — sales, inventory, accounting, and HR integrated.",
+      sortOrder: 5,
     },
   ];
 
@@ -82,7 +90,7 @@ async function main() {
     period: string;
     highlighted?: boolean;
     badge?: string;
-    hidePrice?: boolean; // Dukungan untuk fitur Enterprise/Custom
+    hidePrice?: boolean; 
     features: { labelId: string; labelEn: string; included: boolean }[];
   }
 
@@ -308,6 +316,49 @@ async function main() {
         },
       ],
     },
+    // ── SaaS: ODOO ──
+    {
+      productKey: "odoo",
+      deployment: "saas",
+      tiers: [
+        {
+          name: "Standard", price: 350000, period: "/bulan/user",
+          features: [
+            { labelId: "Manajemen Penjualan & CRM", labelEn: "Sales & CRM Management", included: true },
+            { labelId: "Pelacakan Inventaris Dasar", labelEn: "Basic Inventory Tracking", included: true },
+            { labelId: "Pembukuan & Akuntansi Dasar", labelEn: "Basic Accounting", included: true },
+            { labelId: "1 Perusahaan Induk", labelEn: "1 Company Entity", included: true },
+            { labelId: "Manufaktur & MRP", labelEn: "Manufacturing & MRP", included: false },
+            { labelId: "Multi-Perusahaan", labelEn: "Multi-Company", included: false },
+            { labelId: "Kustomisasi Modul", labelEn: "Module Customization", included: false },
+          ],
+        },
+        {
+          name: "Professional", price: 750000, period: "/bulan/user", highlighted: true, badge: "Populer",
+          features: [
+            { labelId: "Semua Modul Dasar", labelEn: "All Basic Modules", included: true },
+            { labelId: "Manufaktur & MRP (Lengkap)", labelEn: "Full Manufacturing & MRP", included: true },
+            { labelId: "Multi-Perusahaan & Multi-Cabang", labelEn: "Multi-Company & Multi-Branch", included: true },
+            { labelId: "Website & E-Commerce", labelEn: "Website & E-Commerce", included: true },
+            { labelId: "Akses API Terbuka", labelEn: "Open API Access", included: true },
+            { labelId: "Dukungan Teknis Jam Kerja", labelEn: "Business Hours Technical Support", included: true },
+            { labelId: "Kustomisasi Modul Inti", labelEn: "Core Module Customization", included: false },
+          ],
+        },
+        {
+          name: "Premium", price: 1500000, period: "/bulan/user", hidePrice: true,
+          features: [
+            { labelId: "Semua Modul Skala Enterprise", labelEn: "All Enterprise Scale Modules", included: true },
+            { labelId: "Kustomisasi Modul & Alur Kerja Penuh", labelEn: "Full Module & Workflow Customization", included: true },
+            { labelId: "Dedicated Cloud Server Odoo", labelEn: "Dedicated Odoo Cloud Server", included: true },
+            { labelId: "Pembuatan Modul Khusus", labelEn: "Custom Module Development", included: true },
+            { labelId: "Pelatihan Langsung & On-boarding", labelEn: "On-site Training & On-boarding", included: true },
+            { labelId: "Dedicated Account Manager", labelEn: "Dedicated Account Manager", included: true },
+            { labelId: "Dukungan Prioritas 24/7", labelEn: "24/7 Priority Support", included: true },
+          ],
+        },
+      ],
+    },
     // ── On-Premise: ProChain ──
     {
       productKey: "prochain",
@@ -523,6 +574,49 @@ async function main() {
         },
       ],
     },
+    // ── On-Premise: ODOO ──
+    {
+      productKey: "odoo",
+      deployment: "onpremise",
+      tiers: [
+        {
+          name: "Standard", price: 50000000, period: "lisensi lokal",
+          features: [
+            { labelId: "Instalasi Server Lokal", labelEn: "Local Server Installation", included: true },
+            { labelId: "Modul Dasar Odoo Terpilih", labelEn: "Selected Basic Odoo Modules", included: true },
+            { labelId: "1 Server + 10 Pengguna", labelEn: "1 Server + 10 Users", included: true },
+            { labelId: "Pembaruan Keamanan Reguler", labelEn: "Regular Security Updates", included: true },
+            { labelId: "Multi-Perusahaan Terpusat", labelEn: "Centralized Multi-Company", included: false },
+            { labelId: "Kustomisasi Kode Sumber", labelEn: "Source Code Customization", included: false },
+            { labelId: "Dukungan Teknis Berkelanjutan", labelEn: "Continuous Technical Support", included: false },
+          ],
+        },
+        {
+          name: "Professional", price: 120000000, period: "lisensi lokal", highlighted: true, badge: "Populer",
+          features: [
+            { labelId: "Semua Lingkungan Standard", labelEn: "All Standard Environments", included: true },
+            { labelId: "Akses ke Seluruh Modul Ekosistem", labelEn: "Access to All Ecosystem Modules", included: true },
+            { labelId: "Dukungan Multi-Cabang & Multi-PT", labelEn: "Multi-Branch & Multi-Company Support", included: true },
+            { labelId: "Pengguna Tanpa Batas (Unlimited)", labelEn: "Unlimited Users", included: true },
+            { labelId: "Kustomisasi Alur Kerja Bisnis", labelEn: "Business Workflow Customization", included: true },
+            { labelId: "Remote Support & Maintenance 1 Tahun", labelEn: "1-Year Remote Support & Maintenance", included: true },
+            { labelId: "Akses Penuh Kode Sumber Tertentu", labelEn: "Access to Specific Source Code", included: false },
+          ],
+        },
+        {
+          name: "Premium", price: 250000000, period: "lisensi lokal", hidePrice: true,
+          features: [
+            { labelId: "Paket Implementasi Profesional Lengkap", labelEn: "Full Professional Implementation Package", included: true },
+            { labelId: "Kustomisasi Modul & Kode Sumber (Source Code)", labelEn: "Module & Source Code Customization", included: true },
+            { labelId: "Infrastruktur High Availability (Clustering)", labelEn: "High Availability Architecture (Clustering)", included: true },
+            { labelId: "Manajemen Lisensi Bebas Batas", labelEn: "Unrestricted License Management", included: true },
+            { labelId: "SLA Dukungan Kelas Enterprise", labelEn: "Enterprise Grade Support SLA", included: true },
+            { labelId: "Pelatihan Langsung Terpadu", labelEn: "Integrated On-site Training", included: true },
+            { labelId: "Pembaruan Sistem Seumur Hidup", labelEn: "Lifetime System Updates", included: true },
+          ],
+        },
+      ],
+    },
   ];
 
   for (const pd of allTiers) {
@@ -655,7 +749,6 @@ async function main() {
       { labelId: "Budgeting & forecasting", labelEn: "Budgeting & forecasting" },
       { labelId: "Dedicated accountant support", labelEn: "Dedicated accountant support" },
     ]},
-    // Bundle Feature PMO (SaaS)
     { productKey: "pmo", deployment: "saas", tierName: "Standard", features: [
       { labelId: "Manajemen Tugas", labelEn: "Task Management" },
       { labelId: "Papan Kanban Interaktif", labelEn: "Interactive Kanban Boards" },
@@ -673,6 +766,25 @@ async function main() {
       { labelId: "Kustomisasi Workflow", labelEn: "Workflow Customization" },
       { labelId: "Analitik Mendalam", labelEn: "In-depth Analytics" },
       { labelId: "Dedicated Manager", labelEn: "Dedicated Manager" },
+    ]},
+    // Bundle Feature ODOO (SaaS)
+    { productKey: "odoo", deployment: "saas", tierName: "Standard", features: [
+      { labelId: "Manajemen Penjualan & CRM", labelEn: "Sales & CRM Management" },
+      { labelId: "Pelacakan Inventaris Dasar", labelEn: "Basic Inventory Tracking" },
+      { labelId: "Akuntansi Dasar", labelEn: "Basic Accounting" },
+      { labelId: "Hingga 10 Pengguna", labelEn: "Up to 10 Users" },
+    ]},
+    { productKey: "odoo", deployment: "saas", tierName: "Professional", features: [
+      { labelId: "Manufaktur & MRP", labelEn: "Manufacturing & MRP" },
+      { labelId: "Multi-Perusahaan", labelEn: "Multi-Company" },
+      { labelId: "Portal E-Commerce", labelEn: "E-Commerce Portal" },
+      { labelId: "Integrasi API Terbuka", labelEn: "Open API Integration" },
+    ]},
+    { productKey: "odoo", deployment: "saas", tierName: "Premium", features: [
+      { labelId: "Kustomisasi Modul Penuh", labelEn: "Full Module Customization" },
+      { labelId: "Dedicated Cloud Server", labelEn: "Dedicated Cloud Server" },
+      { labelId: "Pelatihan Khusus", labelEn: "Custom Training" },
+      { labelId: "Dukungan Prioritas 24/7", labelEn: "24/7 Priority Support" },
     ]},
 
     // On-Premise bundle features
@@ -748,7 +860,6 @@ async function main() {
       { labelId: "Budgeting & forecasting", labelEn: "Budgeting & forecasting" },
       { labelId: "Sumber kode tersedia", labelEn: "Source code available" },
     ]},
-    // Bundle Feature PMO (On-Premise)
     { productKey: "pmo", deployment: "onpremise", tierName: "Standard", features: [
       { labelId: "Instalasi Server Lokal", labelEn: "Local Server Installation" },
       { labelId: "Manajemen Proyek", labelEn: "Project Management" },
@@ -766,6 +877,25 @@ async function main() {
       { labelId: "Hak Akses Tanpa Batas", labelEn: "Unlimited Access Rights" },
       { labelId: "Pembaruan Seumur Hidup", labelEn: "Lifetime Updates" },
       { labelId: "Sumber Kode Tersedia", labelEn: "Source Code Available" },
+    ]},
+    // Bundle Feature ODOO (On-Premise)
+    { productKey: "odoo", deployment: "onpremise", tierName: "Standard", features: [
+      { labelId: "Instalasi Server Lokal", labelEn: "Local Server Installation" },
+      { labelId: "Modul Standar Odoo", labelEn: "Standard Odoo Modules" },
+      { labelId: "1 Server + 10 Pengguna", labelEn: "1 Server + 10 Users" },
+      { labelId: "Pembaruan Keamanan", labelEn: "Security Updates" },
+    ]},
+    { productKey: "odoo", deployment: "onpremise", tierName: "Professional", features: [
+      { labelId: "Multi-Cabang & Multi-PT", labelEn: "Multi-Branch & Multi-Company" },
+      { labelId: "Pengguna Tanpa Batas", labelEn: "Unlimited Users" },
+      { labelId: "Kustomisasi Alur Kerja", labelEn: "Workflow Customization" },
+      { labelId: "Remote Support 12 Bulan", labelEn: "12-month Remote Support" },
+    ]},
+    { productKey: "odoo", deployment: "onpremise", tierName: "Premium", features: [
+      { labelId: "Kustomisasi Modul Khusus", labelEn: "Custom Modules & Source Code" },
+      { labelId: "Arsitektur High Availability", labelEn: "High Availability Architecture" },
+      { labelId: "Pembaruan Seumur Hidup", labelEn: "Lifetime Updates" },
+      { labelId: "SLA Dukungan Enterprise", labelEn: "Enterprise Support SLA" },
     ]},
   ];
 
@@ -796,7 +926,8 @@ async function main() {
     { minApps: 2, discountPercent: 5 },
     { minApps: 3, discountPercent: 10 },
     { minApps: 4, discountPercent: 15 },
-    { minApps: 5, discountPercent: 20 }, // Ditambahkan untuk 5 produk
+    { minApps: 5, discountPercent: 20 },
+    { minApps: 6, discountPercent: 25 }, // Ditambahkan untuk 6 produk
   ];
 
   for (let i = 0; i < discounts.length; i++) {

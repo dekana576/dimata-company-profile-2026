@@ -117,8 +117,7 @@ interface Product {
   link: string;
   description: string;
   icon: string;
-  iconDark?: string; // Tambahan untuk gambar khusus dark mode
-  /** Foto showcase khusus produk ini, ditampilkan di hero saat tab-nya aktif. */
+  iconDark?: string;
   showcase: string;
   connectsTo: string[];
 }
@@ -151,7 +150,7 @@ const PRODUCTS: Product[] = [
     link: "/products/hairisma",
     description: "home.products.03.description",
     icon: "/img/products/hairisma-logo-no-text.png",
-    iconDark: "/img/products/hairisma-logo-no-text-darkmode.png", // Properti iconDark khusus Hairisma
+    iconDark: "/img/products/hairisma-logo-no-text-darkmode.png",
     showcase: "/img/showcase/hairisma.png",
     connectsTo: ["ProChain", "AISO", "PMO"],
   },
@@ -172,10 +171,23 @@ const PRODUCTS: Product[] = [
     link: "/products/pmo",
     description: "home.products.05.description",
     icon: "/img/products/pmo-logo.png",
-    showcase: "/img/showcase/dimata-pmo.png", // Pastikan aset pmo1.png tersedia
+    showcase: "/img/showcase/dimata-pmo.png",
     connectsTo: ["Hairisma", "AISO"],
   },
+  {
+    number: "06",
+    name: "Odoo Enterprise",
+    name2: "Odoo",
+    link: "/products/odoo", // Sesuaikan rute Odoo Anda
+    description: "home.products.06.description",
+    icon: "/img/partners/odoo_logo.png",
+    showcase: "/img/showcase/odoo1.png", 
+    connectsTo: ["AISO", "ProChain", "Hairisma"],
+  },
 ];
+
+// Array khusus untuk Hero Section agar Odoo tidak ikut dirender di tab showcase
+const HERO_PRODUCTS = PRODUCTS.slice(0, 5);
 
 interface Step {
   number: string;
@@ -259,8 +271,6 @@ interface HeroTag {
   className: string;
 }
 
-// Chip-chip fitur/produk di bawah headline hero (gaya "Kasir Online",
-// "Akuntansi", dst. di majoo.id) — tiap chip warna berbeda supaya scannable.
 const HERO_TAGS: HeroTag[] = [
   { label: "ProChain", className: "bg-sky-500 text-white" },
   { label: "Hanoman", className: "bg-teal-500 text-white" },
@@ -274,7 +284,9 @@ const HERO_TAGS: HeroTag[] = [
 export default function HomePage() {
   const { t } = useLanguage();
   const [activeProduct, setActiveProduct] = useState(0);
-  const activeProductData = PRODUCTS[activeProduct];
+  
+  // Menggunakan HERO_PRODUCTS agar Odoo tidak tercampur di showcase atas
+  const activeProductData = HERO_PRODUCTS[activeProduct] || HERO_PRODUCTS[0];
 
   return (
     <>
@@ -311,18 +323,6 @@ export default function HomePage() {
               {t("home.hero.description")}
             </p>
 
-            {/* Chip fitur/produk — versi DIMATA dari deretan tag di majoo.id */}
-            {/* <div className="mt-6 flex flex-wrap gap-2.5">
-              {HERO_TAGS.map((tag) => (
-                <span
-                  key={tag.label}
-                  className={`rounded-full px-4 py-1.5 text-[13px] font-semibold shadow-sm ${tag.className}`}
-                >
-                  {tag.label}
-                </span>
-              ))}
-            </div> */}
-
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
@@ -338,46 +338,16 @@ export default function HomePage() {
                 {t("home.hero.ctaPlatform")}
               </Link>
             </div>
-
-            {/* Mono readout strip — signature motif reused in later sections */}
-            <div className="mt-14 flex w-full max-w-md flex-wrap gap-x-10 gap-y-5 border-t border-foreground/10 pt-7">
-              <div className="flex flex-row flex-wrap items-center gap-6 sm:gap-8 w-full justify-center sm:justify-start">
-                <div className="relative isolate flex items-center justify-center">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 -z-10 scale-100 rounded-full bg-primary/20 blur-xl"
-                  />
-                  <Image
-                    src="/img/partners/odoo_logo.png"
-                    alt="Odoo"
-                    width={100}
-                    height={75}
-                    className="relative h-9 w-auto object-contain"
-                  />
-                </div>
-
-                <div className="h-9 w-px bg-border" aria-hidden="true" />
-
-                <div className="flex flex-col gap-1 leading-none">
-                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                    Official
-                  </span>
-                  <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
-                    Partner
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Right — hero image + kartu showcase produk yang bisa di-tab (pengganti system diagram) */}
+          {/* Right — hero image + kartu showcase produk yang bisa di-tab */}
           <Reveal
             from="right"
             className="relative mx-auto w-full max-w-135 pb-20 sm:pb-24"
           >
             <div className="relative aspect-4/5 overflow-hidden rounded-[80px] border border-foreground/10 shadow-2xl sm:aspect-5/6">
-              {/* Semua showcase ditumpuk & di-crossfade lewat opacity — tiap produk punya fotonya sendiri */}
-              {PRODUCTS.map((product, i) => (
+              {/* Gunakan HERO_PRODUCTS agar Odoo tidak ikut dirender */}
+              {HERO_PRODUCTS.map((product, i) => (
                 <Image
                   key={product.name}
                   src={product.showcase}
@@ -396,16 +366,16 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Kartu showcase — hook client langsung ke produk/project unggulan */}
+            {/* Kartu showcase */}
             <div className="absolute inset-x-4 -bottom-2 rounded-[24px] border border-separator bg-background/95 p-5 shadow-xl backdrop-blur-lg sm:inset-x-6">
-              {/* Tabs produk — grid mengisi penuh lebar kartu, tidak lagi nge-pack ke kiri */}
+              {/* Tabs produk */}
               <div
                 className="grid gap-1 rounded-full bg-foreground/5 p-1 overflow-x-auto scrollbar-hide"
                 style={{
-                  gridTemplateColumns: `repeat(${PRODUCTS.length}, minmax(80px, 1fr))`,
+                  gridTemplateColumns: `repeat(${HERO_PRODUCTS.length}, minmax(80px, 1fr))`,
                 }}
               >
-                {PRODUCTS.map((product, i) => (
+                {HERO_PRODUCTS.map((product, i) => (
                   <button
                     key={product.name}
                     type="button"
@@ -470,7 +440,37 @@ export default function HomePage() {
         aria-label="Trusted by our clients"
         className="overflow-hidden border-y border-teal/40 bg-background py-8 lg:py-10"
       >
-        <div className="w-full text-center pb-5">
+        {/* ================= ODOO OFFICIAL PARTNER LOGO ================= */}
+        <div className="mb-10 flex w-full justify-center">
+          <div className="flex flex-row flex-wrap items-center justify-center gap-6 sm:gap-8">
+            <div className="relative isolate flex items-center justify-center">
+              <div
+                aria-hidden
+                className="absolute inset-0 -z-10 scale-100 rounded-full bg-primary/20 blur-xl"
+              />
+              <Image
+                src="/img/partners/odoo_logo.png"
+                alt="Odoo"
+                width={100}
+                height={75}
+                className="relative h-9 w-auto object-contain"
+              />
+            </div>
+
+            <div className="h-9 w-px bg-border" aria-hidden="true" />
+
+            <div className="flex flex-col gap-1 text-left leading-none">
+              <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Official
+              </span>
+              <span className="font-display text-[13px] font-semibold uppercase tracking-[0.15em] text-foreground">
+                Partner
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full pb-5 text-center">
           {/* Label */}
           <span className="shrink-0 px-4 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/40 sm:px-6 md:pl-8 md:pr-0 md:text-left">
             {t("home.trustedBy")}
@@ -684,7 +684,7 @@ export default function HomePage() {
             </p>
           </Reveal>
 
-          {/* Bento grid: kartu 1 & 4 lebar (8 kolom), kartu 2 & 3 sempit (4 kolom) — checkerboard. Kartu 5 full (12 kolom). */}
+          {/* Bento grid: Logika grid untuk 6 produk. Odoo muncul di sini. */}
           <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12">
             {PRODUCTS.map(
               (
@@ -703,9 +703,7 @@ export default function HomePage() {
                   key={name}
                   delay={(i % 2) * 120}
                   className={
-                    i === 4
-                      ? "lg:col-span-12"
-                      : i % 3 === 0
+                    (i % 4 === 0 || i % 4 === 3)
                       ? "lg:col-span-8"
                       : "lg:col-span-4"
                   }

@@ -16,7 +16,7 @@
  * Struktur menu:
  *   Home
  *   About Us         -> Company Profile, Visi Misi
- *   Produk & Solusi   -> Hairisma, Prochain, Hanoman, Aiso, Solutions
+ *   Produk & Solusi   -> Hairisma, Prochain, Hanoman, Aiso, PMO, Odoo, Solutions
  *   Project
  *   Harga
  *   Acara
@@ -27,16 +27,7 @@
  * besar supaya lebih mudah dibaca.
  *
  * ICON PRODUK PAKAI GAMBAR:
- * Item produk (Hairisma, Prochain, Hanoman, Aiso) memakai `iconSrc` yang
- * menunjuk ke file di /public/img/products/<nama_product>-logo-no-text.png.
- * Khusus Hairisma disediakan 2 varian logo (mengikuti tema aplikasi):
- *   - light: /img/products/hairisma-logo-no-text.png
- *   - dark : /img/products/hairisma-logo-no-text-darkmode.png
- * Item non-produk (Company Profile, Visi Misi, Solutions) masih memakai
- * icon lucide-react biasa lewat field `icon`.
- *
- * PENTING: tambahkan key terjemahan baru ke id.json & en.json sesuai label
- * & description yang dipakai di DEFAULT_ITEMS di bawah ini.
+ * Item produk (Hairisma, Prochain, Hanoman, Aiso, Odoo) memakai `iconSrc`.
  */
 
 import {
@@ -174,6 +165,13 @@ const DEFAULT_ITEMS: NavItem[] = [
         href: "/products/pmo",
         description: "nav.products.pmo.desc",
         iconSrc: "/img/products/pmo-logo.png",
+      },
+      {
+        // ITEM BARU: ODOO
+        label: "nav.products.odoo",
+        href: "/products/odoo", // Ganti menjadi "/odoo" jika route utamanya di luar folder products
+        description: "nav.products.odoo.desc",
+        iconSrc: "/img/partners/odoo_logo.png", // Menggunakan logo odoo dari folder partners
       },
       {
         label: "nav.solutions",

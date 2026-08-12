@@ -685,7 +685,7 @@ export default function HomePage() {
           </Reveal>
 
           {/* Bento grid: Logika grid untuk 6 produk. Odoo muncul di sini. */}
-          <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12">
+          <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-12">
             {PRODUCTS.map(
               (
                 {

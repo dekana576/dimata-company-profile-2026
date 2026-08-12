@@ -285,7 +285,7 @@ export function Navbar({
         </Link>
 
         {/* Menu desktop */}
-        <ul ref={dropdownRef} className="hidden items-center gap-1 md:flex">
+        <ul ref={dropdownRef} className="hidden items-center gap-1 lg:flex">
           {items.map((item, idx) => {
             const hasChildren = item.children && item.children.length > 0;
             const active = isActive(item.href) || isChildActive(item.children);
@@ -439,7 +439,7 @@ export function Navbar({
         <div className="flex items-center gap-2">
           <Link
             href={ctaItem.href}
-            className={`hidden md:inline-flex ${ctaLinkClass}`}
+            className={`hidden lg:inline-flex ${ctaLinkClass}`}
           >
             {t(ctaItem.label)}
             <ArrowUpRight className="h-4 w-4" />
@@ -453,7 +453,7 @@ export function Navbar({
                 size="sm"
                 aria-label="Toggle theme"
                 onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="hidden md:inline-flex"
+                className="hidden lg:inline-flex"
               >
                 {theme === "dark" ? (
                   <Sun className="h-4 w-4" />
@@ -468,7 +468,7 @@ export function Navbar({
                 size="sm"
                 aria-label="Toggle language"
                 onPress={() => setLocale(locale === "id" ? "en" : "id")}
-                className="hidden md:inline-flex"
+                className="hidden lg:inline-flex"
               >
                 <Globe className="h-4 w-4" />
                 <span className="text-[11px] font-semibold uppercase">
@@ -484,7 +484,7 @@ export function Navbar({
             size="sm"
             aria-label={isMenuOpen ? "Tutup menu" : "Buka menu"}
             aria-expanded={isMenuOpen}
-            className="md:hidden"
+            className="lg:hidden"
             onPress={() => setIsMenuOpen((open) => !open)}
           >
             {isMenuOpen ? (
@@ -498,7 +498,7 @@ export function Navbar({
 
       {/* Panel menu mobile */}
       <div
-        className={`grid overflow-hidden border-t border-separator bg-background transition-[grid-template-rows] duration-300 ease-out md:hidden ${
+        className={`grid overflow-hidden border-t border-separator bg-background transition-[grid-template-rows] duration-300 ease-out lg:hidden ${
           isMenuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >

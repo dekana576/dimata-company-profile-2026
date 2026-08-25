@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ThemeProvider } from "next-themes";
 import { 
   Image, 
   LogOut, 
@@ -25,6 +26,14 @@ interface User {
 }
 
 export default function CmsLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" forcedTheme="light">
+      <CmsLayoutContent>{children}</CmsLayoutContent>
+    </ThemeProvider>
+  );
+}
+
+function CmsLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -32,16 +41,6 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
   const [careerOpen, setCareerOpen] = useState(false);
   const [blogOpen, setBlogOpen] = useState(false);
-
-  // Force light theme for CMS
-  useEffect(() => {
-    const html = document.documentElement;
-    html.classList.remove("dark");
-    html.classList.add("light");
-    return () => {
-      html.classList.remove("light");
-    };
-  }, []);
 
   useEffect(() => {
     if (pathname === "/cms/login") {

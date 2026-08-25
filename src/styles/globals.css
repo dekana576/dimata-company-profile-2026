@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* Tailwind v4 defaults dark: to prefers-color-scheme; bind it to the .dark
+ * class next-themes manages so the navbar toggle controls all dark: utilities */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * Brand: DIMATA IT Solutions — logo blue as the primary color, logo red
  * kept as a secondary accent. Backgrounds are neutral: white in light

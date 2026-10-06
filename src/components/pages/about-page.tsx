@@ -121,7 +121,9 @@ const TEAMS = [
   },
 ];
 
-const GALLERY = [
+// Foto dummy — hanya dipakai sebagai fallback saat tidak ada foto gallery yang valid
+// (folder uploads kosong / semua file tidak ditemukan / gagal dimuat).
+const DUMMY_GALLERY = [
   { src: "https://picsum.photos/seed/dimata1/600/400", alt: "Team meeting discussion" },
   { src: "https://picsum.photos/seed/dimata2/600/400", alt: "Office brainstorming session" },
   { src: "https://picsum.photos/seed/dimata3/600/400", alt: "Team building activity" },
@@ -149,8 +151,10 @@ export default function AboutPage({
 }: AboutPageProps) {
   const [imgError, setImgError] = useState(false);
   const [expandedImage, setExpandedImage] = useState<GalleryItem | null>(null);
+  const [failedImages, setFailedImages] = useState<Record<number, boolean>>({});
   const { t } = useLanguage();
   const showImage = founderImage && !imgError;
+  const visibleImages = galleryImages.filter((img) => !failedImages[img.id]);
 
   return (
     <main className='flex-1'>
@@ -368,12 +372,12 @@ export default function AboutPage({
             <p className='mt-2 text-center text-muted-foreground'>
               {t("about.gallery.description")}
             </p>
-            {galleryImages.length > 0 ? (
+            {visibleImages.length > 0 ? (
               <motion.div
                 {...staggerContainer}
                 className='mt-8 grid grid-cols-2 gap-4 md:grid-cols-3'
               >
-                {galleryImages.map((img) => (
+                {visibleImages.map((img) => (
                   <motion.div
                     key={img.id}
                     {...staggerItem}
@@ -384,6 +388,9 @@ export default function AboutPage({
                       src={img.path}
                       alt={img.description || "Gallery image"}
                       className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                      onError={() =>
+                        setFailedImages((prev) => ({ ...prev, [img.id]: true }))
+                      }
                     />
                     <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
                     <span className='absolute bottom-3 left-3 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
@@ -397,7 +404,7 @@ export default function AboutPage({
                 {...staggerContainer}
                 className='mt-8 grid grid-cols-2 gap-4 md:grid-cols-3'
               >
-                {GALLERY.map((img) => (
+                {DUMMY_GALLERY.map((img) => (
                   <motion.div
                     key={img.src}
                     {...staggerItem}

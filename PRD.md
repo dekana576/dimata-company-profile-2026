@@ -27,7 +27,7 @@ src/
 ├── app/
 │   ├── (public)/          # Public-facing pages (Navbar + Footer layout)
 │   │   ├── page.tsx              # Home page
-│   │   ├── about/page.tsx        # About + Gallery (fetches from DB)
+│   │   ├── about/page.tsx        # About + Gallery (Prisma, fallback dummy)
 │   │   ├── events/page.tsx       # Events listing
 │   │   ├── events/[slug]/page.tsx # Event detail (ISR, revalidate=60)
 │   │   ├── blog/page.tsx          # Blog listing
@@ -105,7 +105,7 @@ src/
 │   ├── prisma.ts            # Prisma client (singleton, MariaDB adapter)
 │   ├── auth.ts              # JWT sign/verify, getCurrentUser
 │   ├── db-config.ts         # Parse DATABASE_URL to connection object
-│   ├── gallery.ts           # getActiveGalleryImages()
+│   ├── gallery.ts           # getActiveGalleryImages() (used by About page)
 │   ├── upload.ts            # File upload utilities
 │   ├── mail.ts              # Nodemailer sendEmail()
 │   └── swagger.ts           # Swagger config
@@ -283,9 +283,10 @@ Full CRUD under `/api/pricing/*` for products, tiers, features, bundle-features,
 - All client components use `"use client"` directive
 
 ### Data Fetching
-- **Server-side (SSR/ISR):** About page fetches gallery via Prisma directly (with `export const revalidate = 60`)
+- **Server-side (SSR):** About page fetches gallery via `getActiveGalleryImages()` (Prisma) with `export const dynamic = "force-dynamic"` so newly uploaded photos appear immediately
+- **Gallery fallback:** DB entries whose file is missing from `public/` are filtered out server-side; if none remain (uploads folder empty), the About page renders hardcoded dummy photos from `src/components/pages/about-page.tsx` (`DUMMY_GALLERY`, picsum.photos). A photo that fails to load in the browser is also swapped out for the dummy set.
 - **Client-side:** Events, Projects, Career pages fetch via `fetch()` in `useEffect` hooks
-- **ISR pattern:** `export const revalidate = 60` on pages with server-side data fetching
+- **ISR pattern:** `export const revalidate = 60` on pages with server-side data fetching (events/blog detail)
 
 ### Internationalization (i18n)
 - Language context at `src/contexts/language-context.tsx`
@@ -364,7 +365,7 @@ nginx -t && systemctl reload nginx
 | Middleware deprecation | Pending | Next.js16 wants `proxy.ts` instead of `middleware.ts` |
 | `process.cwd()` in upload.ts | Caution | Uses `process.cwd()` which depends on PM2 working directory |
 | Events detail page | Done | `src/app/(public)/events/[slug]/page.tsx` with ISR |
-| Gallery ISR | Done | About page uses `revalidate = 60` |
+| Gallery SSR | Done | About page fetches from Prisma with `dynamic = "force-dynamic"`; falls back to dummy photos when `public/uploads/gallery` is empty |
 | Registration URL for events | Done | `registrationUrl` field, conditional button |
 | Blog feature | Done | Blog posts, categories, pagination, author, draft/publish, featured posts |
 

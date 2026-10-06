@@ -176,7 +176,7 @@ dimata-company-profile-2026/
 
 - **i18n**: Indonesian (default) / English toggle
 - **Dark Mode**: System preference + manual toggle
-- **SSR Gallery**: Server-side rendered for SEO
+- **SSR Gallery**: Server-side rendered for SEO; dummy photos only when uploads are empty
 - **Image Optimization**: Client-side crop + resize
 - **Auth**: JWT + httpOnly cookie, protected routes
 

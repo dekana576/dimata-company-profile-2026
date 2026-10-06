@@ -2,15 +2,17 @@ import { readdir } from "fs/promises";
 import path from "path";
 import { existsSync } from "fs";
 import AboutPage from "@/components/pages/about-page";
+import { getActiveGalleryImages, type GalleryImage } from "@/lib/gallery";
 
 // Karena berbasis file statis yang diubah secara dinamis, pastikan halaman tidak di cache permanen
 export const dynamic = "force-dynamic";
 
+const UPLOAD_DIR = path.join(process.cwd(), "public/img/about");
+const GALLERY_DIR = path.join(process.cwd(), "public");
+
 export default async function PublicAboutPage() {
-  const UPLOAD_DIR = path.join(process.cwd(), "public/img/about");
-  
   // Default gambar jika tidak ada
-  let founderImage = "/img/founder.jpg"; 
+  let founderImage = "/img/founder.jpg";
 
   try {
     if (existsSync(UPLOAD_DIR)) {
@@ -26,14 +28,22 @@ export default async function PublicAboutPage() {
     console.error("Gagal membaca folder gambar founder", error);
   }
 
-  // TODO: Ambil gallery dari database jika Anda menggunakan Prisma
-  // const galleryImages = await prisma.gallery.findMany({...})
-  const galleryImages: any[] = []; 
+  // Ambil gallery dari database, lalu buang entri yang filenya sudah tidak ada di folder upload.
+  // Jika hasilnya kosong, AboutPage akan memakai foto dummy.
+  let galleryImages: GalleryImage[] = [];
+  try {
+    const activeImages = await getActiveGalleryImages();
+    galleryImages = activeImages.filter((img) =>
+      existsSync(path.join(GALLERY_DIR, img.path))
+    );
+  } catch (error) {
+    console.error("Gagal mengambil gallery dari database", error);
+  }
 
   return (
-    <AboutPage 
-      founderImage={founderImage} 
-      galleryImages={galleryImages} 
+    <AboutPage
+      founderImage={founderImage}
+      galleryImages={galleryImages}
     />
   );
 }
